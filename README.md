@@ -86,7 +86,7 @@ Seluruh simbol komponen dirender dalam format vektor SVG tajam dan terbagi ke da
 Format berkas proyek Mashimurelay (`.smrl` / `.srelay`) kompatibel secara penuh antar-platform:
 
 1. **Mashimurelay Android (`100% Pure Kotlin Native`)** — Repositori ini.
-2. **Mashimurelay Web (`PWA & WebAssembly`)** — Akses daring: [https://mashimurelay.netlify.app/](https://mashimurelay.netlify.app/)
+2. **Mashimurelay Web (`PWA & WebAssembly`)** — Akses daring: [https://mashimurelay.vercel.app/](https://mashimurelay.vercel.app/)
 3. **Mashimurelay Windows (`Rust Tauri v2 Desktop`)** — Edisi desktop mandiri berkinerja tinggi (`Mashimurelay.exe`).
 
 ---
