@@ -85,9 +85,13 @@ Seluruh simbol komponen dirender dalam format vektor SVG tajam dan terbagi ke da
 
 Format berkas proyek Mashimurelay (`.smrl` / `.srelay`) kompatibel secara penuh antar-platform:
 
-1. **Mashimurelay Android (`100% Pure Kotlin Native`)** — Repositori ini.
-2. **Mashimurelay Web (`PWA & WebAssembly`)** — Akses daring: [https://mashimurelay.vercel.app/](https://mashimurelay.vercel.app/)
-3. **Mashimurelay Windows (`Rust Tauri v2 Desktop`)** — Edisi desktop mandiri berkinerja tinggi (`Mashimurelay.exe`).
+1. **[Mashimurelay Android](https://github.com/maulana-mash/Mashimurelay.apk)** (`100% Pure Kotlin Native`) — **Repositori ini.**
+   Aplikasi mobile native murni (`com.mashimurelay.app`) dengan akselerasi GPU Canvas untuk perangkat siswa di ruang kelas.
+2. **[Mashimurelay Web](https://github.com/maulana-mash/Mashimurelay-Web)** (`PWA & Online Simulator`)
+   Berjalan langsung di peramban web modern tanpa instalasi dengan dukungan *offline-first* Service Worker.
+   - **Akses Online**: [https://mashimurelay.vercel.app/](https://mashimurelay.vercel.app/)
+3. **[Mashimurelay Windows Desktop](https://github.com/maulana-mash/Mashimurelay.exe)** (`Rust Tauri v2 Desktop`)
+   Stasiun kerja instruktur guru & teknisi dengan microserver Hotspot LAN offline, pengelolaan ujian kelas, serta tersedia dalam edisi *Standalone Portable* (`Mashimurelay.exe`) dan *NSIS Installer* (`Mashimurelay_Setup.exe`).
 
 ---
 
