@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Petunjuk Penggunaan Mashimurelay</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Modal (Gambar 2) -->
+  <header class="modal-header">
+    <div class="header-left">
+      <div class="book-icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      </div>
+      <div class="header-meta">
+        <h3 class="modal-title">Petunjuk Penggunaan Mashimurelay</h3>
+        <span class="modal-subtitle">Panduan lengkap CAD, ensiklopedia komponen &amp; simulasi otomasi industri</span>
+      </div>
+    </div>
+    <button id="btnCloseInstructions" class="modal-close-btn" aria-label="Tutup">&times;</button>
+  </header>
+
+  <!-- Horizontal Tab Bar -->
+  <div class="instructions-tabs-wrapper">
+    <nav class="instructions-tabs">
+      <button class="inst-tab active" data-tab="tabVideoSim">Video Simulasi Komponen</button>
+      <button class="inst-tab" data-tab="tabComponents">Ensiklopedia Komponen</button>
+      <button class="inst-tab" data-tab="tabSoftware">Pengenalan Software</button>
+      <button class="inst-tab" data-tab="tabUsage">Cara Penggunaan &amp; Simulasi</button>
+      <button class="inst-tab" data-tab="tabClosing">Penutup &amp; Keselamatan</button>
+    </nav>
+  </div>
+
+  <!-- Modal Body -->
+  <main class="modal-instructions-body">
+    <!-- Tab 1: Video Simulasi Interaktif -->
+    <section id="tabVideoSim" class="inst-section active">
+      <div style="margin-bottom: 8px; font-size: 11.5px; color: var(--text-secondary);">
+        <strong style="color: #38bdf8;">Video Simulasi Interaktif:</strong> Pilih skenario rangkaian di bawah untuk menyaksikan pergerakan fisis kontak, aliran arus, dan medan magnet secara real-time:
+      </div>
+      <div id="simVideoPlayerMount"></div>
+    </section>
+
+    <!-- Tab 2: Ensiklopedia Komponen (Gambar 2) -->
+    <section id="tabComponents" class="inst-section">
+      <div class="encyclo-toolbar">
+        <div class="encyclo-search-box">
+          <input type="text" id="encycloSearchInput" class="encyclo-search-input" placeholder="Cari nama komponen, kode tag (-KM, -KT, -QF, M3~)..." />
+        </div>
+        <div class="encyclo-filters" id="encycloFilters">
+          <button class="encyclo-filter-btn active" data-cat="all">Semua</button>
+          <button class="encyclo-filter-btn" data-cat="sources">Sources</button>
+          <button class="encyclo-filter-btn" data-cat="protections">Proteksi</button>
+          <button class="encyclo-filter-btn" data-cat="switches">Saklar</button>
+          <button class="encyclo-filter-btn" data-cat="contactors">Kontaktor</button>
+          <button class="encyclo-filter-btn" data-cat="coils">Koil &amp; Timer</button>
+          <button class="encyclo-filter-btn" data-cat="auxiliaries">Kontak Bantu</button>
+          <button class="encyclo-filter-btn" data-cat="motors">Motor</button>
+          <button class="encyclo-filter-btn" data-cat="loads">Beban &amp; Sinyal</button>
+        </div>
+      </div>
+      <div id="encycloGrid" class="encyclo-grid">
+        <!-- Rendered dynamically by app_instructions.js -->
+      </div>
+    </section>
+
+    <!-- Tab 3: Pengenalan Software -->
+    <section id="tabSoftware" class="inst-section">
+      <div class="guide-card">
+        <h4>1. Definisi Software</h4>
+        <p><strong>Mashimurelay</strong> adalah perangkat lunak Computer-Aided Design (CAD) dan simulator interaktif teknik kelistrikan industri yang dirancang khusus untuk merancang, menguji, dan menganalisis sistem kendali elektromagnetik, otomasi industri berbasis relai (<em>hardwired relay logic</em>), serta rangkaian tenaga motor listrik.</p>
+        <p>Mengadopsi standar internasional diagram kelistrikan (<strong>IEC 60617</strong> dan <strong>NEMA ICS 19-2002</strong>), menghadirkan lingkungan virtual real-time di mana setiap komponen kelistrikan dimodelkan secara fisis dan logis sesuai karakteristik aslinya di dunia industri nyata.</p>
+      </div>
+
+      <div class="guide-card">
+        <h4>2. Kegunaan &amp; Manfaat Utama</h4>
+        <ul>
+          <li><strong>Perancangan Diagram Kontrol &amp; Tenaga:</strong> Menggambar sirkuit kendali dan sirkuit daya pada snap-grid 30px presisi tinggi.</li>
+          <li><strong>Simulasi Logika Relai Real-Time:</strong> Memvalidasi fungsi interlocking, penguncian mandiri, urutan sekuensial motor, Forward-Reverse, Star-Delta, hingga otomasi flasher.</li>
+          <li><strong>Analisis &amp; Proteksi Hubung Singkat:</strong> Mendeteksi korsleting seketika sebelum diaplikasikan pada panel listrik nyata.</li>
+          <li><strong>Portabilitas &amp; Kompatibilitas Penuh:</strong> Bekerja offline di Android dan Windows dengan format berkas <code>.smrl</code> dan <code>.txt</code>.</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>3. Tujuan Pengembangan</h4>
+        <ol>
+          <li><strong>Keamanan Tanpa Risiko:</strong> Menghilangkan risiko peralatan meledak, terbakar, atau hubung singkat saat proses belajar dan prototyping.</li>
+          <li><strong>Efisiensi Waktu &amp; Biaya:</strong> Menguji logika sistem kontrol secara instan tanpa perlu merakit kabel secara manual pada papan uji.</li>
+          <li><strong>Standarisasi Pendidikan Vokasi:</strong> Menjadi sarana ajar interaktif untuk teknik elektro, mekatronika, dan instalasi tenaga listrik industri.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Tab 4: Cara Penggunaan & Simulasi -->
+    <section id="tabUsage" class="inst-section">
+      <div class="guide-card">
+        <h4>1. Navigasi Antarmuka &amp; Kanvas</h4>
+        <ul>
+          <li><strong>Buka Menu:</strong> Ketuk tombol <code>MENU</code> di pojok kiri atas untuk membuka panel navigasi drawer (Workspace, Save, Instructions, Settings, About).</li>
+          <li><strong>Pencarian &amp; Penempatan Komponen:</strong> Ketuk tombol <code>LIBRARY</code> di toolbar atau tombol FAB (+) di pojok kanan bawah. Ketuk komponen untuk menempatkannya di kanvas. Geser menggunakan jari (snap 30px otomatis).</li>
+          <li><strong>Rotasi Komponen:</strong> Ketuk komponen lalu tekan tombol <code>Putar</code> pada floating pill di bawah kanvas untuk memutar 90 derajat.</li>
+          <li><strong>Pemberian Tag Interlocking:</strong> Ketuk komponen lalu tekan tombol <code>Tag</code> untuk menyelaraskan nama interlocking (misal: <code>-KM1</code>) atau mengatur waktu delay (misal: <code>2.0s</code>).</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>2. Penarikan Kabel (Wiring System)</h4>
+        <ul>
+          <li>Arahkan sentuhan ke terminal pin komponen (lingkaran putih/cyan).</li>
+          <li>Ketuk sekali pada pin asal (titik menyala cyan), lalu ketuk pin target pada komponen lain. Kabel ortogonal rapi akan otomatis terbentuk.</li>
+          <li><strong>Proteksi Sambungan Mandiri:</strong> Kabel dilarang menghubungkan pin komponen ke pin lain pada komponen yang sama demi kerapian skema.</li>
+          <li><strong>Menggeser Jalur Kabel:</strong> Ketuk kabel yang telah terpasang, lalu seret handle tengah kabel untuk mengubah jalur perutean kawat.</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>3. Menjalankan Simulasi (RUN Mode)</h4>
+        <ul>
+          <li>Tekan tombol hijau <strong>RUN</strong> di toolbar atas. Mode simulasi aktif ditandai dengan tombol <strong>STOP</strong> merah.</li>
+          <li>Sentuh dan tahan tombol <strong>Push Button</strong> di kanvas untuk mengaktifkan kontak sesaat (momentary press-and-hold).</li>
+          <li>Ketuk <strong>Saklar Pemutus</strong> atau <strong>MCB</strong> di kanvas untuk membuka/menutup sirkuit secara permanen.</li>
+          <li>Kabel aktif akan menyala terang (fasa berwarna merah/biru cerah, netral cyan). Motor induksi 3 fasa akan berputar dengan panah dinamis 60fps.</li>
+          <li>Jika terjadi hubung singkat (korsleting), sistem proteksi instan akan memutus daya dan memunculkan banner peringatan <code>SHORT CIRCUIT!</code>.</li>
+          <li>Tekan tombol merah <strong>STOP</strong> untuk mengakhiri simulasi dan kembali ke mode pengeditan skema.</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>4. Manajemen File &amp; Penyimpanan</h4>
+        <ul>
+          <li><strong>Auto-Save:</strong> Bekerja secara otomatis saat perubahan dibuat atau saat berpindah aplikasi. Dapat diatur pada menu Settings.</li>
+          <li><strong>Format .smrl:</strong> Berkas standar CAD modern berbasis JSON lengkap dengan metadata posisi.</li>
+          <li><strong>Format .txt:</strong> Format native Simurelay Android agar dapat dibuka langsung pada pengelola berkas perangkat.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Tab 5: Penutup & Keselamatan -->
+    <section id="tabClosing" class="inst-section">
+      <h4>Penutup &amp; Komitmen Pembelajaran</h4>
+      <p>Mashimurelay dirancang sebagai platform terpadu untuk menjembatani teori otomasi kelistrikan dengan implementasi industri nyata. Melalui simulasi berpresisi tinggi ini, perancang dapat memvalidasi desain sistem kendali tanpa risiko kesalahan perangkat keras.</p>
+
+      <p style="margin-top: 14px;">
+        <strong style="color: #f59e0b;">Peringatan Keselamatan Instalasi Fisik Nyata:</strong><br>
+        Selalu patuhi standar K3 Listrik dan prosedur <em>Lockout/Tagout (LOTO)</em>. Pastikan sumber tegangan telah dimatikan total dan ukur dengan voltmeter sebelum menyentuh kabel pada panel industri fisik. Hasil simulasi virtual ini adalah panduan konseptual dan verifikasi logika matematis.
+      </p>
+
+      <div class="guide-footer">
+        <strong>© Mashimurelay • All Rights Reserved.</strong><br>
+        <em>Industrial Electromechanical Relay CAD &amp; Circuit Simulation Engine</em>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="components_data.js"></script>
+  <script src="encyclopedia_data.js"></script>
+  <script src="instruction_video.js"></script>
+  <script src="app_instructions.js"></script>
+</body>
+</html>

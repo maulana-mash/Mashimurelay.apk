@@ -1,0 +1,3741 @@
+package com.mashimurelay.app
+
+import android.app.Activity
+import android.app.Dialog
+import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.net.Uri
+import android.provider.OpenableColumns
+import java.io.File
+import com.mashimurelay.app.nativecad.SettingsManager
+import com.mashimurelay.app.nativecad.NativePdfReportGenerator
+import com.mashimurelay.app.nativecad.StudentPdfInfo
+import com.mashimurelay.app.nativecad.SvgComponentRenderer
+import androidx.core.content.FileProvider
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import com.journeyapps.barcodescanner.BarcodeCallback
+import com.journeyapps.barcodescanner.BarcodeResult
+import com.google.zxing.ResultPoint
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.common.HybridBinarizer
+import java.net.NetworkInterface
+import java.util.Collections
+import android.text.InputFilter
+import android.view.Gravity
+import android.os.Build
+import android.os.Bundle
+import android.webkit.WebView
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
+import android.widget.ScrollView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.FrameLayout
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.mashimurelay.app.nativecad.ComponentDef
+import com.mashimurelay.app.nativecad.NativeCanvasView
+import com.mashimurelay.app.nativecad.NativeComponentRegistry
+import com.mashimurelay.app.nativecad.NativeConnector
+import com.mashimurelay.app.nativecad.NativeElement
+import com.mashimurelay.app.nativecad.ProjectItem
+import com.mashimurelay.app.nativecad.VisualComponentAdapter
+import com.mashimurelay.app.nativecad.WorkspaceManager
+import com.mashimurelay.app.nativecad.WorkspaceProjectsAdapter
+import com.mashimurelay.app.nativecad.CompactMenuHelper
+import com.mashimurelay.app.nativecad.CompactMenuItem
+
+class MainActivity : Activity() {
+
+    // Top Drawer & Navigation (Gambar 1)
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var btnOpenMenu: View
+    private lateinit var tvDrawerSubtitle: TextView
+    private lateinit var menuDrawerWorkspace: View
+    private lateinit var menuDrawerSave: View
+    private lateinit var menuDrawerSaveAs: View
+    private lateinit var menuDrawerInstructions: View
+    private lateinit var menuDrawerAbout: View
+    private lateinit var menuDrawerSettings: View
+
+    // Undo & Redo (Gambar 1 & Gambar 5)
+    private lateinit var btnUndo: View
+    private lateinit var btnRedo: View
+
+    // Workspace Fullscreen Overlay (Gambar 2)
+    private lateinit var layoutWorkspaceOverlay: LinearLayout
+    private lateinit var tvWorkspaceHeaderTitle: TextView
+    private lateinit var btnWorkspaceBack: ImageView
+    private lateinit var btnNewProject: ImageView
+    private lateinit var btnWorkspaceImport: ImageView
+    private var btnWorkspaceScanQr: ImageView? = null
+    private lateinit var btnWorkspaceMore: ImageView
+    private val REQUEST_CODE_IMPORT = 1001
+    private val REQUEST_CODE_CAMERA_PERMISSION = 2002
+    private val REQUEST_CODE_PICK_QR_IMAGE = 2003
+    private lateinit var rvWorkspaceProjects: RecyclerView
+    private lateinit var tabWorkspace: LinearLayout
+    private lateinit var tabExamples: LinearLayout
+    private lateinit var pillTabWorkspace: LinearLayout
+    private lateinit var pillTabExamples: LinearLayout
+    private lateinit var ivTabWorkspaceIcon: ImageView
+    private lateinit var ivTabExamplesIcon: ImageView
+    private lateinit var tvTabWorkspaceLabel: TextView
+    private lateinit var tvTabExamplesLabel: TextView
+    private lateinit var workspaceAdapter: WorkspaceProjectsAdapter
+    private var isViewingExamples = false
+
+    // Startup Loading Motion Overlay
+    private lateinit var layoutLoadingOverlay: FrameLayout
+    private lateinit var webViewLoading: WebView
+
+    // Classroom Hotspot Sync State
+    private var lastClassroomServerUrl: String? = null
+    private var studentName: String? = null
+    private var studentPresensi: String? = null
+    private var isClassroomExamMode: Boolean = false
+
+    private lateinit var canvasView: NativeCanvasView
+    private lateinit var btnToggleLibrary: View
+    private lateinit var ivToolbarLibraryIcon: ImageView
+    private lateinit var tvToolbarLibraryLabel: TextView
+    private lateinit var btnRun: View
+    private lateinit var btnStop: View
+    private lateinit var btnToolbarMore: View
+    private lateinit var btnExitFullscreen: View
+    private lateinit var appBarLayout: View
+
+    // Visual Component Library Side Panel
+    private lateinit var panelLibrary: MaterialCardView
+    private lateinit var spinnerCategory: Spinner
+    private lateinit var btnCloseLibrary: Button
+    private lateinit var rvComponentLibrary: RecyclerView
+    private lateinit var visualAdapter: VisualComponentAdapter
+
+    // Floating Action Pill
+    private lateinit var floatingPill: MaterialCardView
+    private lateinit var pillLabel: TextView
+    private lateinit var pillSwitchOptions: LinearLayout
+    private lateinit var pillEditControls: LinearLayout
+    private lateinit var btnPos1: Button
+    private lateinit var btnPos0: Button
+    private lateinit var btnPos2: Button
+    private lateinit var btnRotate: Button
+    private lateinit var btnTag: Button
+    private lateinit var btnDelete: Button
+
+    // Zoom Controls
+    private lateinit var cardZoomWidget: MaterialCardView
+    private lateinit var btnZoomIn: Button
+    private lateinit var btnZoomOut: Button
+
+    // Alerts & FAB
+    private lateinit var cardShortCircuit: MaterialCardView
+    private lateinit var tvAlertShortCircuit: TextView
+    private lateinit var btnCloseAlert: Button
+    private lateinit var fabAdd: FloatingActionButton
+
+    private var activeSwitchElement: NativeElement? = null
+    private var lastSelectedElementId: Int? = null
+    private var lastSelectedSwitchId: Int? = null
+    private var currentProjectName = "DOL Motor Starter"
+    private var isLibraryOpen = false
+    private var lastWorkspaceBackTime: Long = 0L
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        // 1. Enable layout across cutout (shortEdges) & edge-to-edge BEFORE super.onCreate & setContentView
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window?.attributes = window?.attributes?.apply {
+                layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window?.statusBarColor = Color.TRANSPARENT
+        window?.navigationBarColor = Color.TRANSPARENT
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_native_cad)
+
+        WorkspaceManager.initDefaultProjects(this)
+
+        initViews()
+        setupWindowCutoutAndInsets()
+        setupListeners()
+        setupVisualLibrary()
+        setupWorkspaceOverlay()
+        restoreLastProjectOrTemplate()
+        setupLoadingScreen()
+        openWorkspaceOverlay()
+        hideSystemUI()
+    }
+
+    private fun setupWindowCutoutAndInsets() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window?.attributes = window?.attributes?.apply {
+                layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insetsCompat ->
+            val cutout = insetsCompat.displayCutout
+            val cutoutInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val safeTop = maxOf(cutout?.safeInsetTop ?: 0, cutoutInsets.top)
+            val safeBottom = maxOf(cutout?.safeInsetBottom ?: 0, cutoutInsets.bottom)
+            val safeLeft = maxOf(cutout?.safeInsetLeft ?: 0, cutoutInsets.left)
+            val safeRight = maxOf(cutout?.safeInsetRight ?: 0, cutoutInsets.right)
+
+            // 1. Bilah Toolbar Atas Kanvas CAD (appBarLayout)
+            if (::appBarLayout.isInitialized) {
+                appBarLayout.setPadding(safeLeft, safeTop, safeRight, 0)
+            }
+
+            // 2. Layar Penuh Workspace Overlay (layoutWorkspaceOverlay)
+            if (::layoutWorkspaceOverlay.isInitialized) {
+                layoutWorkspaceOverlay.setPadding(safeLeft, safeTop, safeRight, safeBottom)
+            }
+
+            // 3. Tombol Mengambang Keluar Fullscreen (btnExitFullscreen)
+            if (::btnExitFullscreen.isInitialized) {
+                val density = resources.displayMetrics.density
+                val baseMargin = (16 * density).toInt()
+                (btnExitFullscreen.layoutParams as? CoordinatorLayout.LayoutParams)?.apply {
+                    topMargin = baseMargin + safeTop
+                    marginStart = baseMargin + safeLeft
+                    btnExitFullscreen.layoutParams = this
+                }
+            }
+
+            // 4. Panel Library Samping
+            if (::panelLibrary.isInitialized) {
+                val density = resources.displayMetrics.density
+                val baseTopMargin = (52 * density).toInt()
+                (panelLibrary.layoutParams as? CoordinatorLayout.LayoutParams)?.apply {
+                    topMargin = baseTopMargin + safeTop
+                    marginStart = safeLeft
+                    bottomMargin = safeBottom
+                    panelLibrary.layoutParams = this
+                }
+            }
+
+            // 5. Slide-in Left Drawer
+            val leftDrawer = findViewById<View>(R.id.leftDrawer)
+            leftDrawer?.setPadding(safeLeft, safeTop, 0, safeBottom)
+
+            insetsCompat
+        }
+    }
+
+    private fun initViews() {
+        // Drawer & Navigation (Gambar 1)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        btnOpenMenu = findViewById(R.id.btnOpenMenu)
+        tvDrawerSubtitle = findViewById(R.id.tvDrawerSubtitle)
+        menuDrawerWorkspace = findViewById(R.id.menuDrawerWorkspace)
+        menuDrawerSave = findViewById(R.id.menuDrawerSave)
+        menuDrawerSaveAs = findViewById(R.id.menuDrawerSaveAs)
+        menuDrawerInstructions = findViewById(R.id.menuDrawerInstructions)
+        menuDrawerAbout = findViewById(R.id.menuDrawerAbout)
+        menuDrawerSettings = findViewById(R.id.menuDrawerSettings)
+
+        val classroomPrefs = getSharedPreferences("simurelay_classroom", android.content.Context.MODE_PRIVATE)
+        lastClassroomServerUrl = classroomPrefs.getString("server_url", null)
+        studentName = classroomPrefs.getString("student_name", null)
+        studentPresensi = classroomPrefs.getString("student_presensi", null)
+        isClassroomExamMode = classroomPrefs.getBoolean("is_exam_mode", false)
+
+        // Undo & Redo (Gambar 1 & Gambar 5)
+        btnUndo = findViewById(R.id.btnUndo)
+        btnRedo = findViewById(R.id.btnRedo)
+        updateUndoRedoButtons(false, false)
+
+        canvasView = findViewById(R.id.canvasView)
+        btnToggleLibrary = findViewById(R.id.btnToggleLibrary)
+        ivToolbarLibraryIcon = findViewById(R.id.ivToolbarLibraryIcon)
+        tvToolbarLibraryLabel = findViewById(R.id.tvToolbarLibraryLabel)
+        btnRun = findViewById(R.id.btnRun)
+        btnStop = findViewById(R.id.btnStop)
+        btnToolbarMore = findViewById(R.id.btnToolbarMore)
+        appBarLayout = findViewById(R.id.appBarLayout)
+
+        // Visual Library Panel
+        panelLibrary = findViewById(R.id.panelLibrary)
+        spinnerCategory = findViewById(R.id.spinnerCategory)
+        btnCloseLibrary = findViewById(R.id.btnCloseLibrary)
+        rvComponentLibrary = findViewById(R.id.rvComponentLibrary)
+
+        // Floating Pill
+        floatingPill = findViewById(R.id.floatingPill)
+        pillLabel = findViewById(R.id.pillLabel)
+        pillSwitchOptions = findViewById(R.id.pillSwitchOptions)
+        pillEditControls = findViewById(R.id.pillEditControls)
+        btnPos1 = findViewById(R.id.btnPos1)
+        btnPos0 = findViewById(R.id.btnPos0)
+        btnPos2 = findViewById(R.id.btnPos2)
+        btnRotate = findViewById(R.id.btnRotate)
+        btnTag = findViewById(R.id.btnTag)
+        btnDelete = findViewById(R.id.btnDelete)
+
+        // Zoom Controls
+        cardZoomWidget = findViewById(R.id.cardZoomWidget)
+        btnZoomIn = findViewById(R.id.btnZoomIn)
+        btnZoomOut = findViewById(R.id.btnZoomOut)
+
+        cardShortCircuit = findViewById(R.id.cardShortCircuit)
+        tvAlertShortCircuit = findViewById(R.id.tvAlertShortCircuit)
+        btnCloseAlert = findViewById(R.id.btnCloseAlert)
+        fabAdd = findViewById(R.id.fabAdd)
+
+        // Workspace Overlay (Gambar 2)
+        layoutWorkspaceOverlay = findViewById(R.id.layoutWorkspaceOverlay)
+        tvWorkspaceHeaderTitle = findViewById(R.id.tvWorkspaceHeaderTitle)
+        btnWorkspaceBack = findViewById(R.id.btnWorkspaceBack)
+        btnNewProject = findViewById(R.id.btnNewProject)
+        btnWorkspaceImport = findViewById(R.id.btnWorkspaceImport)
+        btnWorkspaceScanQr = findViewById(R.id.btnWorkspaceScanQr)
+        btnWorkspaceMore = findViewById(R.id.btnWorkspaceMore)
+        btnExitFullscreen = findViewById(R.id.btnExitFullscreen)
+        rvWorkspaceProjects = findViewById(R.id.rvWorkspaceProjects)
+        tabWorkspace = findViewById(R.id.tabWorkspace)
+        tabExamples = findViewById(R.id.tabExamples)
+        pillTabWorkspace = findViewById(R.id.pillTabWorkspace)
+        pillTabExamples = findViewById(R.id.pillTabExamples)
+        ivTabWorkspaceIcon = findViewById(R.id.ivTabWorkspaceIcon)
+        ivTabExamplesIcon = findViewById(R.id.ivTabExamplesIcon)
+        tvTabWorkspaceLabel = findViewById(R.id.tvTabWorkspaceLabel)
+        tvTabExamplesLabel = findViewById(R.id.tvTabExamplesLabel)
+
+        // Startup Loading Motion Overlay
+        layoutLoadingOverlay = findViewById(R.id.layoutLoadingOverlay)
+        webViewLoading = findViewById(R.id.webViewLoading)
+    }
+
+    private fun setupLoadingScreen() {
+        webViewLoading.apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.allowFileAccess = true
+            settings.allowContentAccess = true
+            @Suppress("DEPRECATION")
+            settings.allowFileAccessFromFileURLs = true
+            @Suppress("DEPRECATION")
+            settings.allowUniversalAccessFromFileURLs = true
+            settings.setSupportZoom(false)
+            settings.builtInZoomControls = false
+            settings.displayZoomControls = false
+            setBackgroundColor(Color.parseColor("#01143a"))
+            addJavascriptInterface(object {
+                @android.webkit.JavascriptInterface
+                fun onLoadingFinished() {
+                    runOnUiThread {
+                        finishLoadingScreen()
+                    }
+                }
+            }, "AndroidApp")
+            loadUrl("file:///android_asset/loading/index.html")
+        }
+    }
+
+    private fun finishLoadingScreen() {
+        if (!::layoutLoadingOverlay.isInitialized || layoutLoadingOverlay.visibility != View.VISIBLE) return
+        layoutLoadingOverlay.animate()
+            .alpha(0f)
+            .setDuration(450)
+            .withEndAction {
+                layoutLoadingOverlay.visibility = View.GONE
+                (layoutLoadingOverlay.parent as? ViewGroup)?.removeView(layoutLoadingOverlay)
+                openWorkspaceOverlay()
+            }
+            .start()
+    }
+
+    private fun setupListeners() {
+        // Buka Slide-in Left Drawer (Gambar 1)
+        btnOpenMenu.setOnClickListener {
+            findViewById<android.widget.ScrollView>(R.id.leftDrawerScrollView)?.scrollTo(0, 0)
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        // Drawer Menu Click Listeners
+        menuDrawerWorkspace.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            handleExitCanvasToWorkspace()
+        }
+
+        menuDrawerSave.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            saveCurrentProject()
+        }
+
+        menuDrawerSaveAs.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            showSaveAsDialog()
+        }
+
+        menuDrawerInstructions.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            showInstructionsDialog()
+        }
+
+        menuDrawerAbout.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            showAboutDialog()
+        }
+
+        menuDrawerSettings.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            showSettingsDialog()
+        }
+
+        // Undo & Redo Click Handlers (Gambar 1)
+        btnUndo.setOnClickListener {
+            canvasView.undo()
+        }
+
+        btnRedo.setOnClickListener {
+            canvasView.redo()
+        }
+
+        // Toggle Visual Component Library
+        btnToggleLibrary.setOnClickListener {
+            toggleLibraryPanel()
+        }
+
+
+        btnCloseLibrary.setOnClickListener {
+            closeLibraryPanel()
+        }
+
+        // Run Simulation
+        btnRun.setOnClickListener {
+            btnRun.visibility = View.GONE
+            btnStop.visibility = View.VISIBLE
+            cardShortCircuit.visibility = View.GONE
+            closeLibraryPanel()
+
+            val prevSelectedId = canvasView.selectedElementId
+            canvasView.startSimulation()
+
+            // Otomatis Pop Up Panel Pekerjaan saat Running
+            val targetSwitch = resolveTargetSwitchForRunning(prevSelectedId)
+            if (targetSwitch != null) {
+                canvasView.selectedElementId = targetSwitch.id
+                canvasView.invalidate()
+                updatePill(targetSwitch)
+            } else {
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+            }
+        }
+
+        // Stop Simulation
+        btnStop.setOnClickListener {
+            btnStop.visibility = View.GONE
+            btnRun.visibility = View.VISIBLE
+            cardShortCircuit.visibility = View.GONE
+
+            val prevSelectedId = canvasView.selectedElementId
+            canvasView.stopSimulation()
+
+            // Otomatis Pop Up Panel Properti saat Running Stopped (CAD Edit Mode)
+            val targetElement = resolveTargetElementForEdit(prevSelectedId)
+            if (targetElement != null) {
+                canvasView.selectedElementId = targetElement.id
+                canvasView.invalidate()
+                updatePill(targetElement)
+            } else {
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+            }
+        }
+
+        // More Options Menu (Gambar 5 Toolbar)
+        btnToolbarMore.setOnClickListener { anchor ->
+            showToolbarMoreMenu(anchor)
+        }
+
+        // Tombol Keluar Layar Penuh (Pojok Kiri Atas - Gambar 4)
+        btnExitFullscreen.setOnClickListener {
+            exitFullscreenMode()
+        }
+
+        // Import Project Button di Workspace Overlay
+        btnWorkspaceImport.setOnClickListener {
+            launchImportPicker()
+        }
+
+        btnWorkspaceScanQr?.setOnClickListener {
+            launchQrScanner()
+        }
+
+        // Zoom In & Out
+        btnZoomIn.setOnClickListener { canvasView.zoomIn() }
+        btnZoomOut.setOnClickListener { canvasView.zoomOut() }
+
+        // Canvas Interaction Callback
+        canvasView.interactionListener = object : NativeCanvasView.OnCanvasInteractionListener {
+            override fun onElementSelected(element: NativeElement?) {
+                if (element != null) {
+                    lastSelectedElementId = element.id
+                    if (isControllableSwitch(element.svgData)) {
+                        lastSelectedSwitchId = element.id
+                    }
+                }
+                updatePill(element)
+            }
+
+            override fun onConnectorSelected(connector: NativeConnector?) {
+                updatePillForConnector(connector)
+            }
+
+            override fun onSwitchClicked(element: NativeElement) {
+                lastSelectedElementId = element.id
+                lastSelectedSwitchId = element.id
+                updatePill(element)
+            }
+
+            override fun onShortCircuit(isShort: Boolean, isDcOverheat: Boolean) {
+                if (isShort) {
+                    cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0dc2626"))
+                    tvAlertShortCircuit.text = if (isDcOverheat) {
+                        "DC OVERHEAT! Kutub (+) dan (-) terhubung tanpa beban"
+                    } else {
+                        "SHORT CIRCUIT! Periksa fasa & netral"
+                    }
+                    cardShortCircuit.visibility = View.VISIBLE
+                } else if (canvasView.simResult?.isFuseBlown != true) {
+                    cardShortCircuit.visibility = View.GONE
+                }
+            }
+
+            override fun onFuseBlown(isBlown: Boolean) {
+                if (isBlown) {
+                    cardShortCircuit.setCardBackgroundColor(Color.parseColor("#d97706"))
+                    tvAlertShortCircuit.text = "FUSE TERPUTUS! Matikan simulasi & perbaiki di properti"
+                    cardShortCircuit.visibility = View.VISIBLE
+                } else if (canvasView.simResult?.shortCircuit != true) {
+                    cardShortCircuit.visibility = View.GONE
+                    cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0dc2626"))
+                }
+            }
+
+            override fun onUndoRedoStateChanged(canUndo: Boolean, canRedo: Boolean) {
+                updateUndoRedoButtons(canUndo, canRedo)
+            }
+
+            override fun onCircuitModified() {
+                triggerAutoSaveIfEnabled(showFeedback = false)
+            }
+
+            override fun onTeacherLockedMoveAttempt() {
+                // Hening tanpa popup putih mengganggu, visual gembok sudah jelas di kanvas
+            }
+
+            override fun onLockedMoveAttempt() {
+                // Hening tanpa popup putih mengganggu, visual gembok sudah jelas di kanvas
+            }
+        }
+
+        // Pill Action Buttons
+        btnRotate.setOnClickListener {
+            val elId = canvasView.selectedElementId ?: return@setOnClickListener
+            val el = canvasView.elements.find { it.id == elId } ?: return@setOnClickListener
+            if (el.teacherLocked || el.locked) {
+                return@setOnClickListener
+            }
+            canvasView.pushUndoState()
+            el.rotation = (el.canonicalRotation + 1) % 4
+            canvasView.invalidate()
+            triggerAutoSaveIfEnabled()
+        }
+
+        btnDelete.setOnClickListener {
+            if (canvasView.selectedConnectorId != null) {
+                val connId = canvasView.selectedConnectorId!!
+                canvasView.pushUndoState()
+                canvasView.connectors.removeAll { it.id == connId }
+                canvasView.selectedConnectorId = null
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+                canvasView.invalidate()
+                triggerAutoSaveIfEnabled()
+            } else if (canvasView.selectedElementId != null) {
+                val elId = canvasView.selectedElementId!!
+                val el = canvasView.elements.find { it.id == elId }
+                if (el != null && (el.teacherLocked || el.locked)) {
+                    return@setOnClickListener
+                }
+                canvasView.pushUndoState()
+                canvasView.elements.removeAll { it.id == elId }
+                canvasView.connectors.removeAll { it.elem1Id == elId || it.elem2Id == elId }
+                canvasView.selectedElementId = null
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+                canvasView.invalidate()
+                triggerAutoSaveIfEnabled()
+            }
+        }
+
+        btnTag.setOnClickListener {
+            val elId = canvasView.selectedElementId ?: return@setOnClickListener
+            val el = canvasView.elements.find { it.id == elId } ?: return@setOnClickListener
+            showComponentPropertiesDialog(el)
+        }
+
+        // Switch Position Actions via mapped index
+        btnPos0.setOnClickListener { onSwitchButtonTapped(0) }
+        btnPos1.setOnClickListener { onSwitchButtonTapped(1) }
+        btnPos2.setOnClickListener { onSwitchButtonTapped(2) }
+
+        btnCloseAlert.setOnClickListener {
+            cardShortCircuit.visibility = View.GONE
+        }
+
+        // FAB Toggles Visual Library
+        fabAdd.setOnClickListener {
+            toggleLibraryPanel()
+        }
+    }
+
+    private fun setupVisualLibrary() {
+        val categories = listOf(
+            "Semua Komponen (All)",
+            "Sumber Daya (Sources)",
+            "Proteksi / MCB (Protections)",
+            "Saklar & Tombol (Switches)",
+            "Kontaktor (Contactors)",
+            "Koil & Timer (Coils)",
+            "Kontak Bantu (Auxiliaries)",
+            "Motor Listrik (Motors)",
+            "Beban & Lampu (Loads)",
+            "Terminal & Jalur (Others)"
+        )
+
+        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategory.adapter = spinnerAdapter
+
+        val allComponents = NativeComponentRegistry.getAll()
+        visualAdapter = VisualComponentAdapter(allComponents) { selectedDef ->
+            onComponentChosenFromLibrary(selectedDef)
+        }
+
+        val gridManager = GridLayoutManager(this, 3).apply {
+            spanSizeLookup = visualAdapter.getSpanSizeLookup(3)
+        }
+        rvComponentLibrary.layoutManager = gridManager
+        rvComponentLibrary.adapter = visualAdapter
+
+        spinnerCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val filterKey = when (position) {
+                    1 -> "sources"
+                    2 -> "protections"
+                    3 -> "switches"
+                    4 -> "contactors"
+                    5 -> "coils"
+                    6 -> "auxiliaries"
+                    7 -> "motors"
+                    8 -> "loads"
+                    9 -> "others"
+                    else -> "all"
+                }
+                visualAdapter.setCategoryFilter(filterKey)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun toggleLibraryPanel() {
+        if (btnExitFullscreen.visibility == View.VISIBLE) {
+            return
+        }
+        if (isLibraryOpen) {
+            closeLibraryPanel()
+        } else {
+            openLibraryPanel()
+        }
+    }
+
+    private fun openLibraryPanel() {
+        if (btnExitFullscreen.visibility == View.VISIBLE) {
+            return
+        }
+        isLibraryOpen = true
+        panelLibrary.visibility = View.VISIBLE
+        rvComponentLibrary.scrollToPosition(0)
+        tvToolbarLibraryLabel.text = "CLOSE"
+        ivToolbarLibraryIcon.setImageResource(R.drawable.ic_close)
+        btnToggleLibrary.setBackgroundColor(Color.parseColor("#1e3a8a"))
+        fabAdd.setImageResource(R.drawable.ic_fab_minus)
+        fabAdd.contentDescription = "Tutup Library"
+    }
+
+    private fun closeLibraryPanel() {
+        isLibraryOpen = false
+        panelLibrary.visibility = View.GONE
+        tvToolbarLibraryLabel.text = "LIBRARY"
+        ivToolbarLibraryIcon.setImageResource(R.drawable.ic_toolbar_library)
+        btnToggleLibrary.background = null
+        fabAdd.setImageResource(R.drawable.ic_fab_plus)
+        fabAdd.contentDescription = "Buka Library"
+    }
+
+    private fun updateFabPosition(pillVisible: Boolean) {
+        val isFullscreen = btnExitFullscreen.visibility == View.VISIBLE
+        val shiftY = if (pillVisible) -76f * resources.displayMetrics.density else 0f
+        if (isFullscreen) {
+            fabAdd.visibility = View.GONE
+            val zoomShift = shiftY + 60f * resources.displayMetrics.density
+            cardZoomWidget.animate()
+                .translationY(zoomShift)
+                .setDuration(220)
+                .start()
+        } else {
+            fabAdd.visibility = View.VISIBLE
+            fabAdd.animate()
+                .translationY(shiftY)
+                .setDuration(220)
+                .start()
+            cardZoomWidget.animate()
+                .translationY(shiftY)
+                .setDuration(220)
+                .start()
+        }
+    }
+
+    private fun onComponentChosenFromLibrary(def: ComponentDef) {
+        if (canvasView.isSimulating) {
+            return
+        }
+        val center = canvasView.screenToWorld(canvasView.width / 2f, canvasView.height / 2f)
+        val snappedX = canvasView.snap(center.x)
+        val snappedY = canvasView.snap(center.y)
+
+        canvasView.pushUndoState()
+        val nextId = (canvasView.elements.maxOfOrNull { it.id } ?: 0) + 1
+        val newElement = NativeElement(
+            id = nextId,
+            svgData = def.type,
+            tag = def.defaultTag,
+            comment = "",
+            x = snappedX,
+            y = snappedY
+        )
+
+        canvasView.elements.add(newElement)
+        canvasView.selectedElementId = newElement.id
+        canvasView.invalidate()
+        updatePill(newElement)
+        triggerAutoSaveIfEnabled()
+    }
+
+    private fun onSwitchButtonTapped(buttonIndex: Int) {
+        val el = activeSwitchElement ?: return
+        val isSwitch3p0 = (el.svgData == "switch3p0")
+        val isSwitch3p = (el.svgData == "switch3p")
+        val isCON = el.svgData.contains("CON", ignoreCase = true)
+
+        val targetPos = when {
+            isSwitch3p0 -> when (buttonIndex) {
+                1 -> 0 // Pos 1 (mainPath1)
+                0 -> 1 // Pos 0 (mainPath2)
+                else -> 2 // Pos 2 (mainPath3)
+            }
+            isSwitch3p -> when (buttonIndex) {
+                1 -> 0 // Pos 1 (mainPath1)
+                0 -> 1 // Pos 2 (mainPath2)
+                else -> 2 // Pos 3 (mainPath3)
+            }
+            isCON -> when (buttonIndex) {
+                1 -> 0 // Pos 1 (mainPath1)
+                else -> 1 // Pos 2 (mainPath2)
+            }
+            else -> when (buttonIndex) {
+                1 -> 1 // ON (mainPath2)
+                else -> 0 // OFF (mainPath1)
+            }
+        }
+        changeSwitchPos(targetPos)
+    }
+
+    private fun changeSwitchPos(pos: Int) {
+        val el = activeSwitchElement ?: return
+        val isCartridgeFuse = el.svgData.startsWith("fuse") && !el.svgData.startsWith("fuseSwitch")
+        val mappedFrame = if (isCartridgeFuse) (if (pos == 1) 0 else 1) else pos
+        canvasView.soundManager.playSwitchClick(floatingPill)
+        canvasView.engine.setSwitchPosition(el.id, pos)
+        if (isCartridgeFuse && pos == 1) {
+            canvasView.engine.fuseBlownElements.remove(el.id)
+        }
+        el.frameIndex = mappedFrame // Update visual frame canvas seketika
+        updateSwitchButtonsState(el.svgData, pos)
+        if (canvasView.isSimulating) {
+            canvasView.stepSimulation()
+        } else {
+            canvasView.invalidate()
+        }
+    }
+
+    private fun updateSwitchButtonsState(svgData: String, pos: Int) {
+        val onActiveBg = Color.parseColor("#10b981") // Hijau emerald tegas untuk ON
+        val offActiveBg = Color.parseColor("#ef4444") // Merah tegas untuk OFF
+        val inactiveBg = Color.parseColor("#1e293b") // Slate gelap netral
+        val selectorActiveBg = Color.parseColor("#0284c7") // Biru cyan untuk Pos I / Pos II
+
+        val isSwitch3p0 = (svgData == "switch3p0")
+        val isSwitch3p = (svgData == "switch3p")
+        val isCON = svgData.contains("CON", ignoreCase = true)
+
+        when {
+            isSwitch3p0 -> {
+                btnPos1.backgroundTintList = ColorStateList.valueOf(if (pos == 0) selectorActiveBg else inactiveBg)
+                btnPos0.backgroundTintList = ColorStateList.valueOf(if (pos == 1) offActiveBg else inactiveBg)
+                btnPos2.backgroundTintList = ColorStateList.valueOf(if (pos == 2) selectorActiveBg else inactiveBg)
+                btnPos1.setTextColor(if (pos == 0) Color.WHITE else Color.parseColor("#94a3b8"))
+                btnPos0.setTextColor(if (pos == 1) Color.WHITE else Color.parseColor("#94a3b8"))
+                btnPos2.setTextColor(if (pos == 2) Color.WHITE else Color.parseColor("#94a3b8"))
+            }
+            isSwitch3p -> {
+                btnPos1.backgroundTintList = ColorStateList.valueOf(if (pos == 0) selectorActiveBg else inactiveBg)
+                btnPos0.backgroundTintList = ColorStateList.valueOf(if (pos == 1) selectorActiveBg else inactiveBg)
+                btnPos2.backgroundTintList = ColorStateList.valueOf(if (pos == 2) selectorActiveBg else inactiveBg)
+                btnPos1.setTextColor(if (pos == 0) Color.WHITE else Color.parseColor("#94a3b8"))
+                btnPos0.setTextColor(if (pos == 1) Color.WHITE else Color.parseColor("#94a3b8"))
+                btnPos2.setTextColor(if (pos == 2) Color.WHITE else Color.parseColor("#94a3b8"))
+            }
+            isCON -> {
+                val isPos1 = (pos == 0)
+                btnPos1.backgroundTintList = ColorStateList.valueOf(if (isPos1) selectorActiveBg else inactiveBg)
+                btnPos0.backgroundTintList = ColorStateList.valueOf(if (!isPos1) selectorActiveBg else inactiveBg)
+                btnPos1.setTextColor(if (isPos1) Color.WHITE else Color.parseColor("#94a3b8"))
+                btnPos0.setTextColor(if (!isPos1) Color.WHITE else Color.parseColor("#94a3b8"))
+            }
+            else -> {
+                // Standar Breaker & Switch (Pos 0 = OFF, Pos 1 = ON)
+                val isOff = (pos == 0)
+                btnPos0.backgroundTintList = ColorStateList.valueOf(if (isOff) offActiveBg else inactiveBg)
+                btnPos1.backgroundTintList = ColorStateList.valueOf(if (!isOff) onActiveBg else inactiveBg)
+                btnPos0.setTextColor(if (isOff) Color.WHITE else Color.parseColor("#94a3b8"))
+                btnPos1.setTextColor(if (!isOff) Color.WHITE else Color.parseColor("#94a3b8"))
+            }
+        }
+    }
+
+    private fun isControllableSwitch(svgData: String): Boolean {
+        val def = NativeComponentRegistry.get(svgData)
+        val isPushButton = NativeComponentRegistry.isPushButton(svgData)
+        return !isPushButton && (def?.category == "switches" || def?.category == "protections")
+    }
+
+    private fun resolveTargetSwitchForRunning(preferredId: Int? = null): NativeElement? {
+        val elements = canvasView.elements
+        if (preferredId != null) {
+            val pref = elements.find { it.id == preferredId && isControllableSwitch(it.svgData) }
+            if (pref != null) {
+                lastSelectedSwitchId = pref.id
+                lastSelectedElementId = pref.id
+                return pref
+            }
+        }
+        val cur = elements.find { it.id == canvasView.selectedElementId && isControllableSwitch(it.svgData) }
+        if (cur != null) {
+            lastSelectedSwitchId = cur.id
+            lastSelectedElementId = cur.id
+            return cur
+        }
+        if (lastSelectedSwitchId != null) {
+            val lastSwitch = elements.find { it.id == lastSelectedSwitchId && isControllableSwitch(it.svgData) }
+            if (lastSwitch != null) {
+                return lastSwitch
+            }
+        }
+        val firstSwitch = elements.firstOrNull { isControllableSwitch(it.svgData) }
+        if (firstSwitch != null) {
+            lastSelectedSwitchId = firstSwitch.id
+            lastSelectedElementId = firstSwitch.id
+            return firstSwitch
+        }
+        return null
+    }
+
+    private fun resolveTargetElementForEdit(preferredId: Int? = null): NativeElement? {
+        val elements = canvasView.elements
+        if (preferredId != null) {
+            val pref = elements.find { it.id == preferredId }
+            if (pref != null) {
+                lastSelectedElementId = pref.id
+                if (isControllableSwitch(pref.svgData)) lastSelectedSwitchId = pref.id
+                return pref
+            }
+        }
+        val cur = elements.find { it.id == canvasView.selectedElementId }
+        if (cur != null) {
+            lastSelectedElementId = cur.id
+            if (isControllableSwitch(cur.svgData)) lastSelectedSwitchId = cur.id
+            return cur
+        }
+        if (lastSelectedElementId != null) {
+            val lastEl = elements.find { it.id == lastSelectedElementId }
+            if (lastEl != null) return lastEl
+        }
+        val firstEl = elements.firstOrNull()
+        if (firstEl != null) {
+            lastSelectedElementId = firstEl.id
+            if (isControllableSwitch(firstEl.svgData)) lastSelectedSwitchId = firstEl.id
+            return firstEl
+        }
+        return null
+    }
+
+    private fun updatePill(element: NativeElement?) {
+        if (element == null) {
+            floatingPill.visibility = View.GONE
+            activeSwitchElement = null
+            updateFabPosition(false)
+            return
+        }
+
+        lastSelectedElementId = element.id
+        if (isControllableSwitch(element.svgData)) {
+            lastSelectedSwitchId = element.id
+        }
+
+        if (canvasView.isSimulating && NativeComponentRegistry.isPushButton(element.svgData)) {
+            floatingPill.visibility = View.GONE
+            activeSwitchElement = null
+            updateFabPosition(false)
+            return
+        }
+
+        activeSwitchElement = element
+        val isText = (element.svgData == "text")
+        val label = when {
+            isText && element.comment.isNotEmpty() && element.comment != "null" -> element.comment
+            isText && element.tag.isNotEmpty() && element.tag != "null" -> element.tag
+            isText -> "Teks CAD"
+            element.tag.isNotEmpty() && element.tag != "null" -> element.tag
+            else -> element.svgData
+        }
+        pillLabel.text = label
+
+        val def = NativeComponentRegistry.get(element.svgData)
+        val isPushButton = NativeComponentRegistry.isPushButton(element.svgData)
+        val isOverload = element.svgData.startsWith("overload")
+        val isSwitch = !isPushButton && (def?.category == "switches" || def?.category == "protections")
+
+        val isSimulating = canvasView.isSimulating
+
+        if (isSimulating) {
+            // Ketika simulasi BERJALAN:
+            // Tampilkan opsi pekerjaan komponen sakelar/pemutus
+            if (isSwitch) {
+                pillSwitchOptions.visibility = View.VISIBLE
+                val isCartridgeFuse = element.svgData.startsWith("fuse") && !element.svgData.startsWith("fuseSwitch")
+                val curPos = canvasView.engine.manualStates[element.id] ?: if (element.svgData == "switch3p0" || isCartridgeFuse) 1 else 0
+                val isSwitch3p0 = (element.svgData == "switch3p0")
+                val isSwitch3p = (element.svgData == "switch3p")
+                val isCON = element.svgData.contains("CON", ignoreCase = true)
+
+                when {
+                    isSwitch3p0 -> {
+                        btnPos1.text = "Pos 1"
+                        btnPos0.text = "Pos 0"
+                        btnPos2.text = "Pos 2"
+                        btnPos2.visibility = View.VISIBLE
+                    }
+                    isSwitch3p -> {
+                        btnPos1.text = "Pos 1"
+                        btnPos0.text = "Pos 2"
+                        btnPos2.text = "Pos 3"
+                        btnPos2.visibility = View.VISIBLE
+                    }
+                    isCON -> {
+                        btnPos1.text = "Pos 1"
+                        btnPos0.text = "Pos 2"
+                        btnPos2.visibility = View.GONE
+                    }
+                    isOverload -> {
+                        btnPos1.text = "TRIP"
+                        btnPos0.text = "NORMAL"
+                        btnPos2.visibility = View.GONE
+                    }
+                    else -> {
+                        btnPos1.text = "ON"
+                        btnPos0.text = "OFF"
+                        btnPos2.visibility = View.GONE
+                    }
+                }
+                updateSwitchButtonsState(element.svgData, curPos)
+                pillEditControls.visibility = View.GONE
+                floatingPill.visibility = View.VISIBLE
+                updateFabPosition(true)
+            } else {
+                pillSwitchOptions.visibility = View.GONE
+                pillEditControls.visibility = View.GONE
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+            }
+        } else {
+            // Ketika simulasi TIDAK BERJALAN (Mode CAD / Desain):
+            // Opsi pekerjaan sakelar TIDAK dimasukkan ke floating pill di bawah komponen agar tidak terpotong.
+            // Opsi pekerjaan sakelar dimasukkan ke dalam panel "TAG" (properti komponen).
+            pillSwitchOptions.visibility = View.GONE
+            pillEditControls.visibility = View.VISIBLE
+            val isLocked = element.teacherLocked || element.locked
+            btnRotate.visibility = if (isLocked) View.GONE else View.VISIBLE
+            btnTag.visibility = View.VISIBLE
+            btnDelete.visibility = if (isLocked) View.GONE else View.VISIBLE
+            floatingPill.visibility = View.VISIBLE
+            updateFabPosition(true)
+        }
+    }
+
+    private fun showComponentPropertiesDialog(el: NativeElement) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_modern_properties, null)
+        dialog.setContentView(dialogView)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        val dm = resources.displayMetrics
+        val isLandscape = dm.widthPixels > dm.heightPixels
+        val dialogWidth = if (isLandscape) {
+            (dm.widthPixels * 0.70f).toInt().coerceIn((420 * dm.density).toInt(), (580 * dm.density).toInt())
+        } else {
+            (dm.widthPixels * 0.92f).toInt().coerceAtMost((480 * dm.density).toInt())
+        }
+        val maxAvailableHeight = (dm.heightPixels * (if (isLandscape) 0.94f else 0.82f)).toInt()
+
+        val scrollView = dialogView.findViewById<ScrollView>(R.id.scrollPropBody)
+        val cardPropRoot = dialogView.findViewById<View>(R.id.cardPropRoot)
+        val layoutPropContainer = dialogView.findViewById<LinearLayout>(R.id.layoutPropContainer)
+
+        val isTimerCoil = el.svgData.contains("Delay", ignoreCase = true) || el.svgData == "coilFlasher" || el.svgData == "flasher"
+        val isTextComp = (el.svgData == "text")
+        val isLampComp = (el.svgData == "lamp" || el.svgData == "lampBlink")
+        val def = NativeComponentRegistry.get(el.svgData)
+        val isPushButton = NativeComponentRegistry.isPushButton(el.svgData)
+        val isOverload = el.svgData.startsWith("overload")
+        val isSwitch = !isPushButton && (def?.category == "switches" || def?.category == "protections")
+
+        val ivIcon = dialog.findViewById<ImageView>(R.id.ivPropHeaderIcon)
+        val tvTitle = dialog.findViewById<TextView>(R.id.tvPropHeaderTitle)
+        val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseProp)
+        val tvTagLabel = dialog.findViewById<TextView>(R.id.tvPropTagLabel)
+        val etTag = dialog.findViewById<EditText>(R.id.etPropTag)
+        val layoutFontSize = dialog.findViewById<View>(R.id.layoutPropFontSize)
+        val layoutLampColor = dialog.findViewById<View>(R.id.layoutPropLampColor)
+        val layoutLampRow = dialog.findViewById<LinearLayout>(R.id.layoutPropLampRow)
+        val layoutTimer = dialog.findViewById<View>(R.id.layoutPropTimer)
+        val etTimer = dialog.findViewById<EditText>(R.id.etPropTimer)
+        val layoutComment = dialog.findViewById<View>(R.id.layoutPropComment)
+        val etComment = dialog.findViewById<EditText>(R.id.etPropComment)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelProp)
+        val btnSave = dialog.findViewById<Button>(R.id.btnSaveProp)
+        val layoutPropTerminalTags = dialog.findViewById<View>(R.id.layoutPropTerminalTags)
+        val layoutPropTerminalRows = dialog.findViewById<LinearLayout>(R.id.layoutPropTerminalRows)
+        val terminalInputs = mutableListOf<Pair<Int, EditText>>()
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        when {
+            isTextComp -> {
+                ivIcon?.setImageResource(R.drawable.ic_edit)
+                tvTitle?.text = "Properti Label Teks"
+                tvTagLabel?.text = "Teks Label CAD:"
+                val textVal = if (el.comment.isNotEmpty() && el.comment != "null") el.comment else if (el.tag.isNotEmpty() && el.tag != "null") el.tag else ""
+                etTag?.setText(textVal)
+                etTag?.hint = "Tulis teks label CAD..."
+                layoutComment?.visibility = View.GONE
+            }
+            isTimerCoil -> {
+                ivIcon?.setImageResource(R.drawable.ic_edit)
+                tvTitle?.text = "Pengaturan Koil & Timer"
+                tvTagLabel?.text = "Tag / Identitas Koil:"
+                etTag?.setText(if (el.tag != "null") el.tag else "")
+                etTag?.hint = "Contoh: -KT1"
+                layoutComment?.visibility = View.VISIBLE
+                etComment?.setText(if (el.comment != "null") el.comment else "")
+            }
+            isLampComp -> {
+                ivIcon?.setImageResource(R.drawable.ic_edit)
+                tvTitle?.text = "Properti Lampu Indikator"
+                tvTagLabel?.text = "Tag Lampu Indikator:"
+                etTag?.setText(if (el.tag != "null") el.tag else "")
+                etTag?.hint = "Contoh: -HL1"
+                layoutComment?.visibility = View.VISIBLE
+                etComment?.setText(if (el.comment != "null") el.comment else "")
+            }
+            isSwitch -> {
+                ivIcon?.setImageResource(R.drawable.ic_edit)
+                tvTitle?.text = "Properti Sakelar & Kontak"
+                tvTagLabel?.text = "Tag Sakelar:"
+                etTag?.setText(if (el.tag != "null") el.tag else "")
+                etTag?.hint = "Contoh: -S1, -QM1, -Q1"
+                layoutComment?.visibility = View.VISIBLE
+                etComment?.setText(if (el.comment != "null") el.comment else "")
+            }
+            else -> {
+                ivIcon?.setImageResource(R.drawable.ic_edit)
+                tvTitle?.text = "Properti Komponen"
+                tvTagLabel?.text = "Tag / Identitas Komponen:"
+                etTag?.setText(if (el.tag != "null") el.tag else "")
+                etTag?.hint = "Contoh: -KM1, -SB1, -Q1"
+                layoutComment?.visibility = View.VISIBLE
+                etComment?.setText(if (el.comment != "null") el.comment else "")
+            }
+        }
+
+        // Font Size handling
+        var selectedFontSize = if (el.fontSize > 0) el.fontSize else 24f
+        if (isTextComp) {
+            layoutFontSize?.visibility = View.VISIBLE
+            val fsButtons = listOf(
+                Pair(14f, dialog.findViewById<Button>(R.id.btnPropFs14)),
+                Pair(20f, dialog.findViewById<Button>(R.id.btnPropFs20)),
+                Pair(28f, dialog.findViewById<Button>(R.id.btnPropFs28)),
+                Pair(36f, dialog.findViewById<Button>(R.id.btnPropFs36))
+            )
+            fun updateFsSelection() {
+                for ((size, btn) in fsButtons) {
+                    val active = (selectedFontSize == size)
+                    btn?.backgroundTintList = ColorStateList.valueOf(if (active) Color.parseColor("#7c3aed") else Color.parseColor("#262a40"))
+                    btn?.setTextColor(if (active) Color.WHITE else Color.parseColor("#94a3b8"))
+                }
+            }
+            updateFsSelection()
+            for ((size, btn) in fsButtons) {
+                btn?.setOnClickListener {
+                    selectedFontSize = size
+                    updateFsSelection()
+                }
+            }
+        } else {
+            layoutFontSize?.visibility = View.GONE
+        }
+
+        // Text Color & Lamp Color handling
+        var selectedLampColor = el.lampColor.ifEmpty { "yellow" }
+        var selectedTextColor = el.textColor.ifEmpty { "#93c5fd" }
+        val tvLampColorLabel = dialog.findViewById<TextView>(R.id.tvPropLampColorLabel)
+
+        if (isTextComp) {
+            layoutLampColor?.visibility = View.VISIBLE
+            tvLampColorLabel?.text = "Pilihan Warna Teks CAD:"
+            tvLampColorLabel?.setTextColor(Color.parseColor("#38bdf8"))
+            layoutLampRow?.removeAllViews()
+
+            val textColors = listOf(
+                Pair("Cyan", "#93c5fd"),
+                Pair("Putih", "#f8fafc"),
+                Pair("Kuning", "#fbbf24"),
+                Pair("Merah", "#ef4444"),
+                Pair("Hijau", "#22c55e"),
+                Pair("Abu-abu", "#94a3b8")
+            )
+            val colorButtons = mutableListOf<Button>()
+            for ((label, hex) in textColors) {
+                val btnCol = Button(this).apply {
+                    text = label
+                    textSize = 8.5f
+                    isAllCaps = false
+                    setPadding(0, 0, 0, 0)
+                    minWidth = 0
+                    minimumWidth = 0
+                    layoutParams = LinearLayout.LayoutParams(0, (34 * resources.displayMetrics.density).toInt(), 1f).apply {
+                        setMargins(2, 0, 2, 0)
+                    }
+                }
+                val isCur = selectedTextColor.equals(hex, ignoreCase = true)
+                btnCol.backgroundTintList = ColorStateList.valueOf(if (isCur) Color.parseColor(hex) else Color.parseColor("#1f2338"))
+                btnCol.setTextColor(if (isCur) (if (hex == "#f8fafc" || hex == "#fbbf24" || hex == "#93c5fd") Color.BLACK else Color.WHITE) else Color.parseColor(hex))
+                btnCol.tag = hex
+                btnCol.setOnClickListener {
+                    selectedTextColor = hex
+                    for (b in colorButtons) {
+                        val bHex = b.tag as String
+                        val active = bHex.equals(hex, ignoreCase = true)
+                        b.backgroundTintList = ColorStateList.valueOf(if (active) Color.parseColor(bHex) else Color.parseColor("#1f2338"))
+                        b.setTextColor(if (active) (if (bHex == "#f8fafc" || bHex == "#fbbf24" || bHex == "#93c5fd") Color.BLACK else Color.WHITE) else Color.parseColor(bHex))
+                    }
+                }
+                colorButtons.add(btnCol)
+                layoutLampRow?.addView(btnCol)
+            }
+        } else if (isLampComp) {
+            layoutLampColor?.visibility = View.VISIBLE
+            tvLampColorLabel?.text = "Pilihan Warna Lampu Indikator:"
+            tvLampColorLabel?.setTextColor(Color.parseColor("#fbbf24"))
+            layoutLampRow?.removeAllViews()
+            val colors = listOf(
+                Pair("Putih", "white"),
+                Pair("Kuning", "yellow"),
+                Pair("Merah", "red"),
+                Pair("Hijau", "green"),
+                Pair("Biru", "blue")
+            )
+            val colorHexes = mapOf(
+                "white" to "#f8fafc",
+                "yellow" to "#fbbf24",
+                "red" to "#ef4444",
+                "green" to "#22c55e",
+                "blue" to "#3b82f6"
+            )
+            val lampButtons = mutableListOf<Button>()
+            for ((label, colKey) in colors) {
+                val hex = colorHexes[colKey] ?: "#fbbf24"
+                val btnCol = Button(this).apply {
+                    text = label
+                    textSize = 9.0f // Lebih kecil sesuai permintaan user agar tidak terpotong
+                    isAllCaps = false // Huruf normal (Putih, Kuning, Merah, Hijau, Biru) hemat tempat
+                    setPadding(0, 0, 0, 0)
+                    minWidth = 0
+                    minimumWidth = 0
+                    layoutParams = LinearLayout.LayoutParams(0, (34 * resources.displayMetrics.density).toInt(), 1f).apply {
+                        setMargins(2, 0, 2, 0)
+                    }
+                }
+                val isCur = selectedLampColor.equals(colKey, ignoreCase = true)
+                btnCol.backgroundTintList = ColorStateList.valueOf(if (isCur) Color.parseColor(hex) else Color.parseColor("#1f2338"))
+                btnCol.setTextColor(if (isCur) (if (colKey == "white" || colKey == "yellow") Color.BLACK else Color.WHITE) else Color.parseColor(hex))
+                btnCol.tag = colKey
+                btnCol.setOnClickListener {
+                    selectedLampColor = colKey
+                    for (b in lampButtons) {
+                        val cKey = b.tag as String
+                        val active = cKey.equals(colKey, ignoreCase = true)
+                        val bHex = colorHexes[cKey] ?: "#fbbf24"
+                        b.backgroundTintList = ColorStateList.valueOf(if (active) Color.parseColor(bHex) else Color.parseColor("#1f2338"))
+                        b.setTextColor(if (active) (if (cKey == "white" || cKey == "yellow") Color.BLACK else Color.WHITE) else Color.parseColor(bHex))
+                    }
+                }
+                lampButtons.add(btnCol)
+                layoutLampRow?.addView(btnCol)
+            }
+        } else {
+            layoutLampColor?.visibility = View.GONE
+        }
+
+        // Timer Preset handling
+        if (isTimerCoil) {
+            layoutTimer?.visibility = View.VISIBLE
+            etTimer?.setText(String.format(java.util.Locale.US, "%.1f", if (el.presetTime > 0) el.presetTime else 2.0f))
+            dialog.findViewById<Button>(R.id.btnPropTimer1)?.setOnClickListener { etTimer?.setText("1.0") }
+            dialog.findViewById<Button>(R.id.btnPropTimer2)?.setOnClickListener { etTimer?.setText("2.0") }
+            dialog.findViewById<Button>(R.id.btnPropTimer5)?.setOnClickListener { etTimer?.setText("5.0") }
+            dialog.findViewById<Button>(R.id.btnPropTimer10)?.setOnClickListener { etTimer?.setText("10.0") }
+            dialog.findViewById<Button>(R.id.btnPropTimer30)?.setOnClickListener { etTimer?.setText("30.0") }
+        } else {
+            layoutTimer?.visibility = View.GONE
+        }
+
+        // Switch State / Position handling (Opsi Pekerjaan Sakelar di panel TAG saat tidak running)
+        val layoutPropSwitchState = dialog.findViewById<View>(R.id.layoutPropSwitchState)
+        val btnPropPos1 = dialog.findViewById<Button>(R.id.btnPropPos1)
+        val btnPropPos0 = dialog.findViewById<Button>(R.id.btnPropPos0)
+        val btnPropPos2 = dialog.findViewById<Button>(R.id.btnPropPos2)
+
+        val isSwitch3p0 = (el.svgData == "switch3p0")
+        val isSwitch3p = (el.svgData == "switch3p")
+        val isCON = el.svgData.contains("CON", ignoreCase = true)
+        val isCartridgeFuse = el.svgData.startsWith("fuse") && !el.svgData.startsWith("fuseSwitch")
+        var selectedSwitchPos = canvasView.engine.manualStates[el.id] ?: if (isSwitch3p0 || isCartridgeFuse) 1 else 0
+
+        val onActiveBg = Color.parseColor("#10b981")
+        val offActiveBg = Color.parseColor("#ef4444")
+        val inactiveBg = Color.parseColor("#262a40")
+        val selectorActiveBg = Color.parseColor("#0284c7")
+
+        fun updatePropSwitchVisuals() {
+            when {
+                isSwitch3p0 -> {
+                    btnPropPos1?.text = "Pos 1"
+                    btnPropPos0?.text = "Pos 0"
+                    btnPropPos2?.text = "Pos 2"
+                    btnPropPos2?.visibility = View.VISIBLE
+
+                    val p1 = (selectedSwitchPos == 0)
+                    val p0 = (selectedSwitchPos == 1)
+                    val p2 = (selectedSwitchPos == 2)
+
+                    btnPropPos1?.backgroundTintList = ColorStateList.valueOf(if (p1) selectorActiveBg else inactiveBg)
+                    btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (p0) offActiveBg else inactiveBg)
+                    btnPropPos2?.backgroundTintList = ColorStateList.valueOf(if (p2) selectorActiveBg else inactiveBg)
+
+                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos0?.setTextColor(if (p0) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos2?.setTextColor(if (p2) Color.WHITE else Color.parseColor("#94a3b8"))
+                }
+                isSwitch3p -> {
+                    btnPropPos1?.text = "Pos 1"
+                    btnPropPos0?.text = "Pos 2"
+                    btnPropPos2?.text = "Pos 3"
+                    btnPropPos2?.visibility = View.VISIBLE
+
+                    val p1 = (selectedSwitchPos == 0)
+                    val p2 = (selectedSwitchPos == 1)
+                    val p3 = (selectedSwitchPos == 2)
+
+                    btnPropPos1?.backgroundTintList = ColorStateList.valueOf(if (p1) selectorActiveBg else inactiveBg)
+                    btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (p2) selectorActiveBg else inactiveBg)
+                    btnPropPos2?.backgroundTintList = ColorStateList.valueOf(if (p3) selectorActiveBg else inactiveBg)
+
+                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos0?.setTextColor(if (p2) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos2?.setTextColor(if (p3) Color.WHITE else Color.parseColor("#94a3b8"))
+                }
+                isCON -> {
+                    btnPropPos1?.text = "Pos 1"
+                    btnPropPos0?.text = "Pos 2"
+                    btnPropPos2?.visibility = View.GONE
+
+                    val p1 = (selectedSwitchPos == 0)
+                    btnPropPos1?.backgroundTintList = ColorStateList.valueOf(if (p1) selectorActiveBg else inactiveBg)
+                    btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (!p1) selectorActiveBg else inactiveBg)
+
+                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos0?.setTextColor(if (!p1) Color.WHITE else Color.parseColor("#94a3b8"))
+                }
+                else -> {
+                    btnPropPos0?.text = if (isOverload) "NORMAL" else "OFF / Buka"
+                    btnPropPos1?.text = if (isOverload) "TRIP" else "ON / Tutup"
+                    btnPropPos2?.visibility = View.GONE
+
+                    val isOff = (selectedSwitchPos == 0)
+                    btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (isOff) offActiveBg else inactiveBg)
+                    btnPropPos1?.backgroundTintList = ColorStateList.valueOf(if (!isOff) onActiveBg else inactiveBg)
+
+                    btnPropPos0?.setTextColor(if (isOff) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos1?.setTextColor(if (!isOff) Color.WHITE else Color.parseColor("#94a3b8"))
+                }
+            }
+        }
+
+        if (isSwitch) {
+            layoutPropSwitchState?.visibility = View.VISIBLE
+            updatePropSwitchVisuals()
+
+            btnPropPos1?.setOnClickListener {
+                selectedSwitchPos = when {
+                    isSwitch3p0 || isSwitch3p || isCON -> 0
+                    else -> 1 // ON
+                }
+                updatePropSwitchVisuals()
+            }
+            btnPropPos0?.setOnClickListener {
+                selectedSwitchPos = when {
+                    isSwitch3p0 || isSwitch3p -> 1 // Pos 0 atau Pos 2
+                    isCON -> 1 // Pos 2
+                    else -> 0 // OFF
+                }
+                updatePropSwitchVisuals()
+            }
+            btnPropPos2?.setOnClickListener {
+                selectedSwitchPos = 2 // Pos 2 atau Pos 3
+                updatePropSwitchVisuals()
+            }
+        } else {
+            layoutPropSwitchState?.visibility = View.GONE
+        }
+
+        // Terminal Pin Tags handling (Input / Output Customization)
+        if (def != null && def.nodes.isNotEmpty() && !isTextComp) {
+            layoutPropTerminalTags?.visibility = View.VISIBLE
+            layoutPropTerminalRows?.removeAllViews()
+            terminalInputs.clear()
+
+            val density = resources.displayMetrics.density
+            for (node in def.nodes) {
+                val row = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        setMargins(0, (3 * density).toInt(), 0, (3 * density).toInt())
+                    }
+                }
+
+                val dirStr = when (node.direction) {
+                    0 -> "Atas"
+                    1 -> "Kanan"
+                    2 -> "Bawah"
+                    3 -> "Kiri"
+                    else -> "Node"
+                }
+                val pinLabelText = "Pin ${node.index} ($dirStr)" + if (node.tag.isNotEmpty()) " [Def: ${node.tag}]" else ""
+
+                val tvNode = TextView(this).apply {
+                    text = pinLabelText
+                    setTextColor(Color.parseColor("#94a3b8"))
+                    textSize = 12f
+                    typeface = Typeface.MONOSPACE
+                    layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                }
+
+                val etNode = EditText(this).apply {
+                    setBackgroundResource(R.drawable.bg_edit_text_modern)
+                    setTextColor(Color.parseColor("#38bdf8"))
+                    setHintTextColor(Color.parseColor("#475569"))
+                    textSize = 13f
+                    typeface = Typeface.MONOSPACE
+                    gravity = Gravity.CENTER
+                    isSingleLine = true
+                    filters = arrayOf(InputFilter.LengthFilter(8))
+                    hint = node.tag.ifEmpty { "-" }
+                    val currentVal = el.getTerminalTag(node.index, node.tag)
+                    setText(currentVal)
+                    layoutParams = LinearLayout.LayoutParams((84 * density).toInt(), (36 * density).toInt()).apply {
+                        setMargins((6 * density).toInt(), 0, 0, 0)
+                    }
+                }
+
+                row.addView(tvNode)
+                row.addView(etNode)
+                layoutPropTerminalRows?.addView(row)
+                terminalInputs.add(Pair(node.index, etNode))
+            }
+        } else {
+            layoutPropTerminalTags?.visibility = View.GONE
+        }
+
+        btnSave?.setOnClickListener {
+            canvasView.pushUndoState()
+            if (isTextComp) {
+                val inputVal = etTag?.text?.toString()?.trim() ?: ""
+                el.tag = inputVal
+                el.comment = inputVal
+                el.fontSize = selectedFontSize
+                el.textColor = selectedTextColor
+            } else {
+                el.tag = etTag?.text?.toString()?.trim() ?: ""
+                if (etComment != null) {
+                    el.comment = etComment.text.toString().trim()
+                }
+            }
+            if (terminalInputs.isNotEmpty() && def != null) {
+                val newTags = mutableListOf<String>()
+                for (node in def.nodes) {
+                    val customVal = terminalInputs.find { it.first == node.index }?.second?.text?.toString()?.trim()
+                    newTags.add(if (!customVal.isNullOrEmpty()) customVal else node.tag)
+                }
+                el.terminalTags = newTags
+            }
+            if (isLampComp) {
+                el.lampColor = selectedLampColor
+            }
+            if (isTimerCoil && etTimer != null) {
+                val secVal = etTimer.text.toString().toFloatOrNull()
+                if (secVal != null && secVal > 0f) {
+                    el.presetTime = secVal
+                }
+            }
+            if (isSwitch) {
+                val mappedFrame = if (isCartridgeFuse) (if (selectedSwitchPos == 1) 0 else 1) else selectedSwitchPos
+                canvasView.engine.setSwitchPosition(el.id, selectedSwitchPos)
+                if (isCartridgeFuse && selectedSwitchPos == 1) {
+                    canvasView.engine.fuseBlownElements.remove(el.id)
+                }
+                el.frameIndex = mappedFrame
+            }
+            val isText = (el.svgData == "text")
+            val displayTag = when {
+                isText && el.comment.isNotEmpty() && el.comment != "null" -> el.comment
+                isText && el.tag.isNotEmpty() && el.tag != "null" -> el.tag
+                isText -> "Teks CAD"
+                el.tag.isNotEmpty() && el.tag != "null" -> el.tag
+                else -> el.svgData
+            }
+            pillLabel.text = displayTag
+            canvasView.invalidate()
+            triggerAutoSaveIfEnabled()
+            dialog.dismiss()
+        }
+
+        // Ukuran adaptif untuk mencegah tombol terpotong pada landscape:
+        dialogView.measure(
+            View.MeasureSpec.makeMeasureSpec(dialogWidth, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val desiredHeight = dialogView.measuredHeight
+        val forceFullHeight = isLandscape || (desiredHeight > maxAvailableHeight)
+
+        val lp = scrollView?.layoutParams as? LinearLayout.LayoutParams
+        if (lp != null) {
+            lp.height = if (forceFullHeight) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
+            lp.weight = if (forceFullHeight) 1f else 0f
+            scrollView.layoutParams = lp
+        }
+        val targetHeightMode = if (forceFullHeight) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+        cardPropRoot?.layoutParams?.height = targetHeightMode
+        layoutPropContainer?.layoutParams?.height = targetHeightMode
+
+        dialog.show()
+        val finalHeight = if (forceFullHeight) maxAvailableHeight else ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog.window?.setLayout(dialogWidth, finalHeight)
+    }
+
+    private fun updatePillForConnector(connector: NativeConnector?) {
+        if (connector == null) {
+            if (canvasView.selectedElementId == null) {
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+            }
+            return
+        }
+
+        activeSwitchElement = null
+        pillLabel.text = "Kawat #${connector.id}"
+        pillSwitchOptions.visibility = View.GONE
+
+        // Kawat bisa dihapus, tetapi tidak di-rotate atau di-tag
+        btnRotate.visibility = View.GONE
+        btnTag.visibility = View.GONE
+        btnDelete.visibility = View.VISIBLE
+        pillEditControls.visibility = if (canvasView.isSimulating) View.GONE else View.VISIBLE
+        floatingPill.visibility = View.VISIBLE
+        updateFabPosition(true)
+    }
+
+    private fun showProjectDashboardDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_project_dashboard)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.92).toInt(),
+            (resources.displayMetrics.heightPixels * 0.85).toInt()
+        )
+
+        dialog.findViewById<View>(R.id.btnCloseDashboard).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<View>(R.id.btnDashNew).setOnClickListener {
+            loadEmptyCanvasTemplate()
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<View>(R.id.btnDashImport)?.setOnClickListener {
+            dialog.dismiss()
+            launchImportPicker()
+        }
+
+        dialog.findViewById<View>(R.id.btnDashScanQr)?.setOnClickListener {
+            dialog.dismiss()
+            launchQrScanner()
+        }
+
+        dialog.findViewById<View>(R.id.cardTemplateDol)?.setOnClickListener {
+            loadDolStarterTemplate()
+            dialog.dismiss()
+        }
+        dialog.findViewById<View>(R.id.btnUseTemplateDol)?.setOnClickListener {
+            loadDolStarterTemplate()
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<View>(R.id.cardTemplateHazard)?.setOnClickListener {
+            loadHazardLampTemplate()
+            dialog.dismiss()
+        }
+        dialog.findViewById<View>(R.id.btnUseTemplateHazard)?.setOnClickListener {
+            loadHazardLampTemplate()
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<View>(R.id.cardTemplateEmpty)?.setOnClickListener {
+            loadEmptyCanvasTemplate()
+            dialog.dismiss()
+        }
+        dialog.findViewById<View>(R.id.btnUseTemplateEmpty)?.setOnClickListener {
+            loadEmptyCanvasTemplate()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun loadEmptyCanvasTemplate() {
+        canvasView.elements.clear()
+        canvasView.connectors.clear()
+        setCurrentProject("Canvas Baru")
+        floatingPill.visibility = View.GONE
+        updateFabPosition(false)
+        canvasView.clearUndoHistory()
+        canvasView.invalidate()
+        markCurrentStateAsSaved()
+    }
+
+    private fun loadStarterDemoTemplate() {
+        try {
+            val assetStream = assets.open("assets/examples/rangkaian_sederhana_demo.smrl")
+            val text = assetStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            val circuit = WorkspaceManager.deserializeCircuit(text)
+            canvasView.elements.clear()
+            canvasView.elements.addAll(circuit.first)
+            canvasView.connectors.clear()
+            canvasView.connectors.addAll(circuit.second)
+            setCurrentProject("Rangkaian Sederhana Demo")
+            WorkspaceManager.saveProject(this, "Rangkaian Sederhana Demo", canvasView.elements, canvasView.connectors)
+            canvasView.clearUndoHistory()
+            canvasView.invalidate()
+            markCurrentStateAsSaved()
+            canvasView.post { canvasView.fitToScreen() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            loadDolStarterTemplate()
+        }
+    }
+
+    private fun loadDolStarterTemplate() {
+        canvasView.elements.clear()
+        canvasView.connectors.clear()
+        setCurrentProject("DOL Motor Starter")
+
+        // Power Circuit Column (X = 150f, vertical tier spacing 150-180px - Non-overlapping!)
+        val pwr = NativeElement(1, "sourceL1L2L3N", "-L1L2L3N", "", 150f, 60f)
+        val qm = NativeElement(2, "motorBreaker3p", "-QM1", "", 150f, 210f)
+        val km = NativeElement(3, "contactor3p", "-KM1", "", 150f, 360f)
+        val fr = NativeElement(4, "overload3p", "-FR1", "", 150f, 510f)
+        val m = NativeElement(5, "motor3ph", "-M1", "", 150f, 690f)
+
+        // Control Circuit Column (X = 330f & 450f, Auxiliary self-holding NO at X = 240f)
+        val sbStop = NativeElement(6, "buttonNC", "-SB1", "Stop", 330f, 210f)
+        val sbStart = NativeElement(7, "buttonNO", "-SB2", "Start", 330f, 360f)
+        val kmAuxNo = NativeElement(10, "contactNO", "-KM1", "13-14", 240f, 360f)
+        val coilKm = NativeElement(8, "coil", "-KM1", "", 330f, 510f)
+        val hlLamp = NativeElement(9, "lamp", "-HL1", "Run Lamp", 450f, 510f)
+
+        canvasView.elements.addAll(listOf(pwr, qm, km, fr, m, sbStop, sbStart, kmAuxNo, coilKm, hlLamp))
+
+        // Power Wires (Tersambung lurus vertikal dengan jarak lega)
+        canvasView.connectors.add(NativeConnector(1, 1, 0, 2, 0)) // L1 -> QM (1)
+        canvasView.connectors.add(NativeConnector(2, 1, 1, 2, 2)) // L2 -> QM (3)
+        canvasView.connectors.add(NativeConnector(3, 1, 2, 2, 4)) // L3 -> QM (5)
+
+        canvasView.connectors.add(NativeConnector(4, 2, 1, 3, 0)) // QM (2) -> KM (1)
+        canvasView.connectors.add(NativeConnector(5, 2, 3, 3, 2)) // QM (4) -> KM (3)
+        canvasView.connectors.add(NativeConnector(6, 2, 5, 3, 4)) // QM (6) -> KM (5)
+
+        canvasView.connectors.add(NativeConnector(7, 3, 1, 4, 0)) // KM (2) -> FR (1)
+        canvasView.connectors.add(NativeConnector(8, 3, 3, 4, 2)) // KM (4) -> FR (3)
+        canvasView.connectors.add(NativeConnector(9, 3, 5, 4, 4)) // KM (6) -> FR (5)
+
+        canvasView.connectors.add(NativeConnector(10, 4, 1, 5, 0)) // FR (2) -> Motor U1
+        canvasView.connectors.add(NativeConnector(11, 4, 3, 5, 1)) // FR (4) -> Motor V1
+        canvasView.connectors.add(NativeConnector(12, 4, 5, 5, 2)) // FR (6) -> Motor W1
+
+        // Control Circuit Wires (Dengan Rangkaian Pengunci Otomatis / Self-Holding Latch)
+        canvasView.connectors.add(NativeConnector(13, 1, 0, 6, 0)) // L1 -> SB1 Stop (1)
+        canvasView.connectors.add(NativeConnector(14, 6, 1, 7, 0)) // SB1 (2) -> SB2 Start (3)
+        canvasView.connectors.add(NativeConnector(15, 6, 1, 10, 0)) // SB1 (2) -> KM1 Aux NO (13) (Paralel Start)
+        canvasView.connectors.add(NativeConnector(16, 7, 1, 8, 0)) // SB2 (4) -> Coil KM1 (A1)
+        canvasView.connectors.add(NativeConnector(17, 10, 1, 8, 0)) // KM1 Aux NO (14) -> Coil KM1 (A1) (Self-holding latch)
+        canvasView.connectors.add(NativeConnector(18, 8, 0, 9, 0)) // Coil A1 -> Lamp HL1 (X1)
+        canvasView.connectors.add(NativeConnector(19, 8, 1, 1, 3)) // Coil A2 -> Neutral N
+        canvasView.connectors.add(NativeConnector(20, 9, 1, 1, 3)) // Lamp X2 -> Neutral N
+
+        canvasView.engine.manualStates[qm.id] = 1 // Breaker tertutup (ready)
+        canvasView.clearUndoHistory()
+        canvasView.invalidate()
+        markCurrentStateAsSaved()
+        canvasView.post { canvasView.fitToScreen() }
+    }
+
+    private fun loadHazardLampTemplate() {
+        canvasView.elements.clear()
+        canvasView.connectors.clear()
+        setCurrentProject("Lampu Sign & Hazard")
+
+        val pwr = NativeElement(1, "sourcePlus", "-+", "", 180f, 60f)
+        val gnd = NativeElement(2, "sourceNegative", "--", "", 180f, 540f)
+        val swHazard = NativeElement(3, "switch3p0", "-S1", "Hazard Switch", 180f, 210f)
+        val lampL = NativeElement(4, "lamp", "-HL1", "Sein Kiri", 120f, 380f)
+        val lampR = NativeElement(5, "lamp", "-HL2", "Sein Kanan", 240f, 380f)
+
+        canvasView.elements.addAll(listOf(pwr, gnd, swHazard, lampL, lampR))
+        canvasView.connectors.add(NativeConnector(1, 1, 0, 3, 0))
+        canvasView.connectors.add(NativeConnector(2, 3, 1, 4, 0))
+        canvasView.connectors.add(NativeConnector(3, 3, 2, 5, 0))
+        canvasView.connectors.add(NativeConnector(4, 4, 1, 2, 0))
+        canvasView.connectors.add(NativeConnector(5, 5, 1, 2, 0))
+
+        canvasView.clearUndoHistory()
+        canvasView.invalidate()
+        markCurrentStateAsSaved()
+        canvasView.post { canvasView.fitToScreen() }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val isLandscape = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val density = resources.displayMetrics.density
+        fun dp(v: Int): Int = (v * density + 0.5f).toInt()
+
+        // Sesuaikan lebar panel library di mode landscape
+        val panelW = if (isLandscape) dp(260) else dp(225)
+        panelLibrary.layoutParams = panelLibrary.layoutParams.apply {
+            width = panelW
+        }
+
+        // Sesuaikan margin bawah floating pill
+        val pillMarginBottom = if (isLandscape) dp(12) else dp(24)
+        (floatingPill.layoutParams as? CoordinatorLayout.LayoutParams)?.apply {
+            bottomMargin = pillMarginBottom
+            floatingPill.layoutParams = this
+        }
+
+        hideSystemUI()
+        ViewCompat.requestApplyInsets(window.decorView)
+
+        // Segarkan canvas
+        canvasView.post {
+            canvasView.invalidate()
+        }
+    }
+
+    private fun updateUndoRedoButtons(canUndo: Boolean, canRedo: Boolean) {
+        btnUndo.isEnabled = canUndo
+        btnUndo.alpha = if (canUndo) 1.0f else 0.35f
+        btnRedo.isEnabled = canRedo
+        btnRedo.alpha = if (canRedo) 1.0f else 0.35f
+    }
+
+    private fun setupWorkspaceOverlay() {
+        workspaceAdapter = WorkspaceProjectsAdapter(
+            items = WorkspaceManager.listProjects(this),
+            onItemClick = { item ->
+                loadProjectItem(item)
+            },
+            onOptionsClick = { anchorView, item ->
+                showProjectOptionsMenu(anchorView, item)
+            }
+        )
+        rvWorkspaceProjects.layoutManager = LinearLayoutManager(this)
+        rvWorkspaceProjects.adapter = workspaceAdapter
+
+        btnWorkspaceBack.setOnClickListener {
+            closeWorkspaceOverlay()
+        }
+
+        btnNewProject.setOnClickListener {
+            showNewProjectDialog()
+        }
+
+        btnWorkspaceMore.setOnClickListener { anchor ->
+            showWorkspaceMoreMenu(anchor)
+        }
+
+        tabWorkspace.setOnClickListener {
+            switchWorkspaceTab(false)
+        }
+
+        tabExamples.setOnClickListener {
+            switchWorkspaceTab(true)
+        }
+    }
+
+    private fun openWorkspaceOverlay() {
+        switchWorkspaceTab(false)
+        layoutWorkspaceOverlay.visibility = View.VISIBLE
+        rvWorkspaceProjects.scrollToPosition(0)
+    }
+
+    private fun closeWorkspaceOverlay() {
+        layoutWorkspaceOverlay.visibility = View.GONE
+    }
+
+    private fun switchWorkspaceTab(showExamples: Boolean) {
+        isViewingExamples = showExamples
+        if (showExamples) {
+            pillTabWorkspace.setBackgroundResource(R.drawable.bg_nav_pill_inactive)
+            ivTabWorkspaceIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#64748b"))
+            tvTabWorkspaceLabel.setTextColor(Color.parseColor("#64748b"))
+            tvTabWorkspaceLabel.setTypeface(null, android.graphics.Typeface.NORMAL)
+
+            pillTabExamples.setBackgroundResource(R.drawable.bg_nav_pill_active)
+            ivTabExamplesIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
+            tvTabExamplesLabel.setTextColor(Color.WHITE)
+            tvTabExamplesLabel.setTypeface(null, android.graphics.Typeface.BOLD)
+
+            workspaceAdapter.updateItems(WorkspaceManager.listExamples())
+        } else {
+            pillTabWorkspace.setBackgroundResource(R.drawable.bg_nav_pill_active)
+            ivTabWorkspaceIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
+            tvTabWorkspaceLabel.setTextColor(Color.WHITE)
+            tvTabWorkspaceLabel.setTypeface(null, android.graphics.Typeface.BOLD)
+
+            pillTabExamples.setBackgroundResource(R.drawable.bg_nav_pill_inactive)
+            ivTabExamplesIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#64748b"))
+            tvTabExamplesLabel.setTextColor(Color.parseColor("#64748b"))
+            tvTabExamplesLabel.setTypeface(null, android.graphics.Typeface.NORMAL)
+
+            workspaceAdapter.updateItems(WorkspaceManager.listProjects(this))
+        }
+        rvWorkspaceProjects.scrollToPosition(0)
+    }
+
+    private fun refreshWorkspaceList() {
+        if (isViewingExamples) {
+            workspaceAdapter.updateItems(WorkspaceManager.listExamples())
+        } else {
+            workspaceAdapter.updateItems(WorkspaceManager.listProjects(this))
+        }
+    }
+
+    private fun loadProjectItem(item: ProjectItem) {
+        if (item.isExample) {
+            when (item.name) {
+                "Rangkaian Sederhana Demo" -> loadStarterDemoTemplate()
+                "DOL Motor Starter" -> loadDolStarterTemplate()
+                "Hazard Switch & Lamp" -> loadHazardLampTemplate()
+                "Forward-Reverse Motor" -> loadForwardReverseTemplate()
+                else -> loadStarterDemoTemplate()
+            }
+        } else {
+            val circuit = WorkspaceManager.loadProject(item.file)
+            if (circuit != null) {
+                canvasView.elements.clear()
+                canvasView.elements.addAll(circuit.first)
+                canvasView.connectors.clear()
+                canvasView.connectors.addAll(circuit.second)
+                canvasView.clearUndoHistory()
+                setCurrentProject(item.name)
+                val kit = WorkspaceManager.currentAssignmentKit
+                if (::visualAdapter.isInitialized) {
+                    if (kit != null && kit.enabled) {
+                        visualAdapter.setAllowedComponentFilter(kit.allowedComponents.toSet())
+                    } else {
+                        visualAdapter.setAllowedComponentFilter(null)
+                    }
+                }
+                canvasView.invalidate()
+                markCurrentStateAsSaved()
+                canvasView.post { canvasView.fitToScreen() }
+            } else {
+                Toast.makeText(this, "Gagal membaca berkas proyek", Toast.LENGTH_SHORT).show()
+            }
+        }
+        closeWorkspaceOverlay()
+    }
+
+    private fun showProjectOptionsMenu(anchorView: View, item: ProjectItem) {
+        val items = listOf(
+            CompactMenuItem(1, R.drawable.ic_edit, "Ganti Nama") {
+                showRenameProjectDialog(item)
+            },
+            CompactMenuItem(2, R.drawable.ic_copy, "Salin Proyek") {
+                val copyName = WorkspaceManager.duplicateProject(this, item.name)
+                if (copyName != null) {
+                    refreshWorkspaceList()
+                    Toast.makeText(this, "Berhasil disalin sebagai '$copyName'", Toast.LENGTH_SHORT).show()
+                }
+            },
+            CompactMenuItem(4, R.drawable.ic_export, "Ekspor .smrl") {
+                exportProject(item.name, asLegacyTxt = false)
+            },
+            CompactMenuItem(5, R.drawable.ic_workspace_file, "Ekspor .txt") {
+                exportProject(item.name, asLegacyTxt = true)
+            },
+            CompactMenuItem(3, R.drawable.ic_delete, "Hapus Proyek", isDanger = true) {
+                val dialog = Dialog(this)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setContentView(R.layout.dialog_modern_confirm)
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((440 * resources.displayMetrics.density).toInt())
+                dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                dialog.findViewById<ImageView>(R.id.ivConfirmHeaderIcon)?.setImageResource(R.drawable.ic_delete)
+                dialog.findViewById<TextView>(R.id.tvConfirmHeaderTitle)?.text = "Hapus Proyek"
+                dialog.findViewById<TextView>(R.id.tvConfirmMessage)?.text = "Apakah Anda yakin ingin menghapus proyek '${item.name}'? Berkas yang dihapus tidak dapat dipulihkan."
+
+                dialog.findViewById<ImageView>(R.id.btnCloseConfirm)?.setOnClickListener { dialog.dismiss() }
+                dialog.findViewById<Button>(R.id.btnCancelConfirm)?.setOnClickListener { dialog.dismiss() }
+                dialog.findViewById<Button>(R.id.btnActionConfirm)?.apply {
+                    text = "Hapus"
+                    backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ef4444"))
+                    setOnClickListener {
+                        WorkspaceManager.deleteProject(this@MainActivity, item.name)
+                        refreshWorkspaceList()
+                        Toast.makeText(this@MainActivity, "Proyek '${item.name}' dihapus", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                }
+                dialog.show()
+            }
+        )
+
+        CompactMenuHelper.show(this, anchorView, items, widthDp = 185)
+    }
+
+    private fun showRenameProjectDialog(item: ProjectItem) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_single_input)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((460 * resources.displayMetrics.density).toInt())
+        dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        dialog.findViewById<ImageView>(R.id.ivInputHeaderIcon)?.setImageResource(R.drawable.ic_edit)
+        dialog.findViewById<TextView>(R.id.tvInputHeaderTitle)?.text = "Ganti Nama Proyek"
+        dialog.findViewById<TextView>(R.id.tvInputLabel)?.text = "Nama Proyek Baru:"
+
+        val input = dialog.findViewById<EditText>(R.id.etInputField)
+        input?.setText(item.name)
+        input?.selectAll()
+
+        dialog.findViewById<ImageView>(R.id.btnCloseInput)?.setOnClickListener { dialog.dismiss() }
+        dialog.findViewById<Button>(R.id.btnCancelInput)?.setOnClickListener { dialog.dismiss() }
+
+        val btnConfirm = dialog.findViewById<Button>(R.id.btnConfirmInput)
+        btnConfirm?.text = "Simpan"
+        btnConfirm?.setOnClickListener {
+            val newName = input?.text?.toString()?.trim() ?: ""
+            if (newName.isNotEmpty() && newName != item.name) {
+                if (WorkspaceManager.renameProject(this, item.name, newName)) {
+                    if (currentProjectName == item.name) {
+                        setCurrentProject(newName)
+                    }
+                    refreshWorkspaceList()
+                    Toast.makeText(this, "Nama berhasil diubah", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(this, "Gagal mengubah nama proyek", Toast.LENGTH_SHORT).show()
+                }
+            } else if (newName == item.name) {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun showWorkspaceMoreMenu(anchorView: View) {
+        val items = listOf(
+            CompactMenuItem(1, R.drawable.ic_qr_scan, "Scan QR Tugas Guru") {
+                launchQrScanner()
+            },
+            CompactMenuItem(2, R.drawable.ic_refresh, "Segarkan") {
+                refreshWorkspaceList()
+            },
+            CompactMenuItem(3, R.drawable.ic_workspace_add, "Proyek Baru") {
+                showNewProjectDialog()
+            }
+        )
+
+        CompactMenuHelper.show(this, anchorView, items, widthDp = 185)
+    }
+
+    private fun showNewProjectDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_single_input)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((460 * resources.displayMetrics.density).toInt())
+        dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        dialog.findViewById<ImageView>(R.id.ivInputHeaderIcon)?.setImageResource(R.drawable.ic_workspace_add)
+        dialog.findViewById<TextView>(R.id.tvInputHeaderTitle)?.text = "Buat Proyek Baru"
+        dialog.findViewById<TextView>(R.id.tvInputLabel)?.text = "Nama Proyek:"
+
+        val input = dialog.findViewById<EditText>(R.id.etInputField)
+        input?.hint = "Contoh: Rangkaian Kontrol 1"
+
+        dialog.findViewById<ImageView>(R.id.btnCloseInput)?.setOnClickListener { dialog.dismiss() }
+        dialog.findViewById<Button>(R.id.btnCancelInput)?.setOnClickListener { dialog.dismiss() }
+
+        val btnConfirm = dialog.findViewById<Button>(R.id.btnConfirmInput)
+        btnConfirm?.text = "Buat Proyek"
+        btnConfirm?.setOnClickListener {
+            val name = input?.text?.toString()?.trim()?.ifEmpty { "Project ${(1..99).random()}" } ?: "Project ${(1..99).random()}"
+            canvasView.pushUndoState()
+            canvasView.elements.clear()
+            canvasView.connectors.clear()
+            canvasView.clearUndoHistory()
+            floatingPill.visibility = View.GONE
+            updateFabPosition(false)
+            WorkspaceManager.saveProject(this, name, emptyList(), emptyList())
+            setCurrentProject(name)
+            markCurrentStateAsSaved()
+            refreshWorkspaceList()
+            closeWorkspaceOverlay()
+            canvasView.invalidate()
+            Toast.makeText(this, "Proyek '$name' dibuat", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun showSaveAsDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_modern_save_as, null)
+        dialog.setContentView(dialogView)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        val dm = resources.displayMetrics
+        val isLandscape = dm.widthPixels > dm.heightPixels
+        val dialogWidth = if (isLandscape) {
+            (dm.widthPixels * 0.65f).toInt().coerceIn((420 * dm.density).toInt(), (540 * dm.density).toInt())
+        } else {
+            (dm.widthPixels * 0.92f).toInt().coerceAtMost((480 * dm.density).toInt())
+        }
+        val maxAvailableHeight = (dm.heightPixels * (if (isLandscape) 0.88f else 0.82f)).toInt()
+        val scrollView = dialogView.findViewById<ScrollView>(R.id.scrollSaveAsBody)
+
+        val etName = dialog.findViewById<EditText>(R.id.etSaveAsProjectName)
+        val cardSmrl = dialog.findViewById<com.google.android.material.card.MaterialCardView>(R.id.cardOptionSmrl)
+        val cardTxt = dialog.findViewById<com.google.android.material.card.MaterialCardView>(R.id.cardOptionTxt)
+        val cardPdf = dialog.findViewById<com.google.android.material.card.MaterialCardView>(R.id.cardOptionPdf)
+        val tvRadioSmrl = dialog.findViewById<TextView>(R.id.tvRadioSmrl)
+        val tvRadioTxt = dialog.findViewById<TextView>(R.id.tvRadioTxt)
+        val tvRadioPdf = dialog.findViewById<TextView>(R.id.tvRadioPdf)
+        val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseSaveAs)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelSaveAs)
+        val btnConfirm = dialog.findViewById<Button>(R.id.btnConfirmSaveAs)
+
+        etName?.setText("$currentProjectName (Salinan)")
+
+        // 0: SMRL, 1: TXT, 2: PDF
+        var selectedFormat = 0
+
+        fun updateFormatSelection() {
+            // SMRL
+            if (selectedFormat == 0) {
+                cardSmrl?.strokeColor = Color.parseColor("#059669")
+                cardSmrl?.setCardBackgroundColor(Color.parseColor("#1a2238"))
+                tvRadioSmrl?.setBackgroundResource(R.drawable.bg_status_badge_on)
+                tvRadioSmrl?.text = "✓"
+            } else {
+                cardSmrl?.strokeColor = Color.parseColor("#2d3148")
+                cardSmrl?.setCardBackgroundColor(Color.parseColor("#181a28"))
+                tvRadioSmrl?.setBackgroundResource(R.drawable.bg_status_badge_off)
+                tvRadioSmrl?.text = ""
+            }
+
+            // TXT
+            if (selectedFormat == 1) {
+                cardTxt?.strokeColor = Color.parseColor("#059669")
+                cardTxt?.setCardBackgroundColor(Color.parseColor("#1a2238"))
+                tvRadioTxt?.setBackgroundResource(R.drawable.bg_status_badge_on)
+                tvRadioTxt?.text = "✓"
+            } else {
+                cardTxt?.strokeColor = Color.parseColor("#2d3148")
+                cardTxt?.setCardBackgroundColor(Color.parseColor("#181a28"))
+                tvRadioTxt?.setBackgroundResource(R.drawable.bg_status_badge_off)
+                tvRadioTxt?.text = ""
+            }
+
+            // PDF
+            if (selectedFormat == 2) {
+                cardPdf?.strokeColor = Color.parseColor("#0284c7")
+                cardPdf?.setCardBackgroundColor(Color.parseColor("#162238"))
+                tvRadioPdf?.setBackgroundResource(R.drawable.bg_status_badge_on)
+                tvRadioPdf?.text = "✓"
+            } else {
+                cardPdf?.strokeColor = Color.parseColor("#2d3148")
+                cardPdf?.setCardBackgroundColor(Color.parseColor("#181a28"))
+                tvRadioPdf?.setBackgroundResource(R.drawable.bg_status_badge_off)
+                tvRadioPdf?.text = ""
+            }
+        }
+
+        cardSmrl?.setOnClickListener {
+            selectedFormat = 0
+            updateFormatSelection()
+        }
+
+        cardTxt?.setOnClickListener {
+            selectedFormat = 1
+            updateFormatSelection()
+        }
+
+        cardPdf?.setOnClickListener {
+            selectedFormat = 2
+            updateFormatSelection()
+        }
+
+        val cardOptionSendToTeacher = dialog.findViewById<View>(R.id.cardOptionSendToTeacher)
+        cardOptionSendToTeacher?.setOnClickListener {
+            dialog.dismiss()
+            sendTaskToTeacher()
+        }
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        btnConfirm?.setOnClickListener {
+            val name = etName?.text?.toString()?.trim()?.ifEmpty { "$currentProjectName (Salinan)" } ?: "$currentProjectName (Salinan)"
+            if (selectedFormat == 2) {
+                dialog.dismiss()
+                showPdfStudentInfoDialog(name)
+                return@setOnClickListener
+            }
+
+            WorkspaceManager.saveProject(this, name, canvasView.elements, canvasView.connectors)
+            setCurrentProject(name)
+            markCurrentStateAsSaved()
+            refreshWorkspaceList()
+
+            if (selectedFormat == 0) {
+                Toast.makeText(this, "Proyek disimpan sebagai '$name.smrl'", Toast.LENGTH_SHORT).show()
+            } else {
+                val exportedFile = WorkspaceManager.exportProjectFile(this, name, asLegacyTxt = true)
+                if (exportedFile != null) {
+                    Toast.makeText(this, "Proyek disimpan & diekspor sebagai '$name.txt'", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Proyek disimpan sebagai '$name'", Toast.LENGTH_SHORT).show()
+                }
+            }
+            dialog.dismiss()
+        }
+
+        dialogView.measure(
+            View.MeasureSpec.makeMeasureSpec(dialogWidth, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val desiredHeight = dialogView.measuredHeight
+        val useMaxHeight = (desiredHeight > maxAvailableHeight)
+        if (useMaxHeight) {
+            val lp = scrollView?.layoutParams as? LinearLayout.LayoutParams
+            if (lp != null) {
+                lp.height = 0
+                lp.weight = 1f
+                scrollView?.layoutParams = lp
+            }
+        }
+        dialog.show()
+        val finalHeight = if (useMaxHeight) maxAvailableHeight else ViewGroup.LayoutParams.WRAP_CONTENT
+        dialog.window?.setLayout(dialogWidth, finalHeight)
+    }
+
+    private fun showPdfStudentInfoDialog(defaultTitle: String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_modern_pdf_student_info, null)
+        dialog.setContentView(dialogView)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        val dm = resources.displayMetrics
+        val isLandscape = dm.widthPixels > dm.heightPixels
+        val dialogWidth = if (isLandscape) {
+            (dm.widthPixels * 0.65f).toInt().coerceIn((420 * dm.density).toInt(), (560 * dm.density).toInt())
+        } else {
+            (dm.widthPixels * 0.92f).toInt().coerceAtMost((480 * dm.density).toInt())
+        }
+        dialog.window?.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT)
+
+        val prefs = getSharedPreferences("simurelay_pdf_etiket", Context.MODE_PRIVATE)
+        val etTitle = dialogView.findViewById<EditText>(R.id.etPdfProjectTitle)
+        val etName = dialogView.findViewById<EditText>(R.id.etPdfStudentName)
+        val etPres = dialogView.findViewById<EditText>(R.id.etPdfStudentPresensi)
+        val etClass = dialogView.findViewById<EditText>(R.id.etPdfStudentClass)
+        val etSchool = dialogView.findViewById<EditText>(R.id.etPdfStudentSchool)
+
+        val btnClose = dialogView.findViewById<ImageView>(R.id.btnClosePdfStudentInfo)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelPdfStudentInfo)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirmPdfStudentInfo)
+
+        etTitle?.setText(defaultTitle)
+        etName?.setText(studentName ?: prefs.getString("pdf_student_name", "") ?: "")
+        etPres?.setText(studentPresensi ?: prefs.getString("pdf_student_presensi", "") ?: "")
+        etClass?.setText(prefs.getString("pdf_student_class", "XII Teknik Instalasi Tenaga Listrik") ?: "")
+        etSchool?.setText(prefs.getString("pdf_student_school", "SMK Negeri 2") ?: "")
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        btnConfirm?.setOnClickListener {
+            val title = etTitle?.text?.toString()?.trim()?.ifEmpty { defaultTitle } ?: defaultTitle
+            val name = etName?.text?.toString()?.trim()?.ifEmpty { studentName ?: "Ahmad Maulana" } ?: "Ahmad Maulana"
+            val pres = etPres?.text?.toString()?.trim()?.ifEmpty { studentPresensi ?: "—" } ?: "—"
+            val sClass = etClass?.text?.toString()?.trim()?.ifEmpty { "XII TITL" } ?: "XII TITL"
+            val sSchool = etSchool?.text?.toString()?.trim()?.ifEmpty { "SMK Vokasi" } ?: "SMK Vokasi"
+
+            prefs.edit()
+                .putString("pdf_student_name", name)
+                .putString("pdf_student_presensi", pres)
+                .putString("pdf_student_class", sClass)
+                .putString("pdf_student_school", sSchool)
+                .apply()
+
+            dialog.dismiss()
+            Toast.makeText(this, "Sedang menyusun dokumen PDF 2 halaman...", Toast.LENGTH_SHORT).show()
+
+            val info = StudentPdfInfo(
+                studentName = name,
+                studentPresensi = pres,
+                studentClass = sClass,
+                studentSchool = sSchool,
+                projectTitle = title
+            )
+
+            val elementsCopy = canvasView.elements.map { it.copy() }
+            val connectorsCopy = canvasView.connectors.map { it.copy() }
+            val cleanFilename = "Laporan_Praktikum_${name.replace(Regex("""[^\w\-]"""), "_")}_${title.replace(Regex("""[^\w\-]"""), "_")}.pdf"
+
+            kotlin.concurrent.thread {
+                try {
+                    val pdfBytes = NativePdfReportGenerator.generatePdfBytes(
+                        context = this@MainActivity,
+                        elements = elementsCopy,
+                        connectors = connectorsCopy,
+                        info = info
+                    )
+                    val savedFile = NativePdfReportGenerator.savePdfToDownloads(this@MainActivity, cleanFilename, pdfBytes)
+
+                    runOnUiThread {
+                        if (savedFile != null) {
+                            Toast.makeText(this@MainActivity, "Laporan PDF berhasil disimpan ke folder Download:\n$cleanFilename", Toast.LENGTH_LONG).show()
+                            openPdfFile(savedFile)
+                        } else {
+                            Toast.makeText(this@MainActivity, "Gagal menyimpan berkas PDF", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Error ekspor PDF: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun openPdfFile(file: File) {
+        try {
+            val uri = FileProvider.getUriForFile(
+                this,
+                "${applicationContext.packageName}.fileprovider",
+                file
+            )
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(Intent.createChooser(intent, "Buka Laporan Praktikum PDF"))
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun saveCurrentProject() {
+        val success = WorkspaceManager.saveProject(this, currentProjectName, canvasView.elements, canvasView.connectors)
+        if (success) {
+            markCurrentStateAsSaved()
+            Toast.makeText(this, "Proyek '$currentProjectName' berhasil disimpan", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Gagal menyimpan proyek", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val autoSaveExecutor = java.util.concurrent.Executors.newSingleThreadExecutor()
+
+    private fun triggerAutoSaveIfEnabled(showFeedback: Boolean = false) {
+        if (!SettingsManager.isAutoSaveEnabled(this)) return
+        if (canvasView.isSimulating) return
+        val projectName = if (currentProjectName.isNotEmpty()) currentProjectName else "Project 1"
+        val elementsSnapshot = ArrayList(canvasView.elements)
+        val connectorsSnapshot = ArrayList(canvasView.connectors)
+
+        autoSaveExecutor.execute {
+            try {
+                val success = WorkspaceManager.saveProject(this, projectName, elementsSnapshot, connectorsSnapshot)
+                if (success) {
+                    SettingsManager.setLastProjectName(this, projectName)
+                    runOnUiThread {
+                        markCurrentStateAsSaved()
+                    }
+                    if (showFeedback) {
+                        runOnUiThread {
+                            Toast.makeText(this, "Simpan Otomatis '$projectName' Aktif", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun setCurrentProject(name: String) {
+        currentProjectName = name
+        tvDrawerSubtitle.text = name
+        SettingsManager.setLastProjectName(this, name)
+    }
+
+    private fun restoreLastProjectOrTemplate() {
+        val lastProject = SettingsManager.getLastProjectName(this)
+        var restored = false
+        if (!lastProject.isNullOrEmpty() &&
+            !lastProject.contains("hazard", ignoreCase = true) &&
+            !lastProject.contains("sign", ignoreCase = true)
+        ) {
+            val file = java.io.File(WorkspaceManager.getWorkspaceDir(this), "$lastProject.smrl")
+            if (file.exists()) {
+                val data = WorkspaceManager.loadProject(file)
+                if (data != null) {
+                    canvasView.elements.clear()
+                    canvasView.elements.addAll(data.first)
+                    canvasView.connectors.clear()
+                    canvasView.connectors.addAll(data.second)
+                    setCurrentProject(lastProject)
+                    canvasView.clearUndoHistory()
+                    canvasView.invalidate()
+                    markCurrentStateAsSaved()
+                    canvasView.post { canvasView.fitToScreen() }
+                    restored = true
+                }
+            }
+        }
+        if (!restored) {
+            loadStarterDemoTemplate()
+        }
+    }
+
+
+
+    private fun showInstructionsDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_instructions)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dm = resources.displayMetrics
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val dialogWidth = (dm.widthPixels * 0.95f).toInt().coerceAtMost((650 * dm.density).toInt())
+        val dialogHeight = if (isLandscape) {
+            (dm.heightPixels * 0.92f).toInt()
+        } else {
+            (dm.heightPixels * 0.72f).toInt().coerceAtMost((540 * dm.density).toInt())
+        }
+        dialog.window?.setLayout(dialogWidth, dialogHeight)
+
+        val webView = dialog.findViewById<WebView>(R.id.webViewInstructions)
+        webView?.apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.mediaPlaybackRequiresUserGesture = false
+            settings.allowFileAccess = true
+            settings.allowContentAccess = true
+            @Suppress("DEPRECATION")
+            settings.allowFileAccessFromFileURLs = true
+            @Suppress("DEPRECATION")
+            settings.allowUniversalAccessFromFileURLs = true
+            settings.setSupportZoom(false)
+            settings.builtInZoomControls = false
+            settings.displayZoomControls = false
+            setBackgroundColor(Color.TRANSPARENT)
+            addJavascriptInterface(object {
+                @android.webkit.JavascriptInterface
+                fun closeDialog() {
+                    runOnUiThread { dialog.dismiss() }
+                }
+            }, "AndroidBridge")
+            loadUrl("file:///android_asset/instructions/index.html")
+            scrollTo(0, 0)
+            webViewClient = object : android.webkit.WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    view?.scrollTo(0, 0)
+                }
+            }
+        }
+
+        dialog.setOnDismissListener {
+            webView?.evaluateJavascript("if (typeof stopEasterEggBgm === 'function') stopEasterEggBgm(false);", null)
+            webView?.loadUrl("about:blank")
+        }
+
+        dialog.show()
+    }
+
+    private fun showAboutDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_about)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((480 * resources.displayMetrics.density).toInt())
+        dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        dialog.findViewById<TextView>(R.id.tvAboutVersion)?.text = "Versi 5.0.5"
+        dialog.findViewById<ImageView>(R.id.btnCloseAbout)?.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun updateSwitchVisuals(
+        switch: androidx.appcompat.widget.SwitchCompat,
+        statusText: TextView,
+        isChecked: Boolean
+    ) {
+        if (isChecked) {
+            statusText.text = "ON"
+            statusText.setTextColor(Color.parseColor("#10b981"))
+            statusText.setBackgroundResource(R.drawable.bg_status_badge_on)
+            switch.trackTintList = ColorStateList.valueOf(Color.parseColor("#10b981"))
+            switch.thumbTintList = ColorStateList.valueOf(Color.parseColor("#ffffff"))
+        } else {
+            statusText.text = "OFF"
+            statusText.setTextColor(Color.parseColor("#94a3b8"))
+            statusText.setBackgroundResource(R.drawable.bg_status_badge_off)
+            switch.trackTintList = ColorStateList.valueOf(Color.parseColor("#334155"))
+            switch.thumbTintList = ColorStateList.valueOf(Color.parseColor("#64748b"))
+        }
+    }
+
+    private fun showSettingsDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_settings)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((480 * resources.displayMetrics.density).toInt())
+        dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseSettings)
+        val switchAutoSave = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchAutoSave)
+        val tvStatusAutoSave = dialog.findViewById<TextView>(R.id.tvStatusAutoSave)
+        val spinnerGrid = dialog.findViewById<Spinner>(R.id.spinnerGridSnap)
+        val switchGlow = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchGlowWires)
+        val tvStatusGlowWires = dialog.findViewById<TextView>(R.id.tvStatusGlowWires)
+        val switchPin = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchPinLabels)
+        val tvStatusPinLabels = dialog.findViewById<TextView>(R.id.tvStatusPinLabels)
+        val btnClear = dialog.findViewById<Button>(R.id.btnClearCanvas)
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+
+        // 1. Auto-Save
+        val currentAutoSave = SettingsManager.isAutoSaveEnabled(this)
+        switchAutoSave?.isChecked = currentAutoSave
+        if (switchAutoSave != null && tvStatusAutoSave != null) {
+            updateSwitchVisuals(switchAutoSave, tvStatusAutoSave, currentAutoSave)
+        }
+        switchAutoSave?.setOnCheckedChangeListener { _, isChecked ->
+            SettingsManager.setAutoSaveEnabled(this, isChecked)
+            if (tvStatusAutoSave != null) {
+                updateSwitchVisuals(switchAutoSave, tvStatusAutoSave, isChecked)
+            }
+            if (isChecked) {
+                triggerAutoSaveIfEnabled(showFeedback = true)
+            } else {
+                Toast.makeText(this, "ℹ Simpan Otomatis Dinonaktifkan", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 2. Grid Snapping
+        val gridOptions = listOf("20px (Kecil)", "30px (Standar)", "40px (Besar)", "Nonaktif")
+        val gridAdapter = ArrayAdapter(this, R.layout.item_spinner_grid, gridOptions).apply {
+            setDropDownViewResource(R.layout.item_spinner_grid)
+        }
+        spinnerGrid?.adapter = gridAdapter
+
+        val currentSnap = canvasView.isGridSnapEnabled
+        val currentSize = canvasView.GRID_SIZE
+        val selectedIdx = when {
+            !currentSnap -> 3
+            currentSize == 20f -> 0
+            currentSize == 40f -> 2
+            else -> 1 // 30f standar
+        }
+        spinnerGrid?.setSelection(selectedIdx)
+
+        var isSpinnerFirstInit = true
+        spinnerGrid?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> {
+                        canvasView.isGridSnapEnabled = true
+                        canvasView.GRID_SIZE = 20f
+                        SettingsManager.setGridSnapEnabled(this@MainActivity, true)
+                        SettingsManager.setGridSize(this@MainActivity, 20f)
+                    }
+                    1 -> {
+                        canvasView.isGridSnapEnabled = true
+                        canvasView.GRID_SIZE = 30f
+                        SettingsManager.setGridSnapEnabled(this@MainActivity, true)
+                        SettingsManager.setGridSize(this@MainActivity, 30f)
+                    }
+                    2 -> {
+                        canvasView.isGridSnapEnabled = true
+                        canvasView.GRID_SIZE = 40f
+                        SettingsManager.setGridSnapEnabled(this@MainActivity, true)
+                        SettingsManager.setGridSize(this@MainActivity, 40f)
+                    }
+                    3 -> {
+                        canvasView.isGridSnapEnabled = false
+                        SettingsManager.setGridSnapEnabled(this@MainActivity, false)
+                    }
+                }
+                isSpinnerFirstInit = false
+                canvasView.invalidate()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // 3. Glow Wires
+        val currentGlow = canvasView.showCurrentFlowAnimation
+        switchGlow?.isChecked = currentGlow
+        if (switchGlow != null && tvStatusGlowWires != null) {
+            updateSwitchVisuals(switchGlow, tvStatusGlowWires, currentGlow)
+        }
+        switchGlow?.setOnCheckedChangeListener { _, isChecked ->
+            canvasView.showCurrentFlowAnimation = isChecked
+            SettingsManager.setCurrentFlowAnimEnabled(this, isChecked)
+            if (tvStatusGlowWires != null) {
+                updateSwitchVisuals(switchGlow, tvStatusGlowWires, isChecked)
+            }
+            canvasView.invalidate()
+        }
+
+        // 4. Pin Labels
+        val currentPin = canvasView.showPinLabels
+        switchPin?.isChecked = currentPin
+        if (switchPin != null && tvStatusPinLabels != null) {
+            updateSwitchVisuals(switchPin, tvStatusPinLabels, currentPin)
+        }
+        switchPin?.setOnCheckedChangeListener { _, isChecked ->
+            canvasView.showPinLabels = isChecked
+            SettingsManager.setPinLabelsEnabled(this, isChecked)
+            if (tvStatusPinLabels != null) {
+                updateSwitchVisuals(switchPin, tvStatusPinLabels, isChecked)
+            }
+            canvasView.invalidate()
+        }
+
+        // 5. Sound Effects (Efek Suara Industri)
+        val switchSound = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchSoundEffects)
+        val tvStatusSound = dialog.findViewById<TextView>(R.id.tvStatusSoundEffects)
+        val currentSound = SettingsManager.isSoundEnabled(this)
+        switchSound?.isChecked = currentSound
+        if (switchSound != null && tvStatusSound != null) {
+            updateSwitchVisuals(switchSound, tvStatusSound, currentSound)
+        }
+        switchSound?.setOnCheckedChangeListener { _, isChecked ->
+            SettingsManager.setSoundEnabled(this, isChecked)
+            canvasView.soundManager.isEnabled = isChecked
+            if (!isChecked) {
+                canvasView.soundManager.stopAllLoops()
+            }
+            if (tvStatusSound != null) {
+                updateSwitchVisuals(switchSound, tvStatusSound, isChecked)
+            }
+        }
+
+        // 6. Tampilkan Nama Komponen (Component Names Visibility)
+        val switchComponentNames = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchComponentNames)
+        val tvStatusComponentNames = dialog.findViewById<TextView>(R.id.tvStatusComponentNames)
+        val currentNames = canvasView.showComponentNames
+        switchComponentNames?.isChecked = currentNames
+        if (switchComponentNames != null && tvStatusComponentNames != null) {
+            updateSwitchVisuals(switchComponentNames, tvStatusComponentNames, currentNames)
+        }
+        switchComponentNames?.setOnCheckedChangeListener { _, isChecked ->
+            canvasView.showComponentNames = isChecked
+            SettingsManager.setComponentNamesEnabled(this, isChecked)
+            if (tvStatusComponentNames != null) {
+                updateSwitchVisuals(switchComponentNames, tvStatusComponentNames, isChecked)
+            }
+            canvasView.invalidate()
+        }
+
+        // 7. Clear Canvas
+        btnClear?.setOnClickListener {
+            dialog.dismiss()
+            confirmClearCanvas()
+        }
+
+        dialog.show()
+    }
+
+    private fun confirmClearCanvas() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_confirm)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((440 * resources.displayMetrics.density).toInt())
+        dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        dialog.findViewById<ImageView>(R.id.ivConfirmHeaderIcon)?.setImageResource(R.drawable.ic_delete)
+        dialog.findViewById<TextView>(R.id.tvConfirmHeaderTitle)?.text = "Kosongkan Kanvas"
+        dialog.findViewById<TextView>(R.id.tvConfirmMessage)?.text = "Apakah Anda yakin ingin menghapus semua komponen dan kawat pada kanvas?"
+
+        dialog.findViewById<ImageView>(R.id.btnCloseConfirm)?.setOnClickListener { dialog.dismiss() }
+        dialog.findViewById<Button>(R.id.btnCancelConfirm)?.setOnClickListener { dialog.dismiss() }
+        dialog.findViewById<Button>(R.id.btnActionConfirm)?.apply {
+            text = "Kosongkan"
+            backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ef4444"))
+            setOnClickListener {
+                canvasView.pushUndoState()
+                canvasView.elements.clear()
+                canvasView.connectors.clear()
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+                canvasView.invalidate()
+                canvasView.notifyUndoRedoState()
+                triggerAutoSaveIfEnabled()
+                Toast.makeText(this@MainActivity, "Kanvas berhasil dikosongkan", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun enterFullscreenMode() {
+        closeLibraryPanel()
+        appBarLayout.visibility = View.GONE
+        btnExitFullscreen.visibility = View.VISIBLE
+        fabAdd.visibility = View.GONE
+        hideSystemUI()
+        updateFabPosition(floatingPill.visibility == View.VISIBLE)
+    }
+
+    private fun exitFullscreenMode() {
+        appBarLayout.visibility = View.VISIBLE
+        btnExitFullscreen.visibility = View.GONE
+        fabAdd.visibility = View.VISIBLE
+        hideSystemUI()
+        updateFabPosition(floatingPill.visibility == View.VISIBLE)
+    }
+
+    private fun launchImportPicker() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+        try {
+            startActivityForResult(intent, REQUEST_CODE_IMPORT)
+        } catch (_: Exception) {
+            try {
+                val fallback = Intent(Intent.ACTION_GET_CONTENT).apply { type = "*/*" }
+                startActivityForResult(fallback, REQUEST_CODE_IMPORT)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Tidak dapat membuka pengelola berkas: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_PICK_QR_IMAGE && resultCode == Activity.RESULT_OK) {
+            val uri = data?.data ?: return
+            decodeQrFromUri(uri)
+            return
+        }
+        val qrResult = com.google.zxing.integration.android.IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (qrResult != null) {
+            if (qrResult.contents != null) {
+                handleScannedQrPayload(qrResult.contents)
+            }
+            return
+        }
+        if (requestCode == REQUEST_CODE_IMPORT && resultCode == Activity.RESULT_OK) {
+            val uri = data?.data ?: return
+            try {
+                val content = contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: return
+                val fileName = getFileNameFromUri(uri) ?: "Sirkuit_Impor"
+                val importedName = WorkspaceManager.importCircuitContent(this, fileName, content)
+                if (importedName != null) {
+                    refreshWorkspaceList()
+                    Toast.makeText(this, "Berhasil mengimpor '$importedName'", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Gagal mengimpor: Berkas sirkuit tidak valid", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "Error membaca file: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun getFileNameFromUri(uri: Uri): String? {
+        var name: String? = null
+        try {
+            contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1 && cursor.moveToFirst()) {
+                    name = cursor.getString(nameIndex)
+                }
+            }
+        } catch (_: Exception) {}
+        if (name == null) {
+            name = uri.lastPathSegment
+        }
+        return name
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_CAMERA_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            showQrScannerDialog()
+        } else if (requestCode == REQUEST_CODE_CAMERA_PERMISSION) {
+            Toast.makeText(this, "Izin kamera diperlukan untuk memindai QR", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun launchQrScanner() {
+        if (checkSelfPermission(android.Manifest.permission.CAMERA) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), REQUEST_CODE_CAMERA_PERMISSION)
+            return
+        }
+        showQrScannerDialog()
+    }
+
+    private fun showQrScannerDialog() {
+        try {
+            val dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.dialog_modern_qr_scanner)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((440 * resources.displayMetrics.density).toInt())
+            dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+            val barcodeScannerView = dialog.findViewById<DecoratedBarcodeView>(R.id.zxing_barcode_scanner)
+            try {
+                barcodeScannerView?.statusView?.visibility = View.GONE
+                barcodeScannerView?.viewFinder?.visibility = View.GONE
+            } catch (_: Exception) {}
+
+            val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseQrScanner)
+            val btnToggleTorch = dialog.findViewById<View>(R.id.btnToggleTorch)
+            val ivTorchIcon = dialog.findViewById<ImageView>(R.id.ivTorchIcon)
+            val tvTorchText = dialog.findViewById<TextView>(R.id.tvTorchText)
+            val btnPickFromGallery = dialog.findViewById<View>(R.id.btnPickFromGallery)
+            val tvStatusDeviceInfo = dialog.findViewById<TextView>(R.id.tvStatusDeviceInfo)
+
+            // Dynamic Device & Local IP Telemetry
+            val manufacturer = Build.MANUFACTURER.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+            val model = Build.MODEL
+            val ip = getDeviceLocalIp() ?: "Wi-Fi Terhubung"
+            tvStatusDeviceInfo?.text = "$manufacturer $model • $ip"
+
+            // Torch (Flashlight) Control
+            var isTorchOn = false
+            btnToggleTorch?.setOnClickListener {
+                isTorchOn = !isTorchOn
+                if (isTorchOn) {
+                    barcodeScannerView?.setTorchOn()
+                    ivTorchIcon?.setColorFilter(Color.parseColor("#38bdf8"))
+                    tvTorchText?.setTextColor(Color.parseColor("#38bdf8"))
+                } else {
+                    barcodeScannerView?.setTorchOff()
+                    ivTorchIcon?.setColorFilter(Color.parseColor("#f4f4f5"))
+                    tvTorchText?.setTextColor(Color.parseColor("#f4f4f5"))
+                }
+            }
+
+            // Pick QR image from gallery
+            btnPickFromGallery?.setOnClickListener {
+                dialog.dismiss()
+                launchGalleryPickerForQr()
+            }
+
+            // Close dialog
+            btnClose?.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            // Start Scanning (Single Decode)
+            barcodeScannerView?.decodeSingle(object : BarcodeCallback {
+                override fun barcodeResult(result: BarcodeResult?) {
+                    if (result != null && !result.text.isNullOrEmpty()) {
+                        dialog.dismiss()
+                        handleScannedQrPayload(result.text)
+                    }
+                }
+                override fun possibleResultPoints(resultPoints: MutableList<ResultPoint>?) {}
+            })
+
+            dialog.setOnDismissListener {
+                barcodeScannerView?.pause()
+            }
+
+            dialog.show()
+            barcodeScannerView?.resume()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal membuka pemindai: ${e.message}", Toast.LENGTH_SHORT).show()
+            promptPasteQrCode()
+        }
+    }
+
+    private fun launchGalleryPickerForQr() {
+        try {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "image/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+            }
+            startActivityForResult(Intent.createChooser(intent, "Pilih Gambar QR"), REQUEST_CODE_PICK_QR_IMAGE)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Tidak dapat membuka galeri: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun decodeQrFromUri(uri: Uri) {
+        try {
+            contentResolver.openInputStream(uri)?.use { stream ->
+                val bitmap = BitmapFactory.decodeStream(stream)
+                if (bitmap != null) {
+                    val qrResult = decodeQrFromBitmap(bitmap)
+                    if (qrResult != null) {
+                        handleScannedQrPayload(qrResult)
+                        return
+                    }
+                }
+            }
+            Toast.makeText(this, "Tidak ada kode QR yang valid pada gambar", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal memproses gambar: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun decodeQrFromBitmap(bitmap: Bitmap): String? {
+        return try {
+            val width = bitmap.width
+            val height = bitmap.height
+            val pixels = IntArray(width * height)
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+            val source = RGBLuminanceSource(width, height, pixels)
+            val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+            val reader = MultiFormatReader()
+            val result = reader.decode(binaryBitmap)
+            result.text
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun getDeviceLocalIp(): String? {
+        try {
+            val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
+            for (intf in interfaces) {
+                if (intf.isLoopback || !intf.isUp) continue
+                val addrs = Collections.list(intf.inetAddresses)
+                for (addr in addrs) {
+                    if (!addr.isLoopbackAddress && addr is java.net.Inet4Address) {
+                        return addr.hostAddress
+                    }
+                }
+            }
+        } catch (_: Exception) {}
+        return null
+    }
+
+    private fun promptPasteQrCode() {
+        val input = EditText(this).apply {
+            hint = "Tempel kode sirkuit (smrl://...)"
+            setTextColor(Color.WHITE)
+            setHintTextColor(Color.parseColor("#64748b"))
+            val clipboard = getSystemService(CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+            val clipText = clipboard?.primaryClip?.getItemAt(0)?.text?.toString()?.trim()
+            if (clipText != null && (clipText.startsWith("smrl://") || clipText.startsWith("http://") || clipText.startsWith("https://"))) {
+                setText(clipText)
+            }
+        }
+        android.app.AlertDialog.Builder(this)
+            .setTitle("Impor Kode Sirkuit Offline")
+            .setView(input)
+            .setPositiveButton("Buka") { _, _ ->
+                val txt = input.text.toString().trim()
+                if (txt.isNotEmpty()) handleScannedQrPayload(txt)
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun decompressQrPayload(payload: String): String? {
+        return try {
+            val trimmed = payload.trim()
+            if (trimmed.startsWith("smrl://v1/")) {
+                val base64 = trimmed.substring("smrl://v1/".length)
+                val compressedBytes = android.util.Base64.decode(base64, android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP or android.util.Base64.DEFAULT)
+                val inflater = java.util.zip.Inflater()
+                inflater.setInput(compressedBytes)
+                val outputStream = java.io.ByteArrayOutputStream(compressedBytes.size * 4)
+                val buffer = ByteArray(1024)
+                while (!inflater.finished()) {
+                    val count = inflater.inflate(buffer)
+                    if (count == 0 && inflater.needsInput()) break
+                    outputStream.write(buffer, 0, count)
+                }
+                inflater.end()
+                outputStream.toString("UTF-8")
+            } else if (trimmed.startsWith("smrl://v0/")) {
+                val base64 = trimmed.substring("smrl://v0/".length)
+                val bytes = android.util.Base64.decode(base64, android.util.Base64.URL_SAFE or android.util.Base64.NO_WRAP or android.util.Base64.DEFAULT)
+                String(bytes, Charsets.UTF_8)
+            } else if (trimmed.startsWith("{")) {
+                trimmed
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun handleScannedQrPayload(rawPayload: String) {
+        val trimmed = rawPayload.trim()
+
+        // 1. KLASIFIKASI: QR Tugas Guru (Online via HTTP/HTTPS/IP Laptop Guru)
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            val serverUrl = if (trimmed.contains("/task.smrl")) {
+                trimmed.substringBeforeLast('/')
+            } else {
+                trimmed
+            }
+            lastClassroomServerUrl = serverUrl
+            getSharedPreferences("simurelay_classroom", android.content.Context.MODE_PRIVATE)
+                .edit()
+                .putString("server_url", serverUrl)
+                .apply()
+
+            Toast.makeText(this, "Menghubungi Laptop Guru ($serverUrl)...", Toast.LENGTH_SHORT).show()
+            kotlin.concurrent.thread {
+                try {
+                    val url = java.net.URL(trimmed)
+                    val conn = url.openConnection() as java.net.HttpURLConnection
+                    conn.connectTimeout = 6000
+                    conn.readTimeout = 6000
+                    conn.requestMethod = "GET"
+                    val code = conn.responseCode
+                    if (code == 200) {
+                        val examHeader = conn.getHeaderField("X-Exam-Mode")
+                        val isExam = examHeader.equals("true", ignoreCase = true)
+                        isClassroomExamMode = isExam
+                        getSharedPreferences("simurelay_classroom", android.content.Context.MODE_PRIVATE)
+                            .edit()
+                            .putBoolean("is_exam_mode", isExam)
+                            .apply()
+                        val downloadedText = conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        runOnUiThread {
+                            showStudentIdentityDialog(downloadedText, serverUrl)
+                        }
+                    } else {
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Gagal mengunduh tugas dari guru (HTTP $code)", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Koneksi ke laptop guru terputus: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            return
+        }
+
+        // 2. KLASIFIKASI: QR Sirkuit Langsung (Offline SMRL / TXT / JSON)
+        val jsonString = decompressQrPayload(trimmed)
+        if (jsonString == null) {
+            Toast.makeText(this, "Format QR Code bukan data sirkuit Simurelay yang valid", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        showDirectCircuitImportDialog(jsonString)
+    }
+
+    private fun showDirectCircuitImportDialog(jsonString: String) {
+        try {
+            val root = org.json.JSONObject(jsonString)
+            val circuitName = root.optString("name", "Sirkuit QR").ifEmpty { "Sirkuit QR" }
+            val elements = root.optJSONArray("elements")
+            val elementCount = elements?.length() ?: 0
+
+            val teacherClass = root.optString("class").ifEmpty {
+                root.optJSONObject("header")?.optString("class") ?: ""
+            }
+            val teacherSchool = root.optString("school").ifEmpty {
+                root.optJSONObject("header")?.optString("school") ?: ""
+            }
+            if (teacherClass.isNotEmpty() || teacherSchool.isNotEmpty()) {
+                val etiketPrefs = getSharedPreferences("simurelay_pdf_etiket", Context.MODE_PRIVATE).edit()
+                if (teacherClass.isNotEmpty()) etiketPrefs.putString("pdf_student_class", teacherClass)
+                if (teacherSchool.isNotEmpty()) etiketPrefs.putString("pdf_student_school", teacherSchool)
+                etiketPrefs.apply()
+            }
+
+            val dialogView = layoutInflater.inflate(R.layout.dialog_modern_qr_import, null)
+            val dialog = android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val tvCircuitName = dialogView.findViewById<TextView>(R.id.tvQrCircuitName)
+            val tvLockStatus = dialogView.findViewById<TextView>(R.id.tvQrLockStatus)
+            val tvKitStatus = dialogView.findViewById<TextView>(R.id.tvQrKitStatus)
+            val btnOpenDirectly = dialogView.findViewById<Button>(R.id.btnQrOpenDirectly)
+            val btnSaveToWorkspace = dialogView.findViewById<Button>(R.id.btnQrSaveToWorkspace)
+            val btnClose = dialogView.findViewById<ImageView>(R.id.btnCloseQrImport)
+
+            tvCircuitName?.text = circuitName
+            if (teacherClass.isNotEmpty() || teacherSchool.isNotEmpty()) {
+                val infoText = listOf(teacherClass, teacherSchool).filter { it.isNotEmpty() }.joinToString(" • ")
+                tvLockStatus?.text = infoText
+                tvLockStatus?.setTextColor(Color.parseColor("#38bdf8"))
+            } else {
+                tvLockStatus?.text = "File Sirkuit Langsung (Offline)"
+                tvLockStatus?.setTextColor(Color.parseColor("#10b981"))
+            }
+            tvKitStatus?.text = "$elementCount Komponen Terdeteksi"
+
+            btnClose?.setOnClickListener { dialog.dismiss() }
+
+            btnOpenDirectly?.setOnClickListener {
+                dialog.dismiss()
+                val importedName = WorkspaceManager.importCircuitContent(this, circuitName, jsonString)
+                if (importedName != null) {
+                    closeWorkspaceOverlay()
+                    val dir = WorkspaceManager.getWorkspaceDir(this)
+                    val targetFile = java.io.File(dir, "$importedName.smrl")
+                    loadProjectItem(ProjectItem(name = importedName, file = targetFile, lastModified = targetFile.lastModified(), elementCount = elementCount, isExample = false))
+                    setCurrentProject(importedName)
+                    refreshWorkspaceList()
+                    Toast.makeText(this, "Sirkuit '$importedName' berhasil dibuka", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Gagal membuka sirkuit", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            btnSaveToWorkspace?.setOnClickListener {
+                dialog.dismiss()
+                val importedName = WorkspaceManager.importCircuitContent(this, circuitName, jsonString)
+                if (importedName != null) {
+                    refreshWorkspaceList()
+                    Toast.makeText(this, "Sirkuit '$importedName' disimpan ke Workspace", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Gagal menyimpan sirkuit", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            dialog.show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error memproses data sirkuit: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showStudentIdentityDialog(jsonString: String, teacherUrl: String? = null) {
+        try {
+            val root = org.json.JSONObject(jsonString)
+            val circuitName = root.optString("name", "Tugas Praktikum").ifEmpty { "Tugas Praktikum" }
+
+            val teacherClass = root.optString("class").ifEmpty {
+                root.optJSONObject("header")?.optString("class") ?: ""
+            }
+            val teacherSchool = root.optString("school").ifEmpty {
+                root.optJSONObject("header")?.optString("school") ?: ""
+            }
+            if (teacherClass.isNotEmpty() || teacherSchool.isNotEmpty()) {
+                val etiketPrefs = getSharedPreferences("simurelay_pdf_etiket", Context.MODE_PRIVATE).edit()
+                if (teacherClass.isNotEmpty()) etiketPrefs.putString("pdf_student_class", teacherClass)
+                if (teacherSchool.isNotEmpty()) etiketPrefs.putString("pdf_student_school", teacherSchool)
+                etiketPrefs.apply()
+            }
+
+            val dialogView = layoutInflater.inflate(R.layout.dialog_modern_student_identity, null)
+            val dialog = android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            val tvIdentityTaskName = dialogView.findViewById<TextView>(R.id.tvIdentityTaskName)
+            val etStudentNameInput = dialogView.findViewById<EditText>(R.id.etStudentNameInput)
+            val etStudentPresensiInput = dialogView.findViewById<EditText>(R.id.etStudentPresensiInput)
+            val tvStudentAutoFilename = dialogView.findViewById<TextView>(R.id.tvStudentAutoFilename)
+            val btnCancelStudentIdentity = dialogView.findViewById<Button>(R.id.btnCancelStudentIdentity)
+            val btnConfirmStudentIdentity = dialogView.findViewById<Button>(R.id.btnConfirmStudentIdentity)
+            val btnCloseStudentIdentity = dialogView.findViewById<ImageView>(R.id.btnCloseStudentIdentity)
+
+            val displayTeacher = if (!teacherUrl.isNullOrEmpty()) " ($teacherUrl)" else ""
+            var taskText = "Nama Tugas: $circuitName$displayTeacher"
+            if (teacherClass.isNotEmpty() || teacherSchool.isNotEmpty()) {
+                val meta = listOf(teacherClass, teacherSchool).filter { it.isNotEmpty() }.joinToString(" • ")
+                taskText += "\nTarget: $meta"
+            }
+            tvIdentityTaskName?.text = taskText
+            if (!studentName.isNullOrEmpty()) etStudentNameInput?.setText(studentName)
+            if (!studentPresensi.isNullOrEmpty()) etStudentPresensiInput?.setText(studentPresensi)
+
+            fun updateFilenamePreview() {
+                val rawName = etStudentNameInput?.text?.toString()?.trim() ?: ""
+                val rawPresensi = etStudentPresensiInput?.text?.toString()?.trim() ?: ""
+                val cleanName = rawName.replace(Regex("[^a-zA-Z0-9_ -]"), "").replace(Regex("\\s+"), "_").ifEmpty { "Nama" }
+                val cleanPresensi = rawPresensi.replace(Regex("[^a-zA-Z0-9]"), "").ifEmpty { "Presensi" }
+                val cleanTask = circuitName.replace(Regex("[^a-zA-Z0-9_ -]"), "").replace(Regex("\\s+"), "_").ifEmpty { "Tugas" }
+                tvStudentAutoFilename?.text = "${cleanName}_${cleanPresensi}_${cleanTask}.smrl"
+            }
+
+            val watcher = object : android.text.TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    updateFilenamePreview()
+                }
+                override fun afterTextChanged(s: android.text.Editable?) {}
+            }
+            etStudentNameInput?.addTextChangedListener(watcher)
+            etStudentPresensiInput?.addTextChangedListener(watcher)
+            updateFilenamePreview()
+
+            btnCloseStudentIdentity?.setOnClickListener { dialog.dismiss() }
+            btnCancelStudentIdentity?.setOnClickListener { dialog.dismiss() }
+
+            btnConfirmStudentIdentity?.setOnClickListener {
+                val inputName = etStudentNameInput?.text?.toString()?.trim() ?: ""
+                val inputPresensi = etStudentPresensiInput?.text?.toString()?.trim() ?: ""
+
+                if (inputName.isEmpty()) {
+                    Toast.makeText(this, "Harap masukkan Nama Lengkap Siswa", Toast.LENGTH_SHORT).show()
+                    etStudentNameInput?.requestFocus()
+                    return@setOnClickListener
+                }
+                if (inputPresensi.isEmpty()) {
+                    Toast.makeText(this, "Harap masukkan No. Presensi Siswa", Toast.LENGTH_SHORT).show()
+                    etStudentPresensiInput?.requestFocus()
+                    return@setOnClickListener
+                }
+
+                val cleanName = inputName.replace(Regex("[^a-zA-Z0-9_ -]"), "").replace(Regex("\\s+"), "_")
+                val cleanPresensi = inputPresensi.replace(Regex("[^a-zA-Z0-9]"), "")
+                val cleanTask = circuitName.replace(Regex("[^a-zA-Z0-9_ -]"), "").replace(Regex("\\s+"), "_")
+                val finalProjectName = "${cleanName}_${cleanPresensi}_${cleanTask}"
+
+                studentName = inputName
+                studentPresensi = inputPresensi
+                getSharedPreferences("simurelay_classroom", android.content.Context.MODE_PRIVATE)
+                    .edit()
+                    .putString("student_name", inputName)
+                    .putString("student_presensi", inputPresensi)
+                    .apply()
+
+                dialog.dismiss()
+
+                val importedName = WorkspaceManager.importCircuitContent(this, finalProjectName, jsonString)
+                if (importedName != null) {
+                    closeWorkspaceOverlay()
+                    val dir = WorkspaceManager.getWorkspaceDir(this)
+                    val targetFile = java.io.File(dir, "$importedName.smrl")
+                    loadProjectItem(ProjectItem(name = importedName, file = targetFile, lastModified = targetFile.lastModified(), elementCount = 0, isExample = false))
+                    setCurrentProject(importedName)
+                    refreshWorkspaceList()
+                    Toast.makeText(this, "Tugas '$importedName' siap dikerjakan", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Gagal membuka tugas praktikum", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            dialog.show()
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error memproses tugas QR: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showCustomExamLockedDialog(message: String) {
+        runOnUiThread {
+            try {
+                val dialogView = layoutInflater.inflate(R.layout.dialog_modern_exam_alert, null)
+                val dialog = android.app.AlertDialog.Builder(this)
+                    .setView(dialogView)
+                    .create()
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                val tvMessage = dialogView.findViewById<TextView>(R.id.tvAlertMessage)
+                val btnOk = dialogView.findViewById<Button>(R.id.btnAlertOk)
+                val btnClose = dialogView.findViewById<ImageView>(R.id.btnCloseAlertTop)
+
+                tvMessage?.text = message
+                btnOk?.setOnClickListener { dialog.dismiss() }
+                btnClose?.setOnClickListener { dialog.dismiss() }
+
+                dialog.show()
+            } catch (_: Exception) {
+                Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun sendTaskToTeacher() {
+        val serverUrl = lastClassroomServerUrl
+        if (serverUrl.isNullOrEmpty()) {
+            Toast.makeText(this, "Belum terhubung ke Hotspot Guru. Silakan Scan QR Tugas Guru terlebih dahulu.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val name = studentName ?: "Siswa"
+        val presensi = studentPresensi ?: "-"
+        val currentName = currentProjectName
+        val cleanFilename = if (currentName.endsWith(".smrl")) currentName else "$currentName.smrl"
+
+        val classroomPrefs = getSharedPreferences("simurelay_classroom", Context.MODE_PRIVATE)
+        val isAlreadySubmittedInExam = classroomPrefs.getBoolean("exam_submitted_${cleanFilename}", false)
+
+        if (isClassroomExamMode && isAlreadySubmittedInExam) {
+            showCustomExamLockedDialog("Mode Ujian Aktif: Berkas tugas ini telah Anda kirimkan sebelumnya dan telah dikunci. Pengiriman ulang tidak diizinkan oleh sistem guru.")
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_modern_confirm_send_teacher, null)
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val tvFilename = dialogView.findViewById<TextView>(R.id.tvConfirmSendFilename)
+        val tvStats = dialogView.findViewById<TextView>(R.id.tvConfirmSendStats)
+        val tvPresensi = dialogView.findViewById<TextView>(R.id.tvConfirmSendPresensi)
+        val tvStudentName = dialogView.findViewById<TextView>(R.id.tvConfirmSendStudentName)
+        val tvServerUrl = dialogView.findViewById<TextView>(R.id.tvConfirmSendServerUrl)
+        val cardExamWarning = dialogView.findViewById<View>(R.id.cardExamWarningNotice)
+        val btnClose = dialogView.findViewById<ImageView>(R.id.btnCloseConfirmSendTeacher)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancelConfirmSend)
+        val btnSubmit = dialogView.findViewById<Button>(R.id.btnSubmitConfirmSend)
+
+        tvFilename?.text = cleanFilename
+        val count = canvasView.elements.size
+        tvStats?.text = "Sirkuit CAD (.smrl) + Laporan PDF 2 Hal • $count Komponen"
+        tvPresensi?.text = presensi
+        tvStudentName?.text = name
+        tvServerUrl?.text = serverUrl
+
+        // Periksa status visual mode ujian
+        cardExamWarning?.visibility = if (isClassroomExamMode) View.VISIBLE else View.GONE
+        if (isClassroomExamMode) {
+            btnSubmit?.text = "KIRIM & KUNCI UJIAN"
+        } else {
+            btnSubmit?.text = "KIRIM SEKARANG"
+        }
+
+        // Live probe ke server guru untuk memastikan status mode ujian sinkron secara real-time
+        kotlin.concurrent.thread {
+            try {
+                val infoUrl = if (serverUrl.endsWith("/")) "${serverUrl}info" else "${serverUrl}/info"
+                val conn = java.net.URL(infoUrl).openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 2000
+                conn.readTimeout = 2000
+                if (conn.responseCode == 200) {
+                    val resp = conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    val jsonObj = org.json.JSONObject(resp)
+                    if (jsonObj.has("exam_mode")) {
+                        val liveExam = jsonObj.getBoolean("exam_mode")
+                        isClassroomExamMode = liveExam
+                        classroomPrefs.edit().putBoolean("is_exam_mode", liveExam).apply()
+                        runOnUiThread {
+                            cardExamWarning?.visibility = if (liveExam) View.VISIBLE else View.GONE
+                            if (liveExam) {
+                                btnSubmit?.text = "KIRIM & KUNCI UJIAN"
+                            } else {
+                                btnSubmit?.text = "KIRIM SEKARANG"
+                            }
+                        }
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        btnSubmit?.setOnClickListener {
+            dialog.dismiss()
+            performSendTaskToTeacher(serverUrl, currentName, name, presensi)
+        }
+
+        dialog.show()
+    }
+
+    private fun performSendTaskToTeacher(serverUrl: String, currentName: String, name: String, presensi: String) {
+        Toast.makeText(this, "Menyusun laporan PDF & mengirim ke laptop guru...", Toast.LENGTH_SHORT).show()
+        val circuitJson = WorkspaceManager.serializeCircuit(canvasView.elements, canvasView.connectors)
+        val submitUrl = if (serverUrl.endsWith("/")) "${serverUrl}submit" else "${serverUrl}/submit"
+
+        val elementsCopy = canvasView.elements.map { it.copy() }
+        val connectorsCopy = canvasView.connectors.map { it.copy() }
+
+        kotlin.concurrent.thread {
+            try {
+                val prefs = getSharedPreferences("simurelay_pdf_etiket", Context.MODE_PRIVATE)
+                val sClass = prefs.getString("pdf_student_class", "XII Teknik Instalasi Tenaga Listrik") ?: "XII TITL"
+                val sSchool = prefs.getString("pdf_student_school", "SMK Negeri 2") ?: "SMK"
+                val studentInfo = StudentPdfInfo(
+                    studentName = name,
+                    studentPresensi = presensi,
+                    studentClass = sClass,
+                    studentSchool = sSchool,
+                    projectTitle = currentName
+                )
+                val pdfBytes = NativePdfReportGenerator.generatePdfBytes(
+                    context = this@MainActivity,
+                    elements = elementsCopy,
+                    connectors = connectorsCopy,
+                    info = studentInfo
+                )
+                val pdfBase64 = android.util.Base64.encodeToString(pdfBytes, android.util.Base64.NO_WRAP)
+                val baseFilename = if (currentName.endsWith(".smrl")) currentName.removeSuffix(".smrl") else currentName
+                val pdfFilename = "$baseFilename.pdf"
+                val cleanFilename = if (currentName.endsWith(".smrl")) currentName else "$currentName.smrl"
+
+                // Simpan juga salinan PDF ke folder Download HP siswa
+                NativePdfReportGenerator.savePdfToDownloads(this@MainActivity, pdfFilename, pdfBytes)
+
+                val postData = org.json.JSONObject().apply {
+                    put("student_name", name)
+                    put("presensi_no", presensi)
+                    put("filename", cleanFilename)
+                    put("content", circuitJson)
+                    put("pdf_filename", pdfFilename)
+                    put("pdf_base64", pdfBase64)
+                }
+
+                val url = java.net.URL(submitUrl)
+                val conn = url.openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 10000
+                conn.readTimeout = 10000
+                conn.requestMethod = "POST"
+                conn.doOutput = true
+                conn.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+
+                val bytes = postData.toString().toByteArray(Charsets.UTF_8)
+                conn.setFixedLengthStreamingMode(bytes.size)
+                conn.outputStream.use { os ->
+                    os.write(bytes)
+                    os.flush()
+                }
+
+                val code = conn.responseCode
+                if (code in 200..299) {
+                    val responseText = try {
+                        conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    } catch (_: Exception) { "" }
+
+                    var successMsg = "Tugas berhasil dikirim ke Laptop Guru"
+                    try {
+                        val jsonResp = org.json.JSONObject(responseText)
+                        if (jsonResp.has("revision")) {
+                            val rev = jsonResp.getInt("revision")
+                            if (rev > 1) {
+                                successMsg = "Revisi ke-$rev berhasil diperbarui di Laptop Guru"
+                            }
+                        }
+                    } catch (_: Exception) {}
+
+                    if (isClassroomExamMode) {
+                        getSharedPreferences("simurelay_classroom", Context.MODE_PRIVATE)
+                            .edit()
+                            .putBoolean("exam_submitted_${cleanFilename}", true)
+                            .apply()
+                        successMsg = "Tugas Ujian berhasil dikumpulkan & telah dikunci."
+                    }
+
+                    val finalSuccessMsg = successMsg
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, finalSuccessMsg, Toast.LENGTH_LONG).show()
+                    }
+                } else if (code == 403) {
+                    // Ditolak karena Mode Ujian (Terkunci)
+                    val errorText = try {
+                        conn.errorStream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
+                    } catch (_: Exception) { "" }
+
+                    var errorMsg = "Mode Ujian Aktif: Tugas Anda telah dikumpulkan sebelumnya dan telah dikunci. Pengumpulan ulang tidak diizinkan."
+                    try {
+                        val jsonErr = org.json.JSONObject(errorText)
+                        if (jsonErr.has("message")) {
+                            errorMsg = jsonErr.getString("message")
+                        }
+                    } catch (_: Exception) {}
+
+                    showCustomExamLockedDialog(errorMsg)
+                } else {
+                    val errorText = try {
+                        conn.errorStream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
+                    } catch (_: Exception) { "" }
+                    runOnUiThread {
+                        Toast.makeText(this@MainActivity, "Server Guru menolak berkas (HTTP $code): $errorText", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this@MainActivity, "Gagal mengirim ke guru: ${e.message}. Pastikan Wi-Fi/Hotspot Guru tetap terhubung.", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun exportProject(projectName: String, asLegacyTxt: Boolean) {
+        try {
+            val file = WorkspaceManager.exportProjectFile(this, projectName, asLegacyTxt)
+            if (file != null && file.exists()) {
+                val typeName = if (asLegacyTxt) ".txt (Legacy)" else ".smrl (JSON)"
+                Toast.makeText(this, "Berhasil mengekspor $typeName ke:\n${file.absolutePath}", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Gagal mengekspor berkas proyek", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error ekspor: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showToolbarMoreMenu(anchor: View) {
+        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val rotLabel = if (isLandscape) "Ubah ke Portrait" else "Ubah ke Landscape"
+
+        val items = listOf(
+            CompactMenuItem(1, R.drawable.ic_fullscreen, "Layar Penuh") {
+                enterFullscreenMode()
+            },
+            CompactMenuItem(2, R.drawable.ic_camera, "Tangkapan Layar") {
+                captureCanvasScreenshot()
+            },
+            CompactMenuItem(3, R.drawable.ic_screen_rotation, rotLabel) {
+                requestedOrientation = if (isLandscape) {
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                } else {
+                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                }
+            },
+            CompactMenuItem(4, R.drawable.ic_fit_screen, "Pusatkan Sirkuit") {
+                canvasView.fitToScreen()
+            }
+        )
+
+        CompactMenuHelper.show(this, anchor, items, widthDp = 185)
+    }
+
+    private fun captureCanvasScreenshot() {
+        try {
+            val bitmap = canvasView.captureBitmap()
+            val timeStamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(java.util.Date())
+            val fileName = "Simurelay_Capture_$timeStamp.png"
+
+            val picturesDir = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES) ?: cacheDir
+            val file = java.io.File(picturesDir, fileName)
+            val fos = java.io.FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.flush()
+            fos.close()
+
+            val downloadsDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
+            if (downloadsDir != null && downloadsDir.exists() && downloadsDir.canWrite()) {
+                val dlFile = java.io.File(downloadsDir, fileName)
+                val dlFos = java.io.FileOutputStream(dlFile)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, dlFos)
+                dlFos.flush()
+                dlFos.close()
+                Toast.makeText(this, "Gambar tersimpan di:\nDownload/$fileName", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Gambar tersimpan:\n${file.name}", Toast.LENGTH_LONG).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Gagal mengambil gambar: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadForwardReverseTemplate() {
+        canvasView.elements.clear()
+        canvasView.connectors.clear()
+        setCurrentProject("Forward-Reverse Motor")
+
+        // 1. Rangkaian Daya (Power Circuit Column, X = 180f)
+        val pwr = NativeElement(1, "sourceL1L2L3N", "-L1L2L3N", "", 180f, 60f)
+        val qm = NativeElement(2, "motorBreaker3p", "-QM1", "", 180f, 210f)
+        val kmFwd = NativeElement(3, "contactor3p", "-KM1", "Maju", 120f, 380f)
+        val kmRev = NativeElement(4, "contactor3p", "-KM2", "Mundur", 240f, 380f)
+        val fr = NativeElement(5, "overload3p", "-FR1", "", 180f, 530f)
+        val m = NativeElement(6, "motor3ph", "-M1", "", 180f, 710f)
+
+        // 2. Rangkaian Kontrol (Control Circuit Columns)
+        val sbStop = NativeElement(7, "buttonNC", "-SB0", "Stop", 400f, 210f)
+
+        // Cabang Kontrol Maju (Forward Branch)
+        val sbFwd = NativeElement(8, "buttonNO", "-SB1", "Maju", 360f, 340f)
+        val kmFwdNo = NativeElement(9, "contactNO", "-KM1", "13-14", 440f, 340f)
+        val kmRevNc = NativeElement(10, "contactNC", "-KM2", "21-22", 360f, 460f)
+        val coilFwd = NativeElement(11, "coil", "-KM1", "Maju", 360f, 580f)
+
+        // Cabang Kontrol Mundur (Reverse Branch)
+        val sbRev = NativeElement(12, "buttonNO", "-SB2", "Mundur", 540f, 340f)
+        val kmRevNo = NativeElement(13, "contactNO", "-KM2", "13-14", 620f, 340f)
+        val kmFwdNc = NativeElement(14, "contactNC", "-KM1", "21-22", 540f, 460f)
+        val coilRev = NativeElement(15, "coil", "-KM2", "Mundur", 540f, 580f)
+
+        canvasView.elements.addAll(listOf(
+            pwr, qm, kmFwd, kmRev, fr, m,
+            sbStop, sbFwd, kmFwdNo, kmRevNc, coilFwd,
+            sbRev, kmRevNo, kmFwdNc, coilRev
+        ))
+
+        // Power Wires (Sumber ke Breaker)
+        canvasView.connectors.add(NativeConnector(1, 1, 0, 2, 0)) // L1 -> QM (1)
+        canvasView.connectors.add(NativeConnector(2, 1, 1, 2, 2)) // L2 -> QM (3)
+        canvasView.connectors.add(NativeConnector(3, 1, 2, 2, 4)) // L3 -> QM (5)
+
+        // Breaker ke Kontaktor Maju (KM1)
+        canvasView.connectors.add(NativeConnector(4, 2, 1, 3, 0)) // QM (2) -> KM1 (1)
+        canvasView.connectors.add(NativeConnector(5, 2, 3, 3, 2)) // QM (4) -> KM1 (3)
+        canvasView.connectors.add(NativeConnector(6, 2, 5, 3, 4)) // QM (6) -> KM1 (5)
+
+        // Breaker ke Kontaktor Mundur (KM2)
+        canvasView.connectors.add(NativeConnector(7, 2, 1, 4, 0)) // QM (2) -> KM2 (1)
+        canvasView.connectors.add(NativeConnector(8, 2, 3, 4, 2)) // QM (4) -> KM2 (3)
+        canvasView.connectors.add(NativeConnector(9, 2, 5, 4, 4)) // QM (6) -> KM2 (5)
+
+        // Kontaktor Maju ke Overload (Urutan Fasa Normal L1-L2-L3 -> CW)
+        canvasView.connectors.add(NativeConnector(10, 3, 1, 5, 0)) // KM1 (2) -> FR (1) [U]
+        canvasView.connectors.add(NativeConnector(11, 3, 3, 5, 2)) // KM1 (4) -> FR (3) [V]
+        canvasView.connectors.add(NativeConnector(12, 3, 5, 5, 4)) // KM1 (6) -> FR (5) [W]
+
+        // Kontaktor Mundur ke Overload (Pembalikan Fasa L1 & L3 -> CCW)
+        canvasView.connectors.add(NativeConnector(13, 4, 1, 5, 4)) // KM2 (2) -> FR (5) [W - Ditukar]
+        canvasView.connectors.add(NativeConnector(14, 4, 3, 5, 2)) // KM2 (4) -> FR (3) [V]
+        canvasView.connectors.add(NativeConnector(15, 4, 5, 5, 0)) // KM2 (6) -> FR (1) [U - Ditukar]
+
+        // Overload ke Terminal Motor 3 Phasa
+        canvasView.connectors.add(NativeConnector(16, 5, 1, 6, 0)) // FR (2) -> Motor U
+        canvasView.connectors.add(NativeConnector(17, 5, 3, 6, 1)) // FR (4) -> Motor V
+        canvasView.connectors.add(NativeConnector(18, 5, 5, 6, 2)) // FR (6) -> Motor W
+
+        // Control Wires: L1 ke Tombol Stop
+        canvasView.connectors.add(NativeConnector(19, 1, 0, 7, 0)) // L1 -> SB0 Stop (1)
+        canvasView.connectors.add(NativeConnector(20, 7, 1, 8, 0)) // SB0 (2) -> SB1 Maju (3)
+        canvasView.connectors.add(NativeConnector(21, 7, 1, 9, 0)) // SB0 (2) -> KM1 NO (13) (Paralel)
+        canvasView.connectors.add(NativeConnector(22, 7, 1, 12, 0)) // SB0 (2) -> SB2 Mundur (3)
+        canvasView.connectors.add(NativeConnector(23, 7, 1, 13, 0)) // SB0 (2) -> KM2 NO (13) (Paralel)
+
+        // Cabang Kontrol Maju (Self-holding & Interlock NC KM2)
+        canvasView.connectors.add(NativeConnector(24, 8, 1, 9, 1)) // SB1 (4) -> KM1 NO (14)
+        canvasView.connectors.add(NativeConnector(25, 8, 1, 10, 0)) // SB1 (4) -> KM2 NC Interlock (21)
+        canvasView.connectors.add(NativeConnector(26, 10, 1, 11, 0)) // KM2 NC (22) -> Coil KM1 Maju (A1)
+
+        // Cabang Kontrol Mundur (Self-holding & Interlock NC KM1)
+        canvasView.connectors.add(NativeConnector(27, 12, 1, 13, 1)) // SB2 (4) -> KM2 NO (14)
+        canvasView.connectors.add(NativeConnector(28, 12, 1, 14, 0)) // SB2 (4) -> KM1 NC Interlock (21)
+        canvasView.connectors.add(NativeConnector(29, 14, 1, 15, 0)) // KM1 NC (22) -> Coil KM2 Mundur (A1)
+
+        // Jalur Netral ke Kedua Koil Kontaktor
+        canvasView.connectors.add(NativeConnector(30, 11, 1, 1, 3)) // Coil KM1 (A2) -> Netral N
+        canvasView.connectors.add(NativeConnector(31, 15, 1, 1, 3)) // Coil KM2 (A2) -> Netral N
+
+        canvasView.engine.manualStates[qm.id] = 1 // Breaker tertutup (ready)
+        canvasView.clearUndoHistory()
+        canvasView.invalidate()
+        markCurrentStateAsSaved()
+        canvasView.post { canvasView.fitToScreen() }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        triggerAutoSaveIfEnabled(showFeedback = false)
+    }
+
+    override fun onBackPressed() {
+        if (::layoutLoadingOverlay.isInitialized && layoutLoadingOverlay.visibility == View.VISIBLE) {
+            return
+        }
+        if (btnExitFullscreen.visibility == View.VISIBLE) {
+            exitFullscreenMode()
+            return
+        }
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            return
+        }
+        if (isLibraryOpen) {
+            closeLibraryPanel()
+            return
+        }
+
+        // 1. Jika pengguna berada di halaman utama Workspace (Home Screen)
+        if (layoutWorkspaceOverlay.visibility == View.VISIBLE) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastWorkspaceBackTime < 2000) {
+                finish()
+            } else {
+                lastWorkspaceBackTime = currentTime
+                Toast.makeText(this, "Tekan kembali sekali lagi untuk keluar", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        // 2. Jika pengguna berada di Canvas proyek -> Kembali ke Workspace
+        handleExitCanvasToWorkspace()
+    }
+
+    // Circuit Baseline Snapshot for Unsaved Changes Tracking
+    private var lastSavedSnapshot: NativeCanvasView.CircuitSnapshot? = null
+
+    private fun markCurrentStateAsSaved() {
+        lastSavedSnapshot = canvasView.createSnapshot()
+    }
+
+    private fun hasUnsavedChanges(): Boolean {
+        val baseline = lastSavedSnapshot ?: return false
+        val current = canvasView.createSnapshot()
+        if (baseline.elements.size != current.elements.size || baseline.connectors.size != current.connectors.size) {
+            return true
+        }
+        val sortedBaseElements = baseline.elements.sortedBy { it.id }
+        val sortedCurrElements = current.elements.sortedBy { it.id }
+        for (i in sortedBaseElements.indices) {
+            if (sortedBaseElements[i] != sortedCurrElements[i]) return true
+        }
+
+        val sortedBaseConnectors = baseline.connectors.sortedBy { it.id }
+        val sortedCurrConnectors = current.connectors.sortedBy { it.id }
+        for (i in sortedBaseConnectors.indices) {
+            if (sortedBaseConnectors[i] != sortedCurrConnectors[i]) return true
+        }
+
+        return false
+    }
+
+    private fun handleExitCanvasToWorkspace() {
+        if (SettingsManager.isAutoSaveEnabled(this)) {
+            triggerAutoSaveIfEnabled(showFeedback = false)
+            openWorkspaceOverlay()
+        } else if (hasUnsavedChanges()) {
+            showUnsavedChangesDialog()
+        } else {
+            openWorkspaceOverlay()
+        }
+    }
+
+    private fun showUnsavedChangesDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_modern_unsaved_changes)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val dialogWidth = (resources.displayMetrics.widthPixels * 0.92f).toInt().coerceAtMost((460 * resources.displayMetrics.density).toInt())
+        dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        val tvMessage = dialog.findViewById<TextView>(R.id.tvUnsavedMessage)
+        val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseUnsaved)
+        val btnSave = dialog.findViewById<Button>(R.id.btnSaveUnsaved)
+        val btnDontSave = dialog.findViewById<Button>(R.id.btnDontSaveUnsaved)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancelUnsaved)
+
+        tvMessage?.text = "Proyek '$currentProjectName' memiliki perubahan yang belum disimpan. Apakah Anda ingin menyimpannya sebelum kembali ke Workspace?"
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        btnSave?.setOnClickListener {
+            dialog.dismiss()
+            saveCurrentProject()
+            openWorkspaceOverlay()
+        }
+
+        btnDontSave?.setOnClickListener {
+            dialog.dismiss()
+            reloadCurrentProjectFromDisk()
+            openWorkspaceOverlay()
+        }
+
+        dialog.show()
+    }
+
+    private fun reloadCurrentProjectFromDisk() {
+        try {
+            val examples = WorkspaceManager.listExamples()
+            val exampleItem = examples.find { it.name == currentProjectName }
+            if (exampleItem != null) {
+                loadProjectItem(exampleItem)
+                return
+            }
+            val projects = WorkspaceManager.listProjects(this)
+            val projectItem = projects.find { it.name == currentProjectName }
+            if (projectItem != null) {
+                loadProjectItem(projectItem)
+                return
+            }
+        } catch (_: Exception) {}
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            hideSystemUI()
+        }
+    }
+
+    private fun hideSystemUI() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                window?.attributes?.let { lp ->
+                    if (lp.layoutInDisplayCutoutMode != WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES) {
+                        lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                        window?.attributes = lp
+                    }
+                }
+            }
+
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+            insetsController.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            insetsController.hide(WindowInsetsCompat.Type.systemBars())
+        } catch (_: Exception) {}
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level >= TRIM_MEMORY_MODERATE) {
+            SvgComponentRenderer.clearCache()
+            NativePdfReportGenerator.clearCache()
+        }
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        SvgComponentRenderer.clearCache()
+        NativePdfReportGenerator.clearCache()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            if (::webViewLoading.isInitialized) {
+                webViewLoading.destroy()
+            }
+        } catch (_: Exception) {}
+        autoSaveExecutor.shutdown()
+        SvgComponentRenderer.clearCache()
+        NativePdfReportGenerator.clearCache()
+    }
+}

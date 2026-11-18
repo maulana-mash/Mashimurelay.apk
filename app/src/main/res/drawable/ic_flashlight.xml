@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Flashlight head -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 6,3 L 18,3 C 18.5,3 19,3.5 19,4 L 19,6 C 19,7 16,9 16,11 L 16,20 C 16,21.1 15.1,22 14,22 L 10,22 C 8.9,22 8,21.1 8,20 L 8,11 C 8,9 5,7 5,6 L 5,4 C 5,3.5 5.5,3 6,3 Z" />
+    <!-- Flashlight switch -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M 12,13 L 12,16" />
+</vector>

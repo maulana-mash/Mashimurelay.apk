@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="#16161c"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#2d3148"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Top Header Bar: Centered QR Icon, Title, and Close Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="#111114"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_qr_scan"
+                app:tint="#38bdf8"
+                android:contentDescription="QR Icon" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Pindai QR Tugas"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnCloseQrScanner"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_close"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Tutup"
+                app:tint="#94a3b8" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#262a40" />
+
+        <!-- Instructions Text -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Arahkan kamera ke kode QR tugas"
+                android:textColor="#e2e8f0"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Posisikan QR code tepat di dalam bingkai pemindai"
+                android:textColor="#94a3b8"
+                android:textSize="11sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Viewfinder Reticle with 4 Outer Corner Brackets -->
+        <FrameLayout
+            android:layout_width="270dp"
+            android:layout_height="240dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp">
+
+            <!-- 4 Outer Corner Brackets -->
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="top|start"
+                android:src="@drawable/ic_corner_bracket_tl"
+                android:contentDescription="Bracket TL" />
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="top|end"
+                android:src="@drawable/ic_corner_bracket_tr"
+                android:contentDescription="Bracket TR" />
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="bottom|start"
+                android:src="@drawable/ic_corner_bracket_bl"
+                android:contentDescription="Bracket BL" />
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_corner_bracket_br"
+                android:contentDescription="Bracket BR" />
+
+            <!-- Clean Camera Preview Window Inside -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="240dp"
+                android:layout_height="210dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#2a2d3d"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="#111114">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+                        android:id="@+id/zxing_barcode_scanner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:zxing_use_texture_view="true"
+                        app:zxing_preview_scaling_strategy="centerCrop" />
+
+                    <!-- Horizontal Subtle Cyan Laser Scan Line -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1.5dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="#38bdf8"
+                        android:alpha="0.75" />
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </FrameLayout>
+
+        <!-- Status Card Telemetri (Wi-Fi Icon, Device Model, IP) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card_workspace_status"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <FrameLayout
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/bg_scan_icon_container">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_wifi"
+                    app:tint="#38bdf8"
+                    android:contentDescription="Wi-Fi Icon" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvStatusTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sinkronisasi Workspace Siap"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvStatusDeviceInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Perangkat Siap • Wi-Fi Terhubung"
+                    android:textColor="#94a3b8"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Symmetrical Equal Action Bar (50:50 Senter - Galeri) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- Tombol Senter (50%) -->
+            <LinearLayout
+                android:id="@+id/btnToggleTorch"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_scanner_secondary"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <ImageView
+                    android:id="@+id/ivTorchIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_flashlight"
+                    app:tint="#f4f4f5"
+                    android:contentDescription="Senter Icon" />
+
+                <TextView
+                    android:id="@+id/tvTorchText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Senter"
+                    android:textColor="#f4f4f5"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
+
+            <!-- Tombol Galeri (50%) -->
+            <LinearLayout
+                android:id="@+id/btnPickFromGallery"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn_scanner_primary"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_gallery"
+                    app:tint="#ffffff"
+                    android:contentDescription="Galeri Icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Galeri"
+                    android:textColor="#ffffff"
+                    android:textSize="13sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Simurelay" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">#121216</item>
+        <item name="android:colorBackground">#121216</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="colorPrimary">#2563eb</item>
+        <item name="colorPrimaryDark">#121216</item>
+        <item name="colorAccent">#38bdf8</item>
+    </style>
+</resources>

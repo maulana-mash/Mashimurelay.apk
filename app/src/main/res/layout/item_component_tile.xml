@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardTile"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:layout_margin="3dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="#161622"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#2a2a3e"
+    app:strokeWidth="1dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Visual SVG Component Symbol (White strokes on dark) -->
+        <ImageView
+            android:id="@+id/ivThumbnail"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="Simbol Komponen"
+            android:scaleType="fitCenter" />
+
+        <!-- Category Color Accent Line at Bottom (Exact like Simurelay) -->
+        <View
+            android:id="@+id/viewCategoryAccent"
+            android:layout_width="match_parent"
+            android:layout_height="2.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="#38bdf8" />
+
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

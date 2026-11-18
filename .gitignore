@@ -1,0 +1,50 @@
+# Built application files & outputs
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Exception: allow root distribution APK if desired (comment out if untracked)
+# !Mashimurelay.apk
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java & Kotlin class files
+*.class
+
+# Generated build directories & artifacts
+bin/
+gen/
+out/
+build/
+app/build/
+release-apk/
+
+# Gradle internal files & cache
+.gradle/
+.kotlin/
+buildOutputCleanup/
+
+# Local configuration file (SDK path, private keystores, signing configs)
+local.properties
+
+# Android Studio / IntelliJ IDEA configuration & cache
+.idea/
+*.iml
+*.iws
+*.ipr
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# Android profiler / trace files
+*.hprof
+*.prof

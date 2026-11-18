@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutWorkspaceOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#111114"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Top Toolbar (Gambar 2: ← Workspace   📁+  ⋮) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#16161c"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
+
+        <ImageView
+            android:id="@+id/btnWorkspaceBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_arrow_back"
+            android:visibility="gone"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/tvWorkspaceHeaderTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Workspace"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btnNewProject"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_workspace_add"
+            android:contentDescription="New Project" />
+
+        <ImageView
+            android:id="@+id/btnWorkspaceImport"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_import"
+            android:contentDescription="Import Circuit (.smrl / .txt)" />
+
+        <ImageView
+            android:id="@+id/btnWorkspaceScanQr"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_qr_scan"
+            app:tint="#38bdf8"
+            android:contentDescription="Scan QR Circuit Tugas Guru" />
+
+        <ImageView
+            android:id="@+id/btnWorkspaceMore"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="More Options" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1e1e28" />
+
+
+    <!-- Project List RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWorkspaceProjects"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
+
+    <!-- Bottom Navigation Bar (Gambar 2: Workspace | Examples) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="#16161c"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Tab 1: Workspace -->
+        <LinearLayout
+            android:id="@+id/tabWorkspace"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/pillTabWorkspace"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_nav_pill_active"
+                android:gravity="center"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <ImageView
+                    android:id="@+id/ivTabWorkspaceIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_nav_workspace"
+                    app:tint="#ffffff"
+                    android:contentDescription="Workspace Icon" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTabWorkspaceLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Workspace"
+                android:textColor="#ffffff"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Tab 2: Examples -->
+        <LinearLayout
+            android:id="@+id/tabExamples"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/pillTabExamples"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_nav_pill_inactive"
+                android:gravity="center"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <ImageView
+                    android:id="@+id/ivTabExamplesIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_nav_examples"
+                    app:tint="#64748b"
+                    android:contentDescription="Examples Icon" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTabExamplesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Examples"
+                android:textColor="#64748b"
+                android:textSize="11sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

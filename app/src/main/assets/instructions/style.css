@@ -1,0 +1,1413 @@
+:root {
+  --bg-body: #0f111a;
+  --bg-modal: #131522;
+  --bg-surface: #181b2c;
+  --bg-surface-elevated: #1f2338;
+  --border-color: #262a40;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #3b82f6;
+  --accent-cyan: #38bdf8;
+  --accent-green: #22c55e;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-purple: #c084fc;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-modal);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 13px;
+  line-height: 1.5;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #11131f;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.book-icon-box {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #1e3a8a, #0284c7);
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-subtitle {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  line-height: 1;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close-btn:active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tab Navigation Bar */
+.instructions-tabs-wrapper {
+  position: relative;
+  background: #11131f;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  padding: 8px 12px;
+}
+
+.instructions-tabs {
+  display: flex;
+  background: transparent;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  gap: 8px;
+  scroll-behavior: smooth;
+  mask-image: linear-gradient(to right, transparent 0px, black 16px, black calc(100% - 16px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0px, black 16px, black calc(100% - 16px), transparent 100%);
+}
+
+.instructions-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.inst-tab {
+  padding: 7px 14px;
+  background: #1a1e30;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inst-tab:active {
+  color: #ffffff;
+  background: #252b44;
+}
+
+.inst-tab.active {
+  background: linear-gradient(135deg, #1d4ed8, #0284c7);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+}
+
+/* Modal Body / Tab Content */
+.modal-instructions-body {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-instructions-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-instructions-body::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+}
+
+.modal-instructions-body::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 4px;
+}
+
+.inst-section {
+  display: none;
+}
+
+.inst-section.active {
+  display: block;
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Tab 1: Interactive Simulation Video Player Styles
+   ========================================================================== */
+.sim-player-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #0d0e15;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Selector Pills untuk Desktop */
+.sim-video-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 6px 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(15, 23, 42, 0.5) !important;
+  flex-shrink: 0;
+}
+
+.sim-video-pills::-webkit-scrollbar {
+  height: 5px !important;
+  display: block !important;
+}
+
+.sim-video-pills::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 3px;
+}
+
+.sim-video-pills::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 3px;
+}
+
+.sim-video-pills::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.85);
+}
+
+.sim-video-pill {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.16s ease;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.sim-video-pill:hover {
+  background: #25283b;
+  color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.sim-video-pill.active {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #ffffff;
+  border-color: #60a5fa;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
+}
+
+/* Rak Pilihan Simulasi Bar (Khusus Android & Layar Mobile) */
+.sim-rak-bar {
+  display: none;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.sim-rak-trigger-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #141a2e, #1b233a);
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  color: #f8fafc;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  font-family: inherit;
+}
+
+.sim-rak-trigger-btn:active {
+  background: #1e293b;
+  transform: scale(0.99);
+}
+
+.sim-rak-trigger-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.sim-rak-badge-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.25);
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sim-rak-label {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.sim-rak-current-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #38bdf8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sim-rak-chevron {
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Rak Minimalis Modal / Sheet (Khusus Android & Mobile) */
+.sim-rak-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.sim-rak-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sim-rak-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.sim-rak-sheet {
+  position: relative;
+  width: min(96vw, 540px);
+  max-height: 75vh;
+  background: #0f1422;
+  border: 1px solid #1e293b;
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sim-rak-modal.open .sim-rak-sheet {
+  transform: translateY(0);
+}
+
+.sim-rak-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #141b2d;
+  border-bottom: 1px solid #1e293b;
+  flex-shrink: 0;
+}
+
+.sim-rak-sheet-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.sim-rak-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sim-rak-sheet-body {
+  padding: 10px 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: calc(75vh - 56px);
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(59, 130, 246, 0.5) rgba(15, 23, 42, 0.5) !important;
+}
+
+.sim-rak-sheet-body::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+.sim-rak-sheet-body::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 3px;
+}
+
+/* Rak Minimalis List Items (Hanya Teks Judul Singkat & Nomor) */
+.sim-rak-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: #e2e8f0;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.sim-rak-item:hover, .sim-rak-item:active {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #ffffff;
+}
+
+.sim-rak-item.active {
+  background: rgba(30, 58, 138, 0.38);
+  border-color: #3b82f6;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.25);
+}
+
+.sim-rak-item-num {
+  font-size: 11px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #94a3b8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.sim-rak-item.active .sim-rak-item-num {
+  background: #1e3a8a;
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+
+.sim-rak-item-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sim-rak-item-check {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Video Display Screen */
+.sim-video-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1140 / 744;
+  max-height: 460px;
+  background: #08090f;
+  border-radius: 10px;
+  border: 1px solid #1f2130;
+  overflow: hidden;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.sim-video-element {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #08090f;
+  border-radius: 8px;
+}
+
+.sim-video-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #60a5fa;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+}
+
+/* Subtitle / Live Technical Explanation (Di bawah video, alur asli Mashimurelay) */
+.sim-subtitle-box {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-left: 4px solid #38bdf8;
+  border-radius: 8px;
+  padding: 9px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-height: 74px;
+  box-sizing: border-box;
+}
+
+.sim-subtitle-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulseDot 1.5s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.sim-subtitle-narration {
+  font-size: 12px;
+  color: #f8fafc;
+  line-height: 1.45;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+/* Player Controls Bar */
+.sim-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #161824;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.sim-ctrl-left, .sim-ctrl-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sim-ctrl-btn {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  color: #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sim-ctrl-btn:hover {
+  background: #2e3248;
+  border-color: #60a5fa;
+  color: #ffffff;
+}
+
+.sim-btn-play {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border-color: #4ade80;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sim-btn-play:hover {
+  background: linear-gradient(135deg, #15803d, #16a34a);
+}
+
+.sim-timeline-wrapper {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sim-timeline-track {
+  flex: 1;
+  height: 8px;
+  background: #2a2d40;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.sim-timeline-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3b82f6, #38bdf8);
+  border-radius: 4px;
+  transition: width 0.08s linear;
+}
+
+.sim-time-display {
+  font-size: 11px;
+  font-family: monospace;
+  color: #94a3b8;
+  min-width: 90px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.sim-speed-group {
+  display: flex;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.sim-speed-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sim-speed-btn.active {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+/* Responsif Mobile & Android */
+.is-mobile-or-android .sim-video-pills {
+  display: none !important;
+}
+.is-mobile-or-android .sim-rak-bar {
+  display: flex !important;
+}
+
+@media (max-width: 900px) {
+  .sim-video-pills {
+    display: none !important;
+  }
+  .sim-rak-bar {
+    display: flex !important;
+  }
+  .sim-controls-bar {
+    gap: 8px;
+    padding: 6px 10px;
+  }
+  .sim-ctrl-btn {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+}
+
+
+/* ==========================================================================
+   Tab 2: Component Encyclopedia Visual Gallery Styles (Gambar 2)
+   ========================================================================== */
+.encyclo-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.encyclo-search-box {
+  width: 100%;
+}
+
+.encyclo-search-input {
+  width: 100%;
+  background: #141726;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: #ffffff;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+}
+
+.encyclo-search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.encyclo-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.encyclo-filter-btn {
+  background: #181b2c;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 16px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.encyclo-filter-btn:active {
+  background: #25283d;
+  color: #fff;
+}
+
+.encyclo-filter-btn.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.encyclo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.encyclo-card {
+  background: #141624;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.encyclo-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.encyclo-icon-box {
+  width: 60px;
+  height: 60px;
+  background: #0d0e16;
+  border: 1px solid #24273d;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.encyclo-icon-img,
+.encyclo-icon-svg {
+  max-width: 100%;
+  max-height: 100%;
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.encyclo-header-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.encyclo-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.encyclo-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.encyclo-tag-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: 700;
+}
+
+.encyclo-cat-badge {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.encyclo-desc {
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.encyclo-fullname {
+  color: #93c5fd;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.encyclo-fullname strong {
+  color: #38bdf8;
+}
+
+.encyclo-explanation {
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+
+.encyclo-how {
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11.5px;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+.encyclo-how strong {
+  color: #38bdf8;
+}
+
+.encyclo-io-section {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.encyclo-io-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.encyclo-io-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.encyclo-io-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.encyclo-pin-badge {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.encyclo-pin-badge.pin-input {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.encyclo-pin-badge.pin-output {
+  background: rgba(14, 165, 233, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(14, 165, 233, 0.4);
+}
+
+.encyclo-pin-badge.pin-control {
+  background: rgba(16, 185, 129, 0.18);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.encyclo-pin-badge.pin-neutral {
+  background: rgba(99, 102, 241, 0.18);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+}
+
+.encyclo-pin-badge.pin-ground {
+  background: rgba(132, 204, 22, 0.18);
+  color: #a3e635;
+  border: 1px solid rgba(132, 204, 22, 0.4);
+}
+
+.btn-watch-sim {
+  margin-top: 4px;
+  background: rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.5);
+  color: #60a5fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  width: 100%;
+}
+
+.btn-watch-sim:active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   Tab 3, 4, 5: Documentation Text Guides
+   ========================================================================== */
+.guide-card {
+  background: #141624;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.guide-card h4 {
+  color: #38bdf8;
+  font-size: 13.5px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.guide-card p {
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.guide-card ul, .guide-card ol {
+  padding-left: 20px;
+  color: #cbd5e1;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.guide-card li {
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+
+.guide-card code {
+  background: #0d0e16;
+  color: #38bdf8;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+#tabClosing {
+  padding: 4px 6px 16px 6px;
+}
+
+#tabClosing h4 {
+  color: #38bdf8;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 12px 0 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 6px;
+}
+
+#tabClosing p {
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.inst-alert-box {
+  background: rgba(14, 165, 233, 0.12);
+  border-left: 4px solid #0284c7;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #bae6fd;
+}
+
+.inst-alert-warn {
+  background: rgba(239, 68, 68, 0.12);
+  border-left: 4px solid #ef4444;
+  color: #fca5a5;
+}
+
+.guide-footer {
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+}
+
+
+/* ==========================================================================
+   ENCYCLOPEDIA SECRET DEVELOPER EASTER EGG CARD (CYAN EDITION)
+   ========================================================================== */
+.encyclo-card-secret {
+  position: relative !important;
+  background: radial-gradient(circle at 90% 10%, rgba(14, 165, 233, 0.12) 0%, rgba(15, 23, 42, 0.98) 75%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  border-radius: 14px !important;
+  padding: 16px 14px !important;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.12) !important;
+  overflow: hidden !important;
+}
+
+.encyclo-card-secret::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #38bdf8, #0ea5e9, transparent);
+}
+
+.encyclo-secret-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.encyclo-secret-badge {
+  position: static !important;
+  background: rgba(14, 165, 233, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  color: #38bdf8;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.encyclo-secret-icon-box {
+  width: 62px !important;
+  height: 62px !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(56, 189, 248, 0.45) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.22) !important;
+  padding: 2px !important;
+  flex-shrink: 0;
+}
+
+.encyclo-secret-headline {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #38bdf8;
+  margin-bottom: 6px;
+  letter-spacing: 0.2px;
+}
+
+.encyclo-secret-motto {
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px dashed rgba(56, 189, 248, 0.35);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 500;
+  color: #e0f2fe;
+  line-height: 1.45;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.encyclo-secret-meta {
+  background: #0b1120;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.encyclo-secret-meta-row {
+  display: flex;
+  align-items: baseline;
+  font-size: 11.5px;
+  gap: 10px;
+}
+
+.encyclo-secret-meta-label {
+  width: 68px;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #38bdf8;
+  background: rgba(2, 132, 199, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 2px 4px;
+  border-radius: 4px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.encyclo-secret-meta-val {
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   ENCYCLOPEDIA SPECIAL LOVER EASTER EGG CARD (GOLD EDITION)
+   ========================================================================== */
+.encyclo-card-special {
+  position: relative !important;
+  background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.11) 0%, rgba(20, 20, 28, 0.98) 65%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.52) !important;
+  border-radius: 14px !important;
+  padding: 16px 14px !important;
+  box-shadow: 0 10px 28px -6px rgba(0, 0, 0, 0.8), 0 0 24px rgba(245, 158, 11, 0.16) !important;
+  overflow: hidden !important;
+}
+
+.encyclo-card-special::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #d97706, transparent);
+}
+
+.encyclo-special-header {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.encyclo-special-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.encyclo-special-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #fffbeb;
+  letter-spacing: 0.3px;
+  line-height: 1.25;
+}
+
+.encyclo-special-badge {
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  color: #fbbf24;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.encyclo-special-tag {
+  background: #242220;
+  border: 1px solid #44403c;
+  color: #d6d3d1;
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+.encyclo-special-tag span {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.encyclo-special-archive-badge {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.encyclo-special-collage-box {
+  background: rgba(18, 17, 24, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.6);
+}
+
+.encyclo-special-collage-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+}
+
+.encyclo-special-collage-container img,
+.encyclo-special-collage-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.encyclo-special-partner-box {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.encyclo-special-partner-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fef3c7;
+  line-height: 1.45;
+}
+
+.encyclo-special-partner-text .name-highlight {
+  color: #fbbf24;
+  font-weight: 700;
+}
+
+.encyclo-special-msg-box {
+  background: #14131b;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.encyclo-special-msg-header {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.encyclo-special-msg-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fbbf24;
+  text-transform: uppercase;
+}
+
+.encyclo-special-msg-content {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #e5e5e5;
+  text-align: justify;
+}
+
+.encyclo-special-msg-content .highlight-love {
+  color: #fbbf24;
+  font-weight: 700;
+}

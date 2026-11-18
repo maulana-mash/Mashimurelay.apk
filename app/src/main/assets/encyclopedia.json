@@ -1,0 +1,1064 @@
+[
+  {
+    "key": "arrowDestination",
+    "name": "Destination Arrow",
+    "category": "others",
+    "tagType": "arrows",
+    "desc": "Panah Referensi Tujuan Antar-Halaman (Destination Signal Arrow).",
+    "how": "Menandai kelanjutan jalur kawat menuju ke nomor lembar diagram skematik berikutnya.",
+    "simVideo": null
+  },
+  {
+    "key": "arrowSource",
+    "name": "Source Arrow",
+    "category": "others",
+    "tagType": "arrows",
+    "desc": "Panah Referensi Sumber Antar-Halaman (Source Signal Arrow).",
+    "how": "Menandai asal sinyal atau kawat daya yang berlanjut dari lembar diagram sebelumnya.",
+    "simVideo": null
+  },
+  {
+    "key": "battery",
+    "name": "Battery",
+    "category": "sources",
+    "tagType": "powerSupply",
+    "desc": "Sumber energi elektrokimia baterai akumulator DC (12V / 24V).",
+    "how": "Mengubah energi kimia internal menjadi energi listrik DC stabil untuk sistem daya cadangan darurat (UPS) dan kontrol tripping pemutus beban.",
+    "simVideo": null
+  },
+  {
+    "key": "breaker",
+    "name": "Motor Circuit Breaker 3P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Motor Protection Circuit Breaker (MPCB / Manual Motor Starter).",
+    "how": "Mengintegrasikan pengaman arus lebih termal terkalibrasi khusus FLA motor dan trip magnetik instan 13x In untuk beban rotor terkunci.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "breaker1p",
+    "name": "Circuit Breaker 1P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Miniature Circuit Breaker (MCB) 1-Kutub untuk proteksi fasa tunggal.",
+    "how": "Mendeteksi beban lebih melalui pembengkokan strip bimetal dan memutus seketika (<10ms) via koil magnetik saat terjadi korsleting.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "breaker2p",
+    "name": "Circuit Breaker 2P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "MCB 2-Kutub untuk proteksi simultan 2-Kawat (Fasa + Netral atau DC 2-Kutub).",
+    "how": "Memutus kedua kutub secara mekanis serentak ketika salah satu kutub mendeteksi arus lebih atau arus hubung singkat.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "breaker3p",
+    "name": "Circuit Breaker 3P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "MCB 3-Kutub untuk proteksi saluran tenaga 3-Fasa AC.",
+    "how": "Mengamankan ketiga jalur fasa L1-L2-L3 secara simultan untuk mencegah kerusakan fatal akibat hubung singkat antar-fasa pada motor.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "breaker4p",
+    "name": "Circuit Breaker 4P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "MCB 4-Kutub (L1-L2-L3-N) untuk proteksi total instalasi 3-fasa 4-kawat.",
+    "how": "Memutus ketiga fasa dan penghantar netral secara bersamaan untuk mencegah pergeseran titik netral saat isolasi perawatan sistem.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "buttonCON",
+    "name": "Push Button CON",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Push Button Changeover (SPDT Sesaat).",
+    "how": "Terminal bersama (Common) terhubung ke kontak NC saat diam, dan beralih ke kontak NO sesaat selama tombol ditekan.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "buttonCrossover",
+    "name": "Push Button Crossover",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Push Button Crossover (Tombol Balik Arah Sesaat).",
+    "how": "Membalik koneksi dua jalur input ke dua jalur output secara simultan selama tombol ditahan.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "buttonNC",
+    "name": "Push Button NC",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Push Button Normally Closed (Tombol STOP Merah).",
+    "how": "Kontak tertutup saat diam; saat ditekan kontak membuka memutus aliran arus kontrol, dan kembali menutup saat dilepas.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "buttonNO",
+    "name": "Push Button NO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Push Button Normally Open (Tombol START Hijau).",
+    "how": "Kontak terbuka saat diam; saat ditekan sesaat kontak menutup menyalurkan arus, dan kembali membuka didorong pegas saat dilepas.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "buttonNONC",
+    "name": "Push Button NCNO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Push Button Ganda dengan Kontak 1 NO dan 1 NC terpadu.",
+    "how": "Menekan satu aktuator tombol memicu dua aksi simultan: membuka cabang kontrol NC dan menutup cabang kontrol NO.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "buzzer",
+    "name": "Buzzer",
+    "category": "loads",
+    "tagType": "loads",
+    "desc": "Buzzer Piezoelektrik Peringatan Panel (Audio Alarm Buzzer).",
+    "how": "Elemen keramik piezoelektrik berosilasi pada frekuensi resonansi dengan jeda berirama untuk memberikan alarm audio kegagalan operasional.",
+    "simVideo": null
+  },
+  {
+    "key": "coil",
+    "name": "Coil",
+    "category": "coils",
+    "tagType": "coils",
+    "desc": "Koil Elektromagnetik Kontaktor / Relai Standar (-KM / -KA).",
+    "how": "Dialiri tegangan pada terminal A1-A2 membangkitkan medan magnet kuat yang seketika menarik seluruh kontak utama dan bantu terkait.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "coilDelayOff",
+    "name": "Off-Delay Relay Coil",
+    "category": "coils",
+    "tagType": "timerCoils",
+    "desc": "Koil Relai Pewaktu Off-Delay (Timer Delay OFF -KT1).",
+    "how": "Kontak langsung aktif saat terenergi; saat tegangan input diputus, kontak tetap ditahan aktif hingga waktu tunda selesai baru membuka.",
+    "simVideo": "off_delay"
+  },
+  {
+    "key": "coilDelayOn",
+    "name": "On-Delay Relay Coil",
+    "category": "coils",
+    "tagType": "timerCoils",
+    "desc": "Koil Relai Pewaktu On-Delay (Timer Delay ON -KT1).",
+    "how": "Saat diberi daya, mekanisme internal menghitung mundur preset waktu; setelah waktu habis, kontak bantu pewaktu berpindah seketika.",
+    "simVideo": "on_delay"
+  },
+  {
+    "key": "coilDelayOnOff",
+    "name": "On-Off-Delay Relay Coil",
+    "category": "coils",
+    "tagType": "timerCoils",
+    "desc": "Koil Relai Pewaktu Kombinasi Tunda Hidup & Tunda Mati.",
+    "how": "Menerapkan waktu tunda terpisah saat koil diberi daya (tunda hidup) maupun saat koil dilepas dayanya (tunda mati).",
+    "simVideo": "on_delay"
+  },
+  {
+    "key": "coilFlasher",
+    "name": "Flasher Relay Coil",
+    "category": "coils",
+    "tagType": "timerCoils",
+    "desc": "Koil Relai Pengedip Asimetris (Flasher / Multivibrator Relay).",
+    "how": "Osilator internal bergantian mengaktifkan dan menonaktifkan kontak secara periodik untuk lampu tanda bahaya atau sirine strobo.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "coilLatch",
+    "name": "Impulse Relay Coil",
+    "category": "coils",
+    "tagType": "coils",
+    "desc": "Koil Relai Impuls / Latching Bistable (Relai Tangga).",
+    "how": "Setiap satu denyut sinyal singkat pada koil membalikkan status kontak dan menguncinya secara mekanis tanpa memerlukan arus kontinu.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "coilSolenoid",
+    "name": "Solenoid Coil",
+    "category": "coils",
+    "tagType": "coilsSolenoid",
+    "desc": "Koil Solenoid Aktuator Elektro-Pneumatik / Hidrolik (-Y1).",
+    "how": "Menghasilkan gaya dorong magnetik translasi untuk menggeser spool katup fluida udara bertekanan atau cairan hidrolik.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactCON",
+    "name": "Contact CON",
+    "category": "auxiliaries",
+    "tagType": "contacts",
+    "desc": "Kontak Bantu Changeover (SPDT Terminal 11-12-14).",
+    "how": "Terminal common 11 memindahkan koneksi dari terminal NC 12 ke terminal NO 14 saat relai master terenergi.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactCONDelayOff",
+    "name": "Off-Delay Contact CON for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu Off-Delay Changeover (SPDT Pewaktu Tunda Mati).",
+    "how": "Mempertahankan posisi aktif selama waktu tunda pasca pemutusan sinyal kendali input.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactCONDelayOn",
+    "name": "On-Delay Contact CON for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu On-Delay Changeover (SPDT Pewaktu Tunda Hidup).",
+    "how": "Beralih dari jalur NC ke jalur NO secara permanen setelah waktu tunda preset timer terhitung habis.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactNC",
+    "name": "Contact NC",
+    "category": "auxiliaries",
+    "tagType": "contacts",
+    "desc": "Kontak Bantu Normally Closed (Terminal 21-22 -KM1).",
+    "how": "Tertutup saat koil master mati; membuka saat koil aktif, digunakan untuk interlocking listrik pencegah tabrakan arah Forward dan Reverse.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactNCDelayOff",
+    "name": "Off-Delay Contact NC for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu Pewaktu Off-Delay NC (Terminal 25-26 -KT1).",
+    "how": "Membuka instan saat koil timer aktif, dan tetap terbuka selama durasi preset setelah daya koil diputus sebelum kembali menutup.",
+    "simVideo": "off_delay"
+  },
+  {
+    "key": "contactNCDelayOn",
+    "name": "On-Delay Contact NC for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu Pewaktu On-Delay NC (Terminal 15-16 -KT1).",
+    "how": "Tetap tertutup selama penghitungan mundur, dan membuka seketika saat waktu tunda preset tercapai untuk mematikan kontaktor Bintang (Star).",
+    "simVideo": "on_delay"
+  },
+  {
+    "key": "contactNO",
+    "name": "Contact NO",
+    "category": "auxiliaries",
+    "tagType": "contacts",
+    "desc": "Kontak Bantu Normally Open (Terminal 13-14 -KM1).",
+    "how": "Terbuka saat koil master mati; menutup saat koil aktif, umumnya diparalel dengan tombol Start untuk rangkaian pengunci mandiri (self-holding).",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactNODelayOff",
+    "name": "Off-Delay Contact NO for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu Pewaktu Off-Delay NO (Terminal 27-28 -KT1).",
+    "how": "Menutup instan saat koil timer aktif, dan tetap tertutup selama durasi preset setelah koil dimatikan sebelum kembali membuka.",
+    "simVideo": "off_delay"
+  },
+  {
+    "key": "contactNODelayOn",
+    "name": "On-Delay Contact NO for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu Pewaktu On-Delay NO (Terminal 17-18 -KT1).",
+    "how": "Tetap terbuka selama penghitungan mundur, dan menutup secara mendadak (snap action) begitu waktu tunda preset tercapai.",
+    "simVideo": "on_delay"
+  },
+  {
+    "key": "contactNONC",
+    "name": "Contact NCNO",
+    "category": "auxiliaries",
+    "tagType": "contacts",
+    "desc": "Blok Kontak Bantu Ganda (1 NO 13-14 + 1 NC 21-22).",
+    "how": "Menyediakan sinyal status ganda terkoordinasi untuk logika interlocking rangkaian kendali otomasi.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactNONCDelayOff",
+    "name": "Off-Delay Contact NCNO for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu Off-Delay Ganda (1 NO 27-28 + 1 NC 25-26).",
+    "how": "Menyediakan kontrol tunda mati simultan untuk sistem pendinginan ekstra (fan overrun) setelah mesin utama dimatikan.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactNONCDelayOn",
+    "name": "On-Delay Contact NCNO for Contactors",
+    "category": "auxiliaries",
+    "tagType": "contactors",
+    "desc": "Kontak Bantu On-Delay Ganda (1 NO 17-18 + 1 NC 15-16).",
+    "how": "Digunakan sebagai kontak sentral perpindahan transisi starter motor Bintang-Segitiga (Star-Delta Transition).",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactor1p",
+    "name": "Contactor 1P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Utama 1-Kutub (Single-Pole Power Contactor).",
+    "how": "Koil elektromagnetik menarik kontak daya berdaya hantar tinggi menutup untuk menyalurkan arus beban pemanas atau lampu besar.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactor2p",
+    "name": "Contactor 2P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Utama 2-Kutub.",
+    "how": "Menghubungkan dan memutus dua kawat daya secara simultan pada beban listrik fasa tunggal 230V atau rangkaian DC motor.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactor3p",
+    "name": "Contactor 3P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Utama 3-Kutub (-KM1) Standar IEC AC-3.",
+    "how": "Koil magnetik menarik armature menutup ketiga kontak daya 1-2, 3-4, 5-6 serempak untuk menjalankan motor induksi 3-fasa.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactor4p",
+    "name": "Contactor 4P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Utama 4-Kutub (L1-L2-L3-N atau Sistem ATS Genset).",
+    "how": "Memindahkan 4 penghantar daya secara bersamaan dalam panel saklar transfer otomatis (Automatic Transfer Switch).",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactorNC1p",
+    "name": "Contactor NC 1P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Kutub NC 1P (Normally Closed Power Pole).",
+    "how": "Tertutup saat de-energized dan membuka saat koil aktif; diaplikasikan pada pengereman dinamis motor atau beban proteksi khusus.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactorNC2p",
+    "name": "Contactor NC 2P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Kutub NC 2P.",
+    "how": "Membuka sirkuit daya 2-kutub saat koil magnetik dialiri arus listrik.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactorNC3p",
+    "name": "Contactor NC 3P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Kutub NC 3P.",
+    "how": "Membuka ketiga jalur daya 3-fasa saat koil elektromagnetik teraktivasi.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "contactorNC4p",
+    "name": "Contactor NC 4P",
+    "category": "contactors",
+    "tagType": "contactors",
+    "desc": "Kontaktor Tenaga Kutub NC 4P.",
+    "how": "Memutuskan 4 kutub daya secara serempak saat medan magnet elektromagnet koil bekerja.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "diode",
+    "name": "Diode",
+    "category": "others",
+    "tagType": "diodes",
+    "desc": "Dioda Semikonduktor Penyearah Silikon (Silicon Rectifier Diode).",
+    "how": "Mengalirkan arus listrik hanya dari anoda ke katoda; digunakan sebagai peredam lonjakan tegangan induktif koil (flyback snubber) atau penyearah AC-DC.",
+    "simVideo": null
+  },
+  {
+    "key": "emergencyCON",
+    "name": "Switch CON",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Emergency Stop tipe Changeover (SPDT Latching).",
+    "how": "Memindahkan jalur daya dari status normal ke jalur darurat saat ditekan dan mempertahankan posisi hingga di-twist release.",
+    "simVideo": null
+  },
+  {
+    "key": "emergencyNC",
+    "name": "Switch NC",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Tombol Darurat Jamur (Emergency Stop NC - E-Stop).",
+    "how": "Ditekan saat bahaya seketika membuka kontak NC dan terkunci mekanis (latching); harus diputar searah jarum jam untuk mereset.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "emergencyNO",
+    "name": "Switch NO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Emergency Stop dengan kontak NO untuk sinyal alarm.",
+    "how": "Ditekan mengunci kontak NO menutup, menyalakan sirine atau lampu darurat untuk memberi tahu operator terjadi kegagalan.",
+    "simVideo": null
+  },
+  {
+    "key": "emergencyNONC",
+    "name": "Switch NCNO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Emergency Stop Ganda 1 NC (Safety Cutoff) + 1 NO (Alarm Signal).",
+    "how": "Satu pukulan tombol darurat serempak mematikan sirkuit kontrol motor (NC terbuka) dan menyalakan indikasi visual bahaya (NO menutup).",
+    "simVideo": null
+  },
+  {
+    "key": "fuse1p",
+    "name": "Fuse 1P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Sekring pelebur (Fuse) 1-Kutub tipe tabung kaca / HRC.",
+    "how": "Kawat perak berkalibrasi melebur akibat efek Joule panas ekstrem saat arus hubung singkat melampaui rating, memutuskan sirkuit permanen.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuse2p",
+    "name": "Fuse 2P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Sekring lebur 2-Kutub.",
+    "how": "Dua elemen lebur terpisah untuk mengamankan kutub positif-negatif catu daya DC atau fasa-netral kontrol instrumen.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuse3p",
+    "name": "Fuse 3P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Sekring lebur HRC 3-Kutub untuk proteksi cadangan feeder motor.",
+    "how": "Kapasitas pemutus sangat tinggi (hingga 100kA) untuk memadamkan busur api gangguan hubung singkat paling masif.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuse4p",
+    "name": "Fuse 4P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Sekring lebur 4-Kutub lengkap dengan proteksi saluran netral.",
+    "how": "Mengamankan sirkuit 3-fasa 4-kawat dari lonjakan arus abnormal dengan isolasi termal keramik tahan ledakan.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuseSwitch1p",
+    "name": "Fuse Switch 1P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Saklar pemisah bersekring 1-Kutub (Fuse Switch Disconnector).",
+    "how": "Menggabungkan fungsionalitas pengaman lebur dengan engsel tuas yang dapat ditarik manual untuk isolasi sirkuit berbeban.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuseSwitch1pn",
+    "name": "Fuse Switch 1P+N",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Saklar bersekring 1P+N dengan kutub netral tanpa sekring.",
+    "how": "Memutus fasa bersekring dan menghubungkan netral secara simultan untuk keamanan penuh saat penggantian elemen lebur.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuseSwitch2p",
+    "name": "Fuse Switch 2P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Saklar pemisah bersekring 2-Kutub.",
+    "how": "Tuas ganda membuka kedua kutub sekaligus, memudahkan penggantian sekring tanpa menyentuh terminal aktif bertegangan.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuseSwitch3p",
+    "name": "Fuse Switch 3P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Saklar pemisah bersekring 3-Kutub untuk panel tenaga motor.",
+    "how": "Ketiga sekring terpasang pada satu pintu tuas engsel; menarik gagang membuka ketiga kontak daya secara simultan.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuseSwitch3pn",
+    "name": "Fuse Switch 3P+N",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Saklar bersekring 3P+N untuk panel daya utama.",
+    "how": "Menjamin pemutusan ketiga fasa bersekring dan pemutusan netral secara mekanis terkoordinasi.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "fuseSwitch4p",
+    "name": "Fuse Switch 4P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Saklar pemisah bersekring 4-Kutub.",
+    "how": "Menyediakan titik isolasi aman untuk sistem daya 4-kawat dengan proteksi lebur pada seluruh penghantar.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "generator3ph",
+    "name": "Three-Phase Generator (C1-C2 for Auto Mode)",
+    "category": "sources",
+    "tagType": "generators",
+    "desc": "Generator sinkron listrik 3-Fasa AC (Genset Cadangan Otomatis).",
+    "how": "Mengubah energi mekanik putaran mesin penggerak menjadi energi listrik 3-fasa 400V lengkap dengan terminal sinyal otomatisasi start (C1-C2).",
+    "simVideo": null
+  },
+  {
+    "key": "isolator1p",
+    "name": "Isolator 1P",
+    "category": "protections",
+    "tagType": "switches",
+    "desc": "Saklar isolator pemutus beban 1-Kutub (Disconnect Switch).",
+    "how": "Memisahkan kontak fisik dengan celah udara terlihat (*visible break gap*) untuk menjamin keamanan teknisi saat perbaikan sirkuit.",
+    "simVideo": null
+  },
+  {
+    "key": "isolator2p",
+    "name": "Isolator 2P",
+    "category": "protections",
+    "tagType": "switches",
+    "desc": "Saklar isolator pemutus beban 2-Kutub.",
+    "how": "Membuka dua kutub konduktor secara mekanis kaku tanpa pengaman otomatis; khusus digunakan untuk saklar isolasi manual.",
+    "simVideo": null
+  },
+  {
+    "key": "isolator3p",
+    "name": "Isolator 3P",
+    "category": "protections",
+    "tagType": "switches",
+    "desc": "Saklar isolator 3-Kutub (Main Isolator Switch).",
+    "how": "Saklar utama di pintu panel listrik untuk memutus seluruh suplai daya 3-fasa sebelum pintu panel dapat dibuka (door interlock).",
+    "simVideo": null
+  },
+  {
+    "key": "isolator4p",
+    "name": "Isolator 4P",
+    "category": "protections",
+    "tagType": "switches",
+    "desc": "Saklar isolator 4-Kutub (L1-L2-L3-N).",
+    "how": "Mengisolasi seluruh penghantar aktif sistem 3-fasa dari trafo atau genset untuk pemeliharaan total instalasi.",
+    "simVideo": null
+  },
+  {
+    "key": "junction2p",
+    "name": "Connection 2P",
+    "category": "others",
+    "tagType": "junctions",
+    "desc": "Titik sambungan kawat lurus 2-Arah (Junction Connection 2P).",
+    "how": "Menghubungkan dua segmen kawat pada satu node potensial listrik yang sama.",
+    "simVideo": null
+  },
+  {
+    "key": "junction2p90",
+    "name": "Connection 2P 90°",
+    "category": "others",
+    "tagType": "junctions",
+    "desc": "Titik sambungan kawat siku 90 Derajat (Junction Connection 90°).",
+    "how": "Membelokkan jalur pengkabelan diagram secara rapi pada grid skematik 30px.",
+    "simVideo": null
+  },
+  {
+    "key": "junction3p",
+    "name": "Connection 3P",
+    "category": "others",
+    "tagType": "junctions",
+    "desc": "Titik percabangan kawat 3-Arah (Junction T-Node 3P).",
+    "how": "Mencabangkan aliran arus dari satu kawat utama ke sirkuit cabang paralel tanpa drop tegangan.",
+    "simVideo": null
+  },
+  {
+    "key": "junction4p",
+    "name": "Connection 4P",
+    "category": "others",
+    "tagType": "junctions",
+    "desc": "Titik persimpangan kawat 4-Arah (Junction Cross-Node 4P).",
+    "how": "Menghubungkan empat jalur konduktor sekaligus pada satu titik simpul ekuipotensial.",
+    "simVideo": null
+  },
+  {
+    "key": "junctionPE",
+    "name": "Connection Ground",
+    "category": "others",
+    "tagType": "junctions",
+    "desc": "Terminal blok sambungan konduktor pembumian pengaman (PE).",
+    "how": "Menyatukan kabel grounding pelindung mesin ke busbar pembumian utama panel.",
+    "simVideo": null
+  },
+  {
+    "key": "lamp",
+    "name": "Light",
+    "category": "loads",
+    "tagType": "loads",
+    "desc": "Lampu Indikator Panel Industri (Pilot Lamp LED / Filamen).",
+    "how": "Menyala terang visual saat dialiri listrik untuk indikasi status mesin (Hijau = Jalan/Running, Merah = Berhenti/Stop, Kuning = Trip/Gangguan).",
+    "simVideo": "on_delay"
+  },
+  {
+    "key": "lampBlink",
+    "name": "Light Blink",
+    "category": "loads",
+    "tagType": "loads",
+    "desc": "Lampu Tanda Bahaya Berkedip (Flashing Hazard Beacon).",
+    "how": "Sirkuit internal mengedipkan lampu secara periodik (500ms ON / 500ms OFF) untuk memberi peringatan visual intensif bagi operator.",
+    "simVideo": null
+  },
+  {
+    "key": "motor",
+    "name": "coil",
+    "category": "motors",
+    "tagType": "2",
+    "desc": "Coil",
+    "how": "Mengalirkan arus dan sinyal kontrol pada diagram skematik otomasi industri.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motor1ph",
+    "name": "Single-Phase Motor",
+    "category": "motors",
+    "tagType": "motors",
+    "desc": "Motor Induksi Fasa Tunggal AC dengan Kapasitor (M 1~).",
+    "how": "Menggunakan belitan utama dan belitan bantu berseri kapasitor untuk menciptakan pergeseran fasa 90 derajat listrik penghasil medan putar start.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motor3ph",
+    "name": "Three-Phase Motor",
+    "category": "motors",
+    "tagType": "motors",
+    "desc": "Motor Induksi Tiga Fasa AC Sangkar Tupai (M 3~).",
+    "how": "Arus 3-fasa simetris menghasilkan medan putar magnet pada celah udara stator, menginduksi arus pada batang rotor dan menghasilkan torsi mekanik kontinu.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motorBreaker1p",
+    "name": "Motor-Breaker 1P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Motor Protection Breaker 1-Kutub untuk motor kecil fasa tunggal.",
+    "how": "Memproteksi motor 1-fasa dari arus start macet dan arus lebih kontinu menggunakan mekanisme trip bimetal kelas 10.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "motorBreaker2p",
+    "name": "Motor-Breaker 2P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Motor Protection Breaker 2-Kutub untuk motor 1-fasa 230V.",
+    "how": "Memutus fasa dan netral serempak dengan kompensasi suhu sekitar untuk melindungi motor penggerak dari panas berlebih.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "motorBreaker3p",
+    "name": "Motor-Breaker 3P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Motor Protection Breaker 3-Kutub industri (MPCB 3P).",
+    "how": "Dilengkapi tuas putar manual, pengaman kehilangan fasa diferensial, serta kontak trip bantu untuk mengamankan motor 3-fasa.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motorBreaker4p",
+    "name": "Motor-Breaker 4P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Motor Protection Breaker 4-Kutub untuk instalasi motor khusus.",
+    "how": "Memberikan proteksi komprehensif pada ketiga fasa daya dan netral terhadap arus berlebih serta gangguan hubung singkat.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "motorDC",
+    "name": "DC Motor",
+    "category": "motors",
+    "tagType": "loads",
+    "desc": "Motor Arus Searah Komutator (DC Motor).",
+    "how": "Gaya elektromagnetik Lorentz memutar jangkar kawat berarus di dalam fluks magnet permanen; arah putaran dibalik dengan menukar polaritas tegangan input.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motorDhalander",
+    "name": "Three-Phase Motor Dahlander",
+    "category": "motors",
+    "tagType": "motors",
+    "desc": "Motor Induksi 2-Kecepatan Belitan Dahlander (Pole-Changing Motor).",
+    "how": "Mengubah konfigurasi sambungan belitan dari seri ke paralel ganda (misal 4-kutub ke 2-kutub), menghasilkan rasio kecepatan putar 1:2.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motorStarDelta",
+    "name": "Three-Phase Motor Star/Delta",
+    "category": "motors",
+    "tagType": "motors",
+    "desc": "Motor Induksi 3-Fasa dengan 6 Terminal Bebas (U1-V1-W1 & U2-V2-W2).",
+    "how": "Dijalankan dalam sambungan Bintang (Y) untuk mereduksi arus kejut start hingga 33%, kemudian dialihkan ke sambungan Segitiga (Delta) untuk daya penuh.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "motorTwoSpeeds",
+    "name": "Three-Phase Motor Two speeds (Separated Winding)",
+    "category": "motors",
+    "tagType": "motors",
+    "desc": "Motor Induksi 2-Kecepatan Belitan Terpisah (Separate Winding Motor).",
+    "how": "Memiliki dua pasang belitan stator independen yang diisolasi terpisah untuk menghasilkan dua nilai RPM kerja tanpa kompromi efisiensi.",
+    "simVideo": "dol_starter"
+  },
+  {
+    "key": "overload1p",
+    "name": "Overload Relay 1P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Thermal Overload Relay (TOR) 1-Kutub.",
+    "how": "Strip bimetal melengkung perlahan akibat panas arus lebih, mendorong tuas mekanik untuk membuka kontak kontrol NC pada sirkuit koil.",
+    "simVideo": "thermal_overload"
+  },
+  {
+    "key": "overload2p",
+    "name": "Overload Relay 2P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Thermal Overload Relay (TOR) 2-Kutub.",
+    "how": "Memantau arus pada 2 fasa untuk melindungi motor 1-fasa atau DC dari kenaikan temperatur isolasi yang merusak belitan.",
+    "simVideo": "thermal_overload"
+  },
+  {
+    "key": "overload3p",
+    "name": "Overload Relay 3P",
+    "category": "protections",
+    "tagType": "fuses",
+    "desc": "Thermal Overload Relay (TOR) 3-Kutub Bimetal Motor (-F1).",
+    "how": "Dipasang langsung di bawah kontaktor utama; bimetal mendeteksi arus lebih kontinu 3-fasa, membuka kontak NC 95-96 untuk mematikan koil kontaktor.",
+    "simVideo": "thermal_overload"
+  },
+  {
+    "key": "phaseFailure",
+    "name": "Phase Failure Relay",
+    "category": "protections",
+    "tagType": "devices",
+    "desc": "Phase Failure & Phase Asymmetry Relay (Relai Pengaman Hilang Fasa).",
+    "how": "Memonitor kesimetrisan tegangan L1-L2-L3; jika ada fasa yang putus (single-phasing) atau urutan terbalik, kontak relai membuka untuk mencegah motor terbakar.",
+    "simVideo": null
+  },
+  {
+    "key": "powerSupply",
+    "name": "Power Supply",
+    "category": "sources",
+    "tagType": "powerSupply",
+    "desc": "Unit catu daya teregulasi switching (SMPS) input AC ke output DC.",
+    "how": "Menyearahkan tegangan AC 230V dan menurunkannya melalui switching frekuensi tinggi menjadi tegangan DC 24V stabil dengan isolasi galvanis.",
+    "simVideo": null
+  },
+  {
+    "key": "powerSupply2",
+    "name": "Power Supply",
+    "category": "sources",
+    "tagType": "powerSupply",
+    "desc": "Catu daya industri redundan (Dual Output DC Power Supply).",
+    "how": "Menghasilkan suplai DC teregulasi ganda dengan proteksi pembatas arus hubung singkat dan penstabil fluktuasi beban kontrol.",
+    "simVideo": null
+  },
+  {
+    "key": "rcboBreaker2p",
+    "name": "RCBO Circuit Breaker 2P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Residual Current Breaker with Overcurrent Protection (RCBO) 2P.",
+    "how": "Mendeteksi arus bocor ke tanah (>30mA) via trafo arus toroidal sekaligus memproteksi beban lebih dan hubung singkat dalam satu unit kompak.",
+    "simVideo": null
+  },
+  {
+    "key": "rcboBreaker4p",
+    "name": "RCBO Circuit Breaker 4P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "RCBO 4-Kutub untuk sistem tenaga 3-Fasa dan Netral.",
+    "how": "Memutus keempat saluran seketika bila terjadi sengatan listrik pada manusia atau kebocoran isolasi kabel ke rangka ground mesin.",
+    "simVideo": null
+  },
+  {
+    "key": "rccbBreaker2p",
+    "name": "RCCB Circuit Breaker 2P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Residual Current Circuit Breaker (RCCB / ELCB) 2-Kutub.",
+    "how": "Murni mendeteksi arus sisa bocor tanah (differential residual current) tanpa proteksi arus lebih; wajib diseri dengan MCB.",
+    "simVideo": null
+  },
+  {
+    "key": "rccbBreaker4p",
+    "name": "RCCB Circuit Breaker 4P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "RCCB / ELCB 4-Kutub untuk sistem distribusi 3-fasa.",
+    "how": "Membandingkan jumlah vektor arus L1+L2+L3+N. Jika selisihnya tidak nol (>30mA), mekanisme mekanis langsung membuka seluruh kutub.",
+    "simVideo": null
+  },
+  {
+    "key": "ring",
+    "name": "Bell Ring",
+    "category": "loads",
+    "tagType": "loads",
+    "desc": "Bel Listrik Mekanis Industri (Electric Bell Ring).",
+    "how": "Solenoid pemukul intermiten memukul mangkok logam secara berulang cepat, menghasilkan bunyi dering dering nyaring penanda pergantian shift kerja.",
+    "simVideo": null
+  },
+  {
+    "key": "rollerCON",
+    "name": "Switch CON",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Limit Switch Mekanis Changeover (SPDT Roller Switch).",
+    "how": "Mengalihkan sinyal dari indikator standby ke sinyal konfirmasi posisi akhir aktuator pneumatik atau silinder hidrolik.",
+    "simVideo": null
+  },
+  {
+    "key": "rollerNC",
+    "name": "Switch NC",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Limit Switch Mekanis NC (Saklar Pembatas Akhir Gerak).",
+    "how": "Membuka kontak kontrol NC saat batas travel mesin tercapai untuk mematikan motor penggerak sebelum terjadi tabrakan mekanis.",
+    "simVideo": null
+  },
+  {
+    "key": "rollerNO",
+    "name": "Switch NO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Limit Switch Mekanis NO dengan Roda Roller (Saklar Pembatas).",
+    "how": "Lengan roda tertekan oleh cam meja mesin menutup kontak NO; pegas internal membuka kontak kembali saat cam bergeser pergi.",
+    "simVideo": null
+  },
+  {
+    "key": "rollerNONC",
+    "name": "Switch NCNO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Limit Switch Mekanis Ganda 1 NO + 1 NC Snap-Action.",
+    "how": "Mekanisme pegas snap-action memicu transfer kontak kecepatan tinggi independen dari kecepatan dorong aktuator mesin.",
+    "simVideo": null
+  },
+  {
+    "key": "siren",
+    "name": "Siren",
+    "category": "loads",
+    "tagType": "loads",
+    "desc": "Sirine / Klakson Peringatan Industri Suara Tinggi (Horn / Siren).",
+    "how": "Transduser elektromagnetik menghasilkan gelombang suara frekuensi tinggi kontinu (>95 dB) saat dialiri arus untuk evakuasi darurat atau sinyal pra-start.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceGnd",
+    "name": "Protection Earth",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Titik referensi pembumian sirkuit (Ground).",
+    "how": "Menetapkan potensi nol volt referensi tanah bagi sirkuit elektronika daya, instrumen, dan penangkal gangguan interferensi EMI/RFI.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceL1",
+    "name": "Power Phase L1",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal catu daya fasa L1 (Fasa R / Fasa 1) sistem AC 50/60 Hz.",
+    "how": "Menyuplai potensial tegangan bolak-balik 230V terhadap Netral atau 400V terhadap L2/L3 sebagai jalur fasa utama rangkaian kendali dan tenaga.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceL1L2L3",
+    "name": "Power Phase L1L2L3",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Rel terminal gabungan sumber daya 3-Fasa AC (L1-L2-L3) 400V.",
+    "how": "Menyediakan koneksi kompak ketiga fasa secara simultan untuk menyuplai sirkuit daya motor induksi dan kontaktor utama.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceL1L2L3N",
+    "name": "Power Phase L1L2L3N",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Rel terminal catu daya 3-Fasa 4-Kawat (L1-L2-L3-N) 400/230V.",
+    "how": "Menyuplai tegangan 3-fasa 400V untuk beban tenaga dan tegangan fasa-ke-netral 230V untuk rangkaian instrumen kontrol panel.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceL2",
+    "name": "Power Phase L2",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal catu daya fasa L2 (Fasa S / Fasa 2) sistem AC 50/60 Hz.",
+    "how": "Menyuplai tegangan bolak-balik dengan pergeseran sudut fasa 120 derajat listrik terhadap L1 untuk membentuk sistem tiga fasa simetris.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceL3",
+    "name": "Power Phase L3",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal catu daya fasa L3 (Fasa T / Fasa 3) sistem AC 50/60 Hz.",
+    "how": "Menyuplai tegangan bolak-balik dengan pergeseran sudut fasa 240 derajat listrik terhadap L1 untuk melengkapi sistem medan putar tiga fasa.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceN",
+    "name": "Power Phase N",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal penghantar Netral (N) sistem tenaga listrik AC.",
+    "how": "Berfungsi sebagai jalur arus balik sirkuit satu fasa (230V) dan titik bintang netral pada transformator distribusi sekunder.",
+    "simVideo": null
+  },
+  {
+    "key": "sourceNegative",
+    "name": "Power Negative",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal negatif catu daya arus searah (0V / -DC).",
+    "how": "Berfungsi sebagai rel referensi nol volt atau kutub negatif tempat kembalinya arus rangkaian kontrol arus searah.",
+    "simVideo": null
+  },
+  {
+    "key": "sourcePE",
+    "name": "Protection Earth",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal pembumian pengaman (Protective Earth - PE / Ground).",
+    "how": "Menghubungkan kerangka logam peralatan ke sistem elektroda tanah untuk membuang arus gangguan dan mencegah tegangan sentuh berbahaya.",
+    "simVideo": null
+  },
+  {
+    "key": "sourcePlus",
+    "name": "Power Positive",
+    "category": "sources",
+    "tagType": "sources",
+    "desc": "Terminal positif catu daya arus searah (+24V / +12V DC).",
+    "how": "Mengalirkan arus listrik DC polaritas positif konstan untuk menyuplai relai bantu, sensor industri, PLC, dan komponen semikonduktor.",
+    "simVideo": null
+  },
+  {
+    "key": "switch3p",
+    "name": "Switch 3 Positions I-II-III",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Selektor 3 Posisi I - II - III (Tanpa Posisi Netral).",
+    "how": "Memilih satu dari tiga rangkaian operasional bertingkat secara berurutan (misal seleksi kecepatan motor Rendah-Sedang-Tinggi).",
+    "simVideo": null
+  },
+  {
+    "key": "switch3p0",
+    "name": "Switch 3 Positions I-0-II",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Selektor 3 Posisi I - 0 - II (Tengah Netral / Off).",
+    "how": "Posisi tengah (0) semua kontak terbuka; diputar ke kiri (I) menyalakan mode 1, diputar ke kanan (II) menyalakan mode 2.",
+    "simVideo": null
+  },
+  {
+    "key": "switchCON",
+    "name": "Switch CON",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Selektor Changeover 2 Posisi (SPDT Maintained).",
+    "how": "Mengalihkan terminal common secara mantap antara dua cabang beban atau sumber daya yang berbeda.",
+    "simVideo": null
+  },
+  {
+    "key": "switchCrossover",
+    "name": "Switch Crossover",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Balik Kutub 2 Posisi (Polarity / Reversing Switch).",
+    "how": "Membalik hubungan polaritas positif-negatif atau urutan dua fasa untuk membalik arah putaran motor DC atau aktuator.",
+    "simVideo": null
+  },
+  {
+    "key": "switchNC",
+    "name": "Switch NC",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Selektor Toggle / Rotary 2 Posisi (Normally Closed).",
+    "how": "Secara default tertutup; saat diputar manual ke posisi buka, kontak tetap membuka hingga diputar kembali ke posisi semula.",
+    "simVideo": null
+  },
+  {
+    "key": "switchNO",
+    "name": "Switch NO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Selektor Toggle / Rotary 2 Posisi (Normally Open).",
+    "how": "Diputar ke posisi ON menutup kontak secara mantap (maintained), dan tetap tertutup sampai diputar kembali manual ke posisi OFF.",
+    "simVideo": null
+  },
+  {
+    "key": "switchNONC",
+    "name": "Switch NCNO",
+    "category": "switches",
+    "tagType": "switches",
+    "desc": "Saklar Selektor 2 Posisi dengan Kontak Ganda NO dan NC.",
+    "how": "Beralih antara membuka satu sirkuit dan menutup sirkuit lainnya secara terkunci (misal seleksi mode Manual / Otomatis).",
+    "simVideo": null
+  },
+  {
+    "key": "text",
+    "name": "Text Label",
+    "category": "others",
+    "tagType": "none",
+    "desc": "Label teks anotasi & penamaan skematik (Schematic Text).",
+    "how": "Menampilkan judul diagram, nomor kawat, instruksi operasional, atau spesifikasi komponen pada kanvas gambar.",
+    "simVideo": null
+  },
+  {
+    "key": "tmBreaker1p",
+    "name": "Thermal-Magnetic Circuit Breaker 1P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Thermal-Magnetic Circuit Breaker 1P berdaya pemutus tinggi.",
+    "how": "Menggunakan bimetal untuk respon lambat beban lebih dan elektromagnet plunger untuk trip super cepat saat hubung singkat.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "tmBreaker2p",
+    "name": "Thermal-Magnetic Circuit Breaker 2P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Thermal-Magnetic Circuit Breaker 2P.",
+    "how": "Memberikan proteksi ganda termal dan magnetik pada 2 kutub dengan ruang pemadam busur api listrik (arc chutes) terpadu.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "tmBreaker3p",
+    "name": "Thermal-Magnetic Circuit Breaker 3P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Thermal-Magnetic Circuit Breaker 3P (MCCB 3-Kutub).",
+    "how": "Dirancang memutus arus hubung singkat puluhan kiloampere (kA) pada feeder utama panel distribusi motor industri.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "tmBreaker4p",
+    "name": "Thermal-Magnetic Circuit Breaker 4P",
+    "category": "protections",
+    "tagType": "breakers",
+    "desc": "Thermal-Magnetic Circuit Breaker 4P (MCCB 4-Kutub).",
+    "how": "Melindungi seluruh sistem feeder 3-fasa beserta netral dari arus beban lebih dan arus hubung tanah masif.",
+    "simVideo": "short_circuit"
+  },
+  {
+    "key": "flasher",
+    "name": "Flasher",
+    "category": "coils",
+    "tagType": "timerCoils",
+    "desc": "Komponen kelistrikan yang digunakan untuk menghasilkan sinyal kedipan pada lampu sein atau lampu tanda peringatan (hazard) secara periodik otomatis.",
+    "how": "Arus masuk melalui terminal 49 dan diteruskan ke beban lampu melalui terminal 49a. Flasher secara otomatis menyambung dan memutus aliran arus secara periodik langsung, menghasilkan efek kedipan lampu yang teratur.",
+    "simVideo": null
+  }
+]

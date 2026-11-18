@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="#161622"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1e1e2c"
+            android:padding="14dp">
+
+            <TextView
+                android:id="@+id/tvDashTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIMURELAY PROJECT DASHBOARD"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvDashTitle"
+                android:layout_marginTop="2dp"
+                android:text="Kelola lembar kerja sirkuit, buat canvas baru, atau pilih template"
+                android:textColor="#94a3b8"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/btnCloseDashboard"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:text="✕"
+                android:textColor="#94a3b8"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <!-- Native NestedScrollView: 100% Guaranteed Fluid Kinetic Touch Scroll -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:overScrollMode="always"
+            android:padding="14dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Top Action Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnDashNew"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#059669"
+                        android:text="Buat Baru"
+                        android:textColor="#ffffff"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnDashImport"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#334155"
+                        android:text="Buka Berkas"
+                        android:textColor="#ffffff"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Dedicated Scan QR Circuit Action -->
+                <Button
+                    android:id="@+id/btnDashScanQr"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#0284c7"
+                    android:text="Scan QR Tugas Guru (Offline)"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <!-- Section: Template Cepat -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="TEMPLATE CEPAT (QUICK START)"
+                    android:textColor="#94a3b8"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold" />
+
+                <!-- Template 1: Canvas Kosong -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardTemplateEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:cardBackgroundColor="#212130"
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="#334155"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Canvas Kosong (Baru)"
+                            android:textColor="#ffffff"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Lembar sirkuit bersih tanpa komponen untuk mulai menggambar dari awal."
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnUseTemplateEmpty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="6dp"
+                            android:backgroundTint="#2563eb"
+                            android:text="Gunakan Template"
+                            android:textColor="#ffffff"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Template 2: DOL Motor Starter -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardTemplateDol"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:cardBackgroundColor="#212130"
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="#334155"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DOL Motor Starter"
+                            android:textColor="#ffffff"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Pengendali motor 3 fasa, kontaktor, thermal overload, dan proteksi."
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnUseTemplateDol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="6dp"
+                            android:backgroundTint="#2563eb"
+                            android:text="Gunakan Template"
+                            android:textColor="#ffffff"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Template 3: Lampu Sign & Hazard (Dihapus dari workspace) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardTemplateHazard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="#212130"
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="#334155"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lampu Sign &amp; Hazard"
+                            android:textColor="#ffffff"
+                            android:textSize="12.5sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Kelistrikan sein mobil, flasher relay, hazard switch, klakson, dan sekring."
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnUseTemplateHazard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="6dp"
+                            android:backgroundTint="#2563eb"
+                            android:text="Gunakan Template"
+                            android:textColor="#ffffff"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Section: Sirkuit Tersimpan -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="LEMBAR KERJA &amp; SIRKUIT SAYA"
+                    android:textColor="#94a3b8"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold" />
+
+                <!-- Active Saved Circuit -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#172554"
+                    app:cardCornerRadius="8dp"
+                    app:strokeColor="#38bdf8"
+                    app:strokeWidth="1.5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DOL Motor Starter"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:background="#059669"
+                                android:paddingStart="6dp"
+                                android:paddingTop="2dp"
+                                android:paddingEnd="6dp"
+                                android:paddingBottom="2dp"
+                                android:text="AKTIF"
+                                android:textColor="#ffffff"
+                                android:textSize="9.5sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Sirkuit Kendali Motor 3-Phase &amp; Thermal Overload"
+                            android:textColor="#93c5fd"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

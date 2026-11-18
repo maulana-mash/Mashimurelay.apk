@@ -1,0 +1,135 @@
+================================================================================
+                    MASHIMURELAY — PANDUAN PENGGUNA ANDROID
+             INFORMASI RESMI: KOMPATIBILITAS, SPESIFIKASI & PERFORMA HP
+================================================================================
+
+Nama Aplikasi   : Mashimurelay (SimuRelay Mobile Electrical CAD)
+Platform        : Android (.apk)
+Versi Rilis     : 5.0.5 (Build Optimal)
+Kategori        : CAD & Simulator Rangkaian Kendali Listrik Industri
+Format Dokumen  : Berkas Informasi Pengguna Resmi (Google Drive Ready)
+
+--------------------------------------------------------------------------------
+1. DAFTAR SMARTPHONE & PERANGKAT YANG KOMPATIBEL
+--------------------------------------------------------------------------------
+Aplikasi Mashimurelay dikompilasi dengan standar kompatibilitas Android luas:
+- Sistem Operasi Minimum (minSdk) : Android 7.0 (Nougat, API 24)
+- Sistem Operasi Target (targetSdk) : Android 15 (API 35)
+- Arsitektur CPU                  : ARMv7 (32-bit), ARM64 (64-bit), x86, x86_64
+
+Cakupan Kompatibilitas:
+Lebih dari 98% smartphone Android yang beredar di seluruh dunia (keluaran tahun 
+2016 hingga model terbaru saat ini) dapat menginstal dan menjalankan APK ini 
+secara langsung tanpa kendala kompatibilitas biner.
+
+Daftar Merk Smartphone yang Didukung:
+- Samsung Galaxy   : Seri A, M, S, Z Fold/Flip, Note, serta Galaxy Tab
+- Xiaomi / Redmi   : Semua seri Redmi, Redmi Note, Xiaomi Flagship, dan POCO
+- Oppo & Realme    : Seri Reno, Find, seri A, Realme number series, GT series
+- Vivo & iQOO      : Seri Y, V, X, serta seri gaming iQOO
+- Infinix & Tecno  : Seri Hot, Note, Zero, Camon, Pova, dan Spark
+- Asus             : Seri Zenfone dan Asus ROG Phone
+- Google Pixel     : Seri Pixel 2 hingga Pixel 9 Pro
+- Merk Lainnya     : Sony Xperia, Sharp Aquos, Motorola, Nothing Phone, dsb.
+- Emulator Android : LDPlayer, NoxPlayer, BlueStacks, Android Studio AVD
+
+--------------------------------------------------------------------------------
+2. TINGKAT KELANCARAN (SMOOTHNESS & FRAME RATE PER DETIK / FPS)
+--------------------------------------------------------------------------------
+Apakah semua HP Android bisa menjalankannya dengan smooth?
+Kelancaran simulasi dipengaruhi oleh kapasitas RAM dan chipset grafis perangkat. 
+Berikut adalah klasifikasi performa di lapangan:
+
+A. KELAS SANGAT MULUS (SILKY SMOOTH: 60 FPS – 120 FPS)
+   - Spesifikasi Hardware:
+     * RAM: 3 GB, 4 GB, 6 GB, 8 GB, 12 GB, atau lebih tinggi.
+     * Chipset: Qualcomm Snapdragon (seri 6xx, 7xx, 8xx), MediaTek Helio G80 
+       ke atas, MediaTek Dimensity series, Exynos modern, atau Google Tensor.
+   - Karakteristik Pengalaman:
+     * Pergerakan kanvas CAD (pan & pinch zoom) terasa sangat responsif dan instan.
+     * Animasi aliran arus listrik dan perputaran motor listrik bergerak halus 
+       tanpa ada frame drop.
+     * Mampu membuka proyek sirkuit berskala besar (50 - 200+ komponen).
+
+B. KELAS STANDAR (LANCAR: 30 FPS – 60 FPS)
+   - Spesifikasi Hardware:
+     * RAM: 2 GB.
+     * Chipset: Entry-level quad-core / octa-core (Unisoc SC9863A, Helio A22/P22, 
+       Snapdragon 4xx lawas).
+   - Karakteristik Pengalaman:
+     * Sangat stabil untuk menyimulasikan rangkaian kendali standar (DOL Starter, 
+       Rangkaian Forward-Reverse, Lampu Seri-Paralel, Rangkaian Demo 10–30 komponen).
+     * Jika rangkaian dibuat sangat padat dengan ratusan kawat, mungkin terjadi 
+       sedikit penurunan FPS saat zoom cepat.
+
+C. KELAS MINIMUM (RAM DI BAWAH 2 GB / ANDROID GO EDITION)
+   - Spesifikasi Hardware:
+     * Smartphone Android Go atau HP lawas dengan RAM 1 GB - 1.5 GB.
+   - Karakteristik Pengalaman:
+     * Aplikasi tetap dapat dibuka dan berfungsi penuh secara fungsional.
+     * Disarankan untuk membuat rangkaian bertahap dan mematikan fitur animasi 
+       aliran arus jika ingin menghemat alokasi daya GPU perangkat.
+
+--------------------------------------------------------------------------------
+3. PENGARUH SISTEM OPERASI (OS) & SKIN UI VENDOR TERHADAP APLIKASI
+--------------------------------------------------------------------------------
+Apakah versi OS dan modifikasi OS dari masing-masing merk HP memengaruhi aplikasi?
+Jawabannya: YA, pada aspek grafis dan efisiensi memori, namun TIDAK memengaruhi 
+keakuratan logika kelistrikannya.
+
+A. Pengaruh Versi Inti Android:
+   - Android 10 hingga Android 15 (Versi Rekomendasi):
+     Memiliki pipeline rendering grafis hardware (RenderThread) dan sistem memori 
+     ART runtime yang sangat cepat. Operasi penggambaran vektor kanvas dieksekusi 
+     langsung oleh GPU HP, membuat pengalaman menggambar terasa instan.
+   - Android 7.0 hingga Android 9.0:
+     Menggunakan arsitektur grafis Android terdahulu. Tetap berfungsi 100%, hanya 
+     memerlukan waktu alokasi memori sedikit lebih banyak saat pertama kali membuka.
+
+B. Pengaruh Modifikasi Skin Vendor (MIUI, HyperOS, One UI, ColorOS, XOS):
+   - Fitur Penghemat Daya Agresif (Battery Saver):
+     Beberapa skin OS (khususnya MIUI / HyperOS dan ColorOS) secara default akan 
+     mengunci refresh rate layar ke 60Hz jika mendeteksi aplikasi non-game. Jika 
+     HP Anda memiliki layar 90Hz/120Hz dan ingin simulasi berjalan super mulus, 
+     aktifkan 'Mode Performa' pada menu pengaturan baterai HP Anda.
+   - Layar Poni / Punch Hole (Kamera Depan):
+     Mashimurelay dilengkapi sistem penyesuaian Insets Dinamis (hideSystemUI), 
+     sehingga kanvas dan tombol navigasi otomatis menyesuaikan posisi layar tanpa 
+     pernah tertutup oleh lubang kamera atau poni layar.
+   - Konsistensi Logika Kelistrikan:
+     Engine simulasi Mashimurelay dibangun murni menggunakan algoritma graf, aljabar 
+     bitmask potensial, dan hukum kontinuitas listrik mandiri (tanpa dependensi C++ 
+     eksternal). Oleh karena itu, simulasi rangkaian seri, pengunci kontaktor, fasa, 
+     dan netral DIJAMIN 100% IDENTIK dan KONSISTEN di semua merk smartphone.
+
+--------------------------------------------------------------------------------
+4. OPTIMASI MESIN TERBARU PADA VERSI 5.0.5
+--------------------------------------------------------------------------------
+Pada pembaruan versi 5.0.5 ini, sejumlah optimasi krusial telah diterapkan:
+1. Optimasi Grid Drawing: Menggunakan single-batch canvas point array (mereduksi 
+   ratusan draw call menjadi 1 kali eksekusi GPU).
+2. Zero-GC Memory Management: Menghilangkan pembuatan objek Paint baru di dalam 
+   fungsi onDraw sehingga HP tidak mengalami lag berkala (stuttering).
+3. Resolusi Bug Jalur Netral: Kawat inaktif kini berwarna abu-abu slate netral 
+   (#475569) dan tidak lagi berwarna biru, menghilangkan kerancuan dengan jalur Netral.
+4. Aliran Arus Cerdas: Garis putus-putus aliran arus hanya muncul pada rangkaian 
+   tertutup yang menyuplai beban aktif (meniadakan animasi aliran liar saat sakelar buka).
+5. Konduksi Penuh Komponen Junction: Seluruh komponen percabangan (Junction 2P, 
+   Junction 90°, Junction 3P, Junction 4P) kini menghantarkan arus secara penuh.
+6. Rangkaian Seri Mulus: Sistem beban seri (seperti 3 lampu seri) menyala serentak 
+   dengan pembagian logika tegangan yang akurat.
+
+--------------------------------------------------------------------------------
+5. PANDUAN PEMASANGAN BERKAS APK
+--------------------------------------------------------------------------------
+Jika Anda mengunduh berkas Mashimurelay.apk dari Google Drive ke smartphone:
+1. Buka File Manager atau unduhan di browser HP Anda, lalu ketuk 'Mashimurelay.apk'.
+2. Jika muncul jendela 'Izin Memasang Aplikasi Tidak Dikenal' (Install Unknown Apps), 
+   pilih 'Izinkan dari Sumber Ini' (Allow from this source).
+3. Jika Google Play Protect menampilkan peringatan aplikasi dari luar Play Store, 
+   ketuk 'Rincian Lebih Lanjut' (More Details), lalu pilih 'Tetap Pasang' (Install Anyway).
+4. Selesai! Aplikasi Mashimurelay siap digunakan dengan performa optimal.
+
+================================================================================
+          © 2026 Mashimurelay Studio — Engineering & Educational CAD
+================================================================================

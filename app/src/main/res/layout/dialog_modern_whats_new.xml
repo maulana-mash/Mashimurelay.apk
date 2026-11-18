@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="#181824"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#2d2d42"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_menu_whats_new"
+                app:tint="#38bdf8" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="What’s New — Fitur Terbaru"
+                android:textColor="#ffffff"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnCloseWhatsNew"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Tutup"
+                app:tint="#94a3b8" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#242436" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="380dp"
+            android:overScrollMode="never"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Item 1: Native Navigation Drawer (Toska Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#10b981" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Native Navigation Drawer"
+                            android:textColor="#10b981"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Klik MENU di pojok kiri atas untuk membuka panel navigasi slide-out lengkap dengan Workspace, Save, Save As, Settings, dan lainnya."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 2: Undo & Redo (Biru Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#3b82f6" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Undo &amp; Redo (Multi-Step History)"
+                            android:textColor="#3b82f6"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Dukungan riwayat tindakan lengkap: kembalikan atau ulangi penambahan komponen, penghapusan, rotasi, perubahan tag, serta penarikan kawat."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 3: Proteksi Running Simulasi & Kabel Mandiri (Hijau Emerald Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#059669" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Proteksi Running Simulasi &amp; Kabel Mandiri"
+                            android:textColor="#059669"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Komponen dilarang masuk saat simulasi sedang aktif untuk menjaga konsistensi visual. Kabel juga tidak dapat dihubungkan ke pin elemen yang sama untuk mencegah short sirkuit internal semu."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 4: Momentary Push Button (Amber Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#f59e0b" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Momentary Push Button (Tekan &amp; Tahan)"
+                            android:textColor="#f59e0b"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Tombol tekan bekerja langsung di kanvas saat running tanpa opsi ON/OFF. Tekan dan tahan untuk mengalirkan arus listrik, lepas untuk memutus seketika."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 5: Motor-Breaker 3P & Switch Pos 1/Pos 0 (Orange Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#f97316" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Motor-Breaker 3P &amp; Switch Opsi 'Pos 1'/'Pos 2'"
+                            android:textColor="#f97316"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Proteksi motor 3-fasa sinkron dengan 3 kontak (0-3, 1-4, 2-5) serta antarmuka saklar posisi yang disesuaikan secara dinamis."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 6: Off-Delay Relay Coil (Ungu Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#a855f7" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Off-Delay Relay Coil Visual Indikator"
+                            android:textColor="#a855f7"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Tanda strip garis lurus khusus relay off-delay yang rapi di luar kotak coil sesuai standar diagram internasional."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Item 7: Workspace & Format Universal (Cyan Strip) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3.5dp"
+                        android:layout_height="match_parent"
+                        android:background="#06b6d4" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Workspace &amp; Ekspor-Impor Universal (.smrl &amp; .txt)"
+                            android:textColor="#06b6d4"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:lineSpacingExtra="2dp"
+                            android:text="Kelola proyek kanvas secara mandiri dengan impor dan ekspor file sirkuit modern (.smrl JSON) maupun format teks legacy Simurelay (.txt)."
+                            android:textColor="#cbd5e1"
+                            android:textSize="11.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

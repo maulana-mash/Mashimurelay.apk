@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="#141624"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#2d3148"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="#11131f"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <FrameLayout
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_icon_blue_square">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_export"
+                    app:tint="#38bdf8"
+                    android:contentDescription="PDF Icon" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Etiket Praktikum — Cetak PDF Laporan"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnClosePdfStudentInfo"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_close"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="#94a3b8"
+                android:contentDescription="Tutup" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#262a40" />
+
+        <!-- Form Body -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Judul Tugas / Proyek -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Judul Lembar Kerja / Proyek:"
+                    android:textColor="#38bdf8"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <EditText
+                    android:id="@+id/etPdfProjectTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_edit_text_modern"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#64748b"
+                    android:textSize="13sp"
+                    android:singleLine="true"
+                    android:hint="Contoh: Rangkaian Kontrol Mesin 1"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Grid Nama Siswa & Presensi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.2"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nama Lengkap Siswa:"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <EditText
+                            android:id="@+id/etPdfStudentName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_edit_text_modern"
+                            android:textColor="#ffffff"
+                            android:textColorHint="#64748b"
+                            android:textSize="13sp"
+                            android:singleLine="true"
+                            android:hint="Nama Praktikan" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No. Presensi:"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <EditText
+                            android:id="@+id/etPdfStudentPresensi"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_edit_text_modern"
+                            android:textColor="#ffffff"
+                            android:textColorHint="#64748b"
+                            android:textSize="13sp"
+                            android:singleLine="true"
+                            android:hint="No/NIS" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Grid Kelas & Sekolah -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kelas / Jurusan:"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <EditText
+                            android:id="@+id/etPdfStudentClass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_edit_text_modern"
+                            android:textColor="#ffffff"
+                            android:textColorHint="#64748b"
+                            android:textSize="13sp"
+                            android:singleLine="true"
+                            android:hint="Contoh: XII TITL 1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sekolah / Instansi:"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="4dp" />
+
+                        <EditText
+                            android:id="@+id/etPdfStudentSchool"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_edit_text_modern"
+                            android:textColor="#ffffff"
+                            android:textColorHint="#64748b"
+                            android:textSize="13sp"
+                            android:singleLine="true"
+                            android:hint="Contoh: SMK Negeri 2" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Info Box Fitur PDF 2 Halaman -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#0b0e1b"
+                    android:padding="10dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="i"
+                        android:textColor="#38bdf8"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:background="@drawable/bg_icon_blue_square"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Dokumen PDF berisi 2 halaman: Hal 1 Skematik CAD Lanskap (CAD bersih), Hal 2 Daftar Komponen (BOM) &amp; Etiket Siswa."
+                        android:textColor="#94a3b8"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#262a40" />
+
+        <!-- Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:background="#11131f">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelPdfStudentInfo"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:backgroundTint="#262a40"
+                android:text="BATAL"
+                android:textColor="#cbd5e1"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginEnd="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirmPdfStudentInfo"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1.6"
+                android:backgroundTint="#0284c7"
+                android:text="UNDUH PDF LAPORAN"
+                android:textColor="#ffffff"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_export"
+                app:iconTint="#ffffff"
+                app:iconSize="16dp"
+                app:iconGravity="textStart"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="#181824"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#2d2d42"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_toolbar_menu"
+                app:tint="#94a3b8" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Pengaturan Mashimurelay"
+                android:textColor="#ffffff"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnCloseSettings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Tutup"
+                app:tint="#94a3b8" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#242436" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 1. Simpan Otomatis (Auto-Save) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Simpan Otomatis (Auto-Save)"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Otomatis menyimpan setiap perubahan sirkuit ke penyimpanan lokal."
+                                android:textColor="#94a3b8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/tvStatusAutoSave"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="OFF"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="#f87171"
+                                android:paddingStart="7dp"
+                                android:paddingEnd="7dp"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="2dp"
+                                android:background="@drawable/bg_status_badge_off"
+                                android:layout_marginEnd="6dp" />
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchAutoSave"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 2. Ukuran Grid (Grid Snapping) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ukuran Grid (Grid Snapping)"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Jarak snap pin dan perataan komponen di canvas."
+                                android:textColor="#94a3b8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinnerGridSnap"
+                            android:layout_width="135dp"
+                            android:layout_height="36dp"
+                            android:layout_marginStart="8dp"
+                            android:background="@drawable/bg_spinner_rounded"
+                            android:gravity="center_vertical|end" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 3. Efek Cahaya Sirkuit (Glow Wires / Flow Anim) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Efek Cahaya Sirkuit (Glow Wires)"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Animasi visual kabel aktif saat simulasi running."
+                                android:textColor="#94a3b8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/tvStatusGlowWires"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ON"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="#10b981"
+                                android:paddingStart="7dp"
+                                android:paddingEnd="7dp"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="2dp"
+                                android:background="@drawable/bg_status_badge_on"
+                                android:layout_marginEnd="6dp" />
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchGlowWires"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 4. Nomor Pin Terminal -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tampilkan Label Terminal"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Nomor pin kaki (1-2, 13-14, A1-A2) pada komponen."
+                                android:textColor="#94a3b8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/tvStatusPinLabels"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ON"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="#10b981"
+                                android:paddingStart="7dp"
+                                android:paddingEnd="7dp"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="2dp"
+                                android:background="@drawable/bg_status_badge_on"
+                                android:layout_marginEnd="6dp" />
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchPinLabels"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 5. Efek Suara Industri (Sound FX) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Efek Suara Industri (Sound FX)"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Audio motor listrik, sirene, buzzer, bel, dan klik switch."
+                                android:textColor="#94a3b8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/tvStatusSoundEffects"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ON"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="#10b981"
+                                android:paddingStart="7dp"
+                                android:paddingEnd="7dp"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="2dp"
+                                android:background="@drawable/bg_status_badge_on"
+                                android:layout_marginEnd="6dp" />
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchSoundEffects"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 6. Tampilkan Nama Komponen di Kanvas -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tampilkan Nama Komponen"
+                                android:textColor="#ffffff"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Keterangan nama komponen (Contactor 1P, Relay, dll.) di kanvas."
+                                android:textColor="#94a3b8"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:id="@+id/tvStatusComponentNames"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ON"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="#10b981"
+                                android:paddingStart="7dp"
+                                android:paddingEnd="7dp"
+                                android:paddingTop="2dp"
+                                android:paddingBottom="2dp"
+                                android:background="@drawable/bg_status_badge_on"
+                                android:layout_marginEnd="6dp" />
+
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/switchComponentNames"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Action Button: Kosongkan Kanvas -->
+                <Button
+                    android:id="@+id/btnClearCanvas"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:backgroundTint="#2d1515"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="Kosongkan Kanvas"
+                    app:icon="@drawable/ic_delete"
+                    app:iconSize="14dp"
+                    app:iconTint="#f87171"
+                    android:textColor="#f87171"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="#7f1d1d"
+                    app:strokeWidth="1dp" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

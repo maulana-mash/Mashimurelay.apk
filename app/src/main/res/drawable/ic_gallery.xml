@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Frame -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 4,4 H 20 C 21.1,4 22,4.9 22,6 V 18 C 22,19.1 21.1,20 20,20 H 4 C 2.9,20 2,19.1 2,18 V 6 C 2,4.9 2.9,4 4,4 Z" />
+    <!-- Sun/Moon dot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 8.5,7.5 A 1.5,1.5 0 1,1 8.5,10.5 A 1.5,1.5 0 1,1 8.5,7.5 Z" />
+    <!-- Mountain landscape -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 21,15 L 16,10 L 5,20" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M 14,14 L 17,17" />
+</vector>

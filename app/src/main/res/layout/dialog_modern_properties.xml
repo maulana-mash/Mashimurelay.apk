@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardPropRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    app:cardBackgroundColor="#141624"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#2d3148"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:id="@+id/layoutPropContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:id="@+id/layoutPropHeader"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="#11131f"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <FrameLayout
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_icon_blue_square">
+
+                <ImageView
+                    android:id="@+id/ivPropHeaderIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_edit"
+                    app:tint="#38bdf8" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvPropHeaderTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Properti Komponen"
+                android:textColor="#ffffff"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnCloseProp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_close"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="#94a3b8" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#262a40" />
+
+        <!-- Form Body (Scrollable with persistent footer buttons below) -->
+        <ScrollView
+            android:id="@+id/scrollPropBody"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Field 1: Tag / Teks -->
+                <TextView
+                    android:id="@+id/tvPropTagLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tag / Identitas Komponen:"
+                    android:textColor="#38bdf8"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/etPropTag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_edit_text_modern"
+                    android:textColor="#ffffff"
+                    android:textColorHint="#64748b"
+                    android:textSize="14sp"
+                    android:singleLine="true"
+                    android:hint="Contoh: -KM1, -SB1, -Q1" />
+
+                <!-- Text Font Size Options -->
+                <LinearLayout
+                    android:id="@+id/layoutPropFontSize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ukuran Huruf (Font Size):"
+                        android:textColor="#a78bfa"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnPropFs14"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#262a40"
+                            android:text="14sp"
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropFs20"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#262a40"
+                            android:text="20sp"
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropFs28"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#7c3aed"
+                            android:text="28sp"
+                            android:textColor="#ffffff"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropFs36"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#262a40"
+                            android:text="36sp"
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Lamp Color Options -->
+                <LinearLayout
+                    android:id="@+id/layoutPropLampColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvPropLampColorLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pilihan Warna Lampu Indikator:"
+                        android:textColor="#fbbf24"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutPropLampRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <!-- Populated programmatically with color chips -->
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Timer Preset Options -->
+                <LinearLayout
+                    android:id="@+id/layoutPropTimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Waktu Timer / Delay (detik):"
+                        android:textColor="#fbbf24"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <EditText
+                        android:id="@+id/etPropTimer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_edit_text_modern"
+                        android:textColor="#ffffff"
+                        android:inputType="numberDecimal"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:hint="2.0" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
+
+                        <Button
+                            android:id="@+id/btnPropTimer1"
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#262a40"
+                            android:text="1s"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropTimer2"
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#262a40"
+                            android:text="2s"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropTimer5"
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#262a40"
+                            android:text="5s"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropTimer10"
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="#262a40"
+                            android:text="10s"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp" />
+
+                        <Button
+                            android:id="@+id/btnPropTimer30"
+                            android:layout_width="0dp"
+                            android:layout_height="34dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#262a40"
+                            android:text="30s"
+                            android:textColor="#38bdf8"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Switch Operation Position Options -->
+                <LinearLayout
+                    android:id="@+id/layoutPropSwitchState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvPropSwitchTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Posisi Sakelar / Status Kontak:"
+                        android:textColor="#38bdf8"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutPropSwitchRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnPropPos1"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:backgroundTint="#262a40"
+                            android:text="Pos 1"
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp" />
+
+                        <Button
+                            android:id="@+id/btnPropPos0"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:backgroundTint="#262a40"
+                            android:text="Pos 0"
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp" />
+
+                        <Button
+                            android:id="@+id/btnPropPos2"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#262a40"
+                            android:text="Pos 2"
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Terminal Pin Tags Editor (Input / Output) -->
+                <LinearLayout
+                    android:id="@+id/layoutPropTerminalTags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Kode Terminal Pin (Input / Output):"
+                            android:textColor="#38bdf8"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Kustomisasi IEC"
+                            android:textColor="#64748b"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutPropTerminalRows"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#0d0e17"
+                        android:padding="8dp"
+                        android:orientation="vertical">
+                        <!-- Populated programmatically in MainActivity -->
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Field 2: Keterangan (Opsional) -->
+                <LinearLayout
+                    android:id="@+id/layoutPropComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Keterangan / Fungsi (Opsional):"
+                        android:textColor="#94a3b8"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <EditText
+                        android:id="@+id/etPropComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_edit_text_modern"
+                        android:textColor="#ffffff"
+                        android:textColorHint="#64748b"
+                        android:textSize="14sp"
+                        android:singleLine="true"
+                        android:hint="Contoh: Timer Bintang Segitiga" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#262a40" />
+
+        <!-- Actions (Sticky Footer: Large, comfortable touch targets for landscape and portrait) -->
+        <LinearLayout
+            android:id="@+id/layoutPropActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:background="#11131f">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelProp"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:backgroundTint="#262a40"
+                android:text="BATAL"
+                android:textColor="#cbd5e1"
+                android:textSize="13.5sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:layout_marginEnd="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveProp"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:backgroundTint="#059669"
+                android:text="SIMPAN"
+                android:textColor="#ffffff"
+                android:textSize="13.5sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

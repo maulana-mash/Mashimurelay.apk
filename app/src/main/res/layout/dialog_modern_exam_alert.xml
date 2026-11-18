@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    app:cardBackgroundColor="#141624"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#ef4444"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:id="@+id/layoutAlertHeader"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="#201014"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp">
+
+            <FrameLayout
+                android:id="@+id/frameAlertIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/bg_icon_rose_square">
+
+                <ImageView
+                    android:id="@+id/ivAlertHeaderIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_exam_lock"
+                    app:tint="#ef4444"
+                    android:contentDescription="Ikon Alert" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvAlertTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Pengumpulan Dikunci (Mode Ujian)"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnCloseAlertTop"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_close"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="#94a3b8"
+                android:contentDescription="Tutup" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#2d1b22" />
+
+        <!-- Body -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/tvAlertMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mode Ujian aktif: Tugas Anda telah dikumpulkan sebelumnya dan telah dikunci. Pengumpulan ulang tidak diizinkan oleh server guru."
+                android:textColor="#cbd5e1"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp" />
+
+            <!-- Sub Information Box -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="#0b0e1b"
+                android:padding="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/ivAlertSubIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_exam_warning"
+                    app:tint="#f59e0b"
+                    android:contentDescription="Info Catatan" />
+
+                <TextView
+                    android:id="@+id/tvAlertNote"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Jika ada kendala teknis atau perbaikan mendesak, silakan konfirmasi langsung ke Guru pengajar di kelas."
+                    android:textColor="#94a3b8"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#262a40" />
+
+        <!-- Footer Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:background="#11131f"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAlertOk"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:backgroundTint="#ef4444"
+                android:text="MENGERTI"
+                android:textColor="#ffffff"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:cornerRadius="10dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
