@@ -238,7 +238,29 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [
+      {
+        "id": "0",
+        "nodeId1": "0",
+        "nodeId2": "3",
+        "type": "no",
+        "enableFrames": "0,1"
+      },
+      {
+        "id": "1",
+        "nodeId1": "1",
+        "nodeId2": "4",
+        "type": "no",
+        "enableFrames": "0,1"
+      },
+      {
+        "id": "2",
+        "nodeId1": "2",
+        "nodeId2": "5",
+        "type": "no",
+        "enableFrames": "0,1"
+      }
+    ]
   },
   "breaker1p": {
     "svg": "breaker1p",
@@ -1726,103 +1748,7 @@
       },
       {
         "id": "2",
-        "tag": "13",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "95",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "96",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "98",
+        "tag": "14",
         "direction": "2",
         "type": "contact",
         "dx": "30.0",
@@ -2152,70 +2078,6 @@
         "type": "contact",
         "dx": "0.0",
         "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "95",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "96",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
       }
     ],
     "frames": [
@@ -2498,70 +2360,6 @@
       {
         "id": "1",
         "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "17",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "17",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "17",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "97",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "98",
         "direction": "2",
         "type": "contact",
         "dx": "0.0",
@@ -2868,134 +2666,6 @@
       {
         "id": "3",
         "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "17",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "17",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "15",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "16",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "17",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "18",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "95",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "96",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "97",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "98",
         "direction": "2",
         "type": "contact",
         "dx": "30.0",
@@ -10064,127 +9734,7 @@
       },
       {
         "id": "2",
-        "tag": "13",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
+        "tag": "14",
         "direction": "2",
         "type": "contact",
         "dx": "30.0",
@@ -10364,86 +9914,6 @@
       "marginV": "0"
     },
     "nodes": [
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
       {
         "id": "0",
         "tag": "11",
@@ -10642,86 +10112,6 @@
         "type": "contact",
         "dx": "0.0",
         "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "0.0",
-        "dy": "60.0"
       }
     ],
     "frames": [
@@ -10890,166 +10280,6 @@
       "marginV": "0"
     },
     "nodes": [
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "0",
-        "tag": "11",
-        "direction": "0",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "12",
-        "direction": "2",
-        "type": "contact",
-        "dx": "-30.0",
-        "dy": "60.0"
-      },
-      {
-        "id": "2",
-        "tag": "13",
-        "direction": "0",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "3",
-        "tag": "14",
-        "direction": "2",
-        "type": "contact",
-        "dx": "30.0",
-        "dy": "60.0"
-      },
       {
         "id": "0",
         "tag": "11",
@@ -11539,12 +10769,12 @@
     },
     "nodes": [
       {
-        "id": "2",
+        "id": "0",
         "tag": "L1",
         "direction": "0",
         "type": "source",
         "value": "l1",
-        "dx": "60.0",
+        "dx": "-60.0",
         "dy": "-60.0"
       },
       {
@@ -11557,12 +10787,12 @@
         "dy": "-60.0"
       },
       {
-        "id": "0",
+        "id": "2",
         "tag": "L3",
         "direction": "0",
         "type": "source",
         "value": "l3",
-        "dx": "-60.0",
+        "dx": "60.0",
         "dy": "-60.0"
       }
     ],
@@ -11623,21 +10853,12 @@
     },
     "nodes": [
       {
-        "id": "3",
-        "tag": "N",
-        "direction": "0",
-        "type": "source",
-        "value": "n",
-        "dx": "90.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "2",
+        "id": "0",
         "tag": "L1",
         "direction": "0",
         "type": "source",
         "value": "l1",
-        "dx": "30.0",
+        "dx": "-90.0",
         "dy": "-60.0"
       },
       {
@@ -11650,12 +10871,21 @@
         "dy": "-60.0"
       },
       {
-        "id": "0",
+        "id": "2",
         "tag": "L3",
         "direction": "0",
         "type": "source",
         "value": "l3",
-        "dx": "-90.0",
+        "dx": "30.0",
+        "dy": "-60.0"
+      },
+      {
+        "id": "3",
+        "tag": "N",
+        "direction": "0",
+        "type": "source",
+        "value": "n",
+        "dx": "90.0",
         "dy": "-60.0"
       }
     ],

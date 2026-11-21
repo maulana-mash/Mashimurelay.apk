@@ -47,6 +47,9 @@ class NativeSimulationEngine {
     val tagStateMap = mutableMapOf<String, Boolean>() // tag -> outputState (persistent across simulation frames)
     val fuseHeatTimers = mutableMapOf<Int, Long>() // elemId -> accumulated short circuit heat ms
     val fuseBlownElements = mutableSetOf<Int>() // elemId of fuses blown by short circuit
+    val breakerTripTimers = mutableMapOf<Int, Long>() // elemId -> accumulated fault trip delay ms
+    val trippedBreakerElements = mutableSetOf<Int>() // elemId of MCB/MPCB/TM/RCBO tripped by short circuit
+    val trippedEarthLeakageElements = mutableSetOf<Int>() // elemId of RCCB/RCBO tripped by earth leakage
 
     fun reset(preserveFuses: Boolean = true) {
         if (preserveFuses) {
@@ -61,6 +64,9 @@ class NativeSimulationEngine {
             fuseBlownElements.clear()
         }
         fuseHeatTimers.clear()
+        breakerTripTimers.clear()
+        trippedBreakerElements.clear()
+        trippedEarthLeakageElements.clear()
         buttonStates.clear()
         timerStates.clear()
         tagStateMap.clear()
@@ -68,6 +74,11 @@ class NativeSimulationEngine {
 
     fun setSwitchPosition(elemId: Int, pos: Int): Int {
         manualStates[elemId] = pos
+        if (pos != 0) {
+            trippedBreakerElements.remove(elemId)
+            trippedEarthLeakageElements.remove(elemId)
+            breakerTripTimers.remove(elemId)
+        }
         return pos
     }
 
@@ -84,6 +95,11 @@ class NativeSimulationEngine {
             else -> if (cur == 0) 1 else 0
         }
         manualStates[elemId] = next
+        if (next != 0) {
+            trippedBreakerElements.remove(elemId)
+            trippedEarthLeakageElements.remove(elemId)
+            breakerTripTimers.remove(elemId)
+        }
         return next
     }
 
@@ -99,10 +115,15 @@ class NativeSimulationEngine {
         val nodeToNetId = mutableMapOf<String, Int>()
         var shortCircuit = false
         var isDcOverheat = false
+        var isEarthLeakage = false
         val activeCoilTags = mutableSetOf<String>()
         val newlyBlownFuses = mutableSetOf<Int>()
+        val newlyTrippedBreakers = mutableSetOf<Int>()
 
-        // Prune fuseBlownElements to only currently existing blown cartridge fuses
+        // Prune fuseBlownElements & tripped breakers to only currently existing elements
+        val currentElemIds = elements.map { it.id }.toSet()
+        trippedBreakerElements.retainAll(currentElemIds)
+        trippedEarthLeakageElements.retainAll(currentElemIds)
         val currentFuseIds = elements.filter {
             it.svgData.startsWith("fuse") && !it.svgData.startsWith("fuseSwitch")
         }.map { it.id }.toSet()
@@ -115,14 +136,18 @@ class NativeSimulationEngine {
             val def = NativeComponentRegistry.get(el.svgData) ?: continue
             if (def.category == "coils") {
                 val presetOnMs = (el.presetTime * 1000f).toLong().coerceAtLeast(0L)
+                val presetOffMs = if (el.presetTimeOff > 0f) (el.presetTimeOff * 1000f).toLong() else presetOnMs
                 val state = timerStates.getOrPut(el.id) {
                     TimerState(
                         presetMs = if (presetOnMs > 0) presetOnMs else 2000L,
-                        presetOffMs = if (presetOnMs > 0) presetOnMs else 2000L
+                        presetOffMs = if (presetOffMs > 0) presetOffMs else 2000L
                     )
                 }
                 if (presetOnMs > 0) {
                     state.presetMs = presetOnMs
+                }
+                if (presetOffMs > 0) {
+                    state.presetOffMs = presetOffMs
                 }
                 if (el.tag.isNotEmpty()) {
                     tagStateMap[el.tag.trim()] = state.outputState
@@ -161,6 +186,9 @@ class NativeSimulationEngine {
             iter++
             converged = true
             val stepDt = if (iter == 1) dtMs else 0L
+            shortCircuit = false
+            isDcOverheat = false
+            isEarthLeakage = false
             nodePotentialMap.clear()
 
             // Set fixed potentials at power sources
@@ -170,7 +198,8 @@ class NativeSimulationEngine {
                     "sourceL2" -> nodePotentialMap["${el.id}:0"] = Potential.L2.flag
                     "sourceL3" -> nodePotentialMap["${el.id}:0"] = Potential.L3.flag
                     "sourceN" -> nodePotentialMap["${el.id}:0"] = Potential.N.flag
-                    "sourcePE", "sourceGnd", "junctionPE" -> nodePotentialMap["${el.id}:0"] = Potential.PE.flag
+                    "sourcePE" -> nodePotentialMap["${el.id}:0"] = Potential.PE.flag
+                    "sourceGnd" -> nodePotentialMap["${el.id}:0"] = Potential.GND.flag
                     "sourcePlus" -> nodePotentialMap["${el.id}:0"] = Potential.DC_P.flag
                     "sourceNegative" -> nodePotentialMap["${el.id}:0"] = Potential.DC_N.flag
                     "battery" -> {
@@ -219,13 +248,14 @@ class NativeSimulationEngine {
                         nodePotentialMap["${el.id}:2"] = Potential.L3.flag
                     }
                     "sourceL1L2L3N" -> {
-                        nodePotentialMap["${el.id}:0"] = Potential.N.flag
-                        nodePotentialMap["${el.id}:1"] = Potential.L1.flag
-                        nodePotentialMap["${el.id}:2"] = Potential.L2.flag
-                        nodePotentialMap["${el.id}:3"] = Potential.L3.flag
+                        nodePotentialMap["${el.id}:0"] = Potential.L1.flag
+                        nodePotentialMap["${el.id}:1"] = Potential.L2.flag
+                        nodePotentialMap["${el.id}:2"] = Potential.L3.flag
+                        nodePotentialMap["${el.id}:3"] = Potential.N.flag
                     }
                 }
             }
+            val rawSourcePotentials = nodePotentialMap.toMap()
 
             // Build Adjacency Graph of Conductive Nodes
             adj.clear()
@@ -352,17 +382,81 @@ class NativeSimulationEngine {
                     }
                 } else if (cat == "auxiliaries" || cat == "contactors") {
                     val tag = el.tag.trim()
-                    var masterActive = false
+                    var rawMasterActive = false
+                    var masterIsTimerCoil = false
                     if (tag.isNotEmpty()) {
-                        masterActive = tagStateMap[tag] ?: false
-                        val masterElem = elements.find { it.tag.trim() == tag && it.id != el.id }
-                        if (masterElem != null) {
-                            if (masterElem.svgData.startsWith("overload")) {
-                                masterActive = (manualStates[masterElem.id] ?: 0) == 1
-                            } else if (masterElem.svgData.contains("breaker")) {
-                                masterActive = (manualStates[masterElem.id] ?: 0) == 1
+                        val masterProt = elements.find {
+                            it.id != el.id && it.tag.trim() == tag &&
+                                (it.svgData.startsWith("overload") || it.svgData.contains("breaker", ignoreCase = true))
+                        }
+                        val masterCoil = elements.find {
+                            it.id != el.id && it.tag.trim() == tag &&
+                                (it.svgData.startsWith("coil") || it.svgData == "phaseFailure")
+                        }
+                        if (masterProt != null) {
+                            rawMasterActive = (manualStates[masterProt.id] ?: 0) == 1
+                        } else {
+                            rawMasterActive = tagStateMap[tag] ?: false
+                            if (masterCoil != null && (masterCoil.svgData == "coilDelayOn" ||
+                                    masterCoil.svgData == "coilDelayOff" ||
+                                    masterCoil.svgData == "coilDelayOnOff")) {
+                                masterIsTimerCoil = true
                             }
                         }
+                    }
+
+                    // Kontak tunda independen (pneumatic timer block) jika dipasangkan ke koil instan / breaker / overload
+                    var masterActive = rawMasterActive
+                    if (!masterIsTimerCoil && (el.svgData.endsWith("DelayOn") || el.svgData.endsWith("DelayOff"))) {
+                        val presetMs = (el.presetTime * 1000f).toLong().coerceAtLeast(100L)
+                        val cState = timerStates.getOrPut(el.id) {
+                            TimerState(presetMs = presetMs, presetOffMs = presetMs)
+                        }
+                        cState.presetMs = presetMs
+                        cState.energized = rawMasterActive
+                        if (el.svgData.endsWith("DelayOn")) {
+                            if (rawMasterActive) {
+                                if (cState.elapsedMs < cState.presetMs) {
+                                    cState.elapsedMs += stepDt
+                                    if (cState.elapsedMs >= cState.presetMs) {
+                                        cState.elapsedMs = cState.presetMs
+                                        cState.outputState = true
+                                        cState.isTiming = false
+                                    } else {
+                                        cState.outputState = false
+                                        cState.isTiming = true
+                                    }
+                                } else {
+                                    cState.outputState = true
+                                    cState.isTiming = false
+                                }
+                            } else {
+                                cState.elapsedMs = 0L
+                                cState.isTiming = false
+                                cState.outputState = false
+                            }
+                        } else {
+                            if (rawMasterActive) {
+                                cState.elapsedMs = 0L
+                                cState.isTiming = false
+                                cState.outputState = true
+                            } else if (cState.outputState) {
+                                cState.elapsedMs += stepDt
+                                if (cState.elapsedMs < cState.presetMs) {
+                                    cState.isTiming = true
+                                    cState.outputState = true
+                                } else {
+                                    cState.elapsedMs = cState.presetMs
+                                    cState.isTiming = false
+                                    cState.outputState = false
+                                }
+                            } else {
+                                cState.elapsedMs = 0L
+                                cState.isTiming = false
+                                cState.outputState = false
+                            }
+                        }
+                        masterActive = cState.outputState
                     }
 
                     if (el.svgData.contains("NC")) {
@@ -418,13 +512,13 @@ class NativeSimulationEngine {
                             if (isClosed) addEdge("${el.id}:2", "${el.id}:3")
                             else addEdge("${el.id}:0", "${el.id}:1")
                         }
-                        "buttonCrossover" -> {
+                        "buttonCrossover", "switchCrossover" -> {
                             if (isClosed) {
-                                addEdge("${el.id}:0", "${el.id}:3")
-                                addEdge("${el.id}:2", "${el.id}:1")
-                            } else {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
+                            } else {
+                                addEdge("${el.id}:0", "${el.id}:3")
+                                addEdge("${el.id}:2", "${el.id}:1")
                             }
                         }
                         "contactNO", "contactor1p" -> {
@@ -433,20 +527,20 @@ class NativeSimulationEngine {
                         "contactNC", "contactorNC1p" -> {
                             if (isClosed) addEdge("${el.id}:0", "${el.id}:1")
                         }
-                        "contactor2p" -> {
+                        "contactor2p", "contactorNC2p" -> {
                             if (isClosed) {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
                             }
                         }
-                        "contactor3p" -> {
+                        "contactor3p", "contactorNC3p" -> {
                             if (isClosed) {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
                                 addEdge("${el.id}:4", "${el.id}:5")
                             }
                         }
-                        "contactor4p" -> {
+                        "contactor4p", "contactorNC4p" -> {
                             if (isClosed) {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
@@ -454,20 +548,28 @@ class NativeSimulationEngine {
                                 addEdge("${el.id}:6", "${el.id}:7")
                             }
                         }
-                        "breaker2p", "motorBreaker2p", "tmBreaker2p", "rcboBreaker2p", "rccbBreaker2p", "fuseSwitch2p", "isolator2p" -> {
+                        "breaker" -> {
+                            // Motor Circuit Breaker 3P: pin atas 0,1,2 -> pin bawah 3,4,5
+                            if (isClosed) {
+                                addEdge("${el.id}:0", "${el.id}:3")
+                                addEdge("${el.id}:1", "${el.id}:4")
+                                addEdge("${el.id}:2", "${el.id}:5")
+                            }
+                        }
+                        "breaker2p", "motorBreaker2p", "tmBreaker2p", "rcboBreaker2p", "rccbBreaker2p", "fuseSwitch2p", "fuseSwitch1pn", "isolator2p" -> {
                             if (isClosed) {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
                             }
                         }
-                        "breaker", "breaker3p", "motorBreaker3p", "tmBreaker3p", "fuseSwitch3p", "isolator3p" -> {
+                        "breaker3p", "motorBreaker3p", "tmBreaker3p", "fuseSwitch3p", "isolator3p" -> {
                             if (isClosed) {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
                                 addEdge("${el.id}:4", "${el.id}:5")
                             }
                         }
-                        "breaker4p", "motorBreaker4p", "tmBreaker4p", "rcboBreaker4p", "rccbBreaker4p", "fuseSwitch4p", "isolator4p" -> {
+                        "breaker4p", "motorBreaker4p", "tmBreaker4p", "rcboBreaker4p", "rccbBreaker4p", "fuseSwitch4p", "fuseSwitch3pn", "isolator4p" -> {
                             if (isClosed) {
                                 addEdge("${el.id}:0", "${el.id}:1")
                                 addEdge("${el.id}:2", "${el.id}:3")
@@ -479,13 +581,13 @@ class NativeSimulationEngine {
                 }
             }
 
-            // Propagate Potentials across Adjacency Graph using BFS
-            val visited = mutableSetOf<String>()
+            // Propagate Potentials across Adjacency Graph using independent per-source BFS
+            // (Per-seed visited set guarantees L1/L2/L3/N/DC+/DC- propagate fully regardless of element order!)
             for ((startNode, sourcePot) in nodePotentialMap.toMap()) {
                 if (sourcePot == 0) continue
+                val visited = mutableSetOf(startNode)
                 val queue = ArrayDeque<String>()
                 queue.add(startNode)
-                visited.add(startNode)
 
                 while (queue.isNotEmpty()) {
                     val curr = queue.removeFirst()
@@ -505,12 +607,13 @@ class NativeSimulationEngine {
                 }
             }
 
-            // Check Short Circuit Condition (Phase-to-Phase, Phase-to-Neutral, or DC Positive-to-Negative on the same net)
+            // Check Short Circuit & Earth Leakage Condition
             for ((_, pot) in nodePotentialMap) {
                 val hasL1 = (pot and Potential.L1.flag) != 0
                 val hasL2 = (pot and Potential.L2.flag) != 0
                 val hasL3 = (pot and Potential.L3.flag) != 0
                 val hasN  = (pot and Potential.N.flag) != 0
+                val hasEarth = (pot and (Potential.PE.flag or Potential.GND.flag)) != 0
                 val hasDCP = (pot and Potential.DC_P.flag) != 0
                 val hasDCN = (pot and Potential.DC_N.flag) != 0
 
@@ -518,84 +621,96 @@ class NativeSimulationEngine {
                 if (phaseCount >= 2 || (phaseCount >= 1 && hasN)) {
                     shortCircuit = true
                 }
+                if (phaseCount >= 1 && hasEarth) {
+                    isEarthLeakage = true
+                }
                 if (hasDCP && hasDCN) {
                     shortCircuit = true
                     isDcOverheat = true
                 }
             }
 
-            // Evaluate Fuse Thermal Melting on Short Circuit Fault Paths (~1.3s natural delay)
-            if (shortCircuit && stepDt > 0L) {
-                val faultPins = mutableSetOf<String>()
-                val posSources = mutableListOf<String>()
-                val negSources = mutableSetOf<String>()
-
-                for ((pin, pot) in nodePotentialMap) {
-                    if ((pot and (Potential.L1.flag or Potential.L2.flag or Potential.L3.flag or Potential.DC_P.flag)) != 0) {
-                        posSources.add(pin)
-                    }
-                    if ((pot and (Potential.N.flag or Potential.DC_N.flag)) != 0) {
-                        negSources.add(pin)
-                    }
-                }
-                if (negSources.isEmpty() && posSources.size >= 2) {
-                    val firstPot = nodePotentialMap[posSources[0]] ?: 0
-                    for (i in 1 until posSources.size) {
-                        if (nodePotentialMap[posSources[i]] != firstPot) {
-                            negSources.add(posSources[i])
-                        }
-                    }
-                }
-
-                for (startPin in posSources) {
-                    if (negSources.contains(startPin)) {
-                        faultPins.add(startPin)
-                        continue
-                    }
-                    val queue = ArrayDeque<Pair<String, List<String>>>()
-                    queue.add(Pair(startPin, listOf(startPin)))
-                    val visited = mutableSetOf(startPin)
-                    while (queue.isNotEmpty()) {
-                        val (curr, path) = queue.removeFirst()
-                        if (negSources.contains(curr)) {
-                            faultPins.addAll(path)
-                            continue
-                        }
-                        for (nxt in adj[curr] ?: emptySet()) {
-                            if (!visited.contains(nxt)) {
-                                visited.add(nxt)
-                                queue.add(Pair(nxt, path + nxt))
+            // Trace Fault Paths from Raw Source Pins & Evaluate Natural-Delay Protection Trips:
+            // - Cartridge Fuse (fuse1p..4p): ~1.3s thermal melting on short circuit
+            // - Magnetic/Short-Circuit Breakers (breaker, breaker1p..4p, tmBreaker*, motorBreaker*, rcboBreaker*): ~0.9s visible delay
+            // - Earth-Leakage Breakers (rccbBreaker*, rcboBreaker*): ~0.8s visible delay on L -> PE/GND leakage
+            if ((shortCircuit || isEarthLeakage) && stepDt > 0L) {
+                fun tracePinsBetween(starts: Set<String>, targets: Set<String>, outPins: MutableSet<String>) {
+                    if (starts.isEmpty() || targets.isEmpty()) return
+                    for (startPin in starts) {
+                        val queue = ArrayDeque<Pair<String, List<String>>>()
+                        queue.add(Pair(startPin, listOf(startPin)))
+                        val seen = mutableSetOf(startPin)
+                        while (queue.isNotEmpty()) {
+                            val (curr, path) = queue.removeFirst()
+                            if (curr != startPin && targets.contains(curr)) {
+                                outPins.addAll(path)
+                                continue
+                            }
+                            for (nxt in adj[curr] ?: emptySet()) {
+                                if (seen.add(nxt)) {
+                                    queue.add(Pair(nxt, path + nxt))
+                                }
                             }
                         }
                     }
                 }
 
+                val rawL1 = rawSourcePotentials.filterValues { (it and Potential.L1.flag) != 0 }.keys
+                val rawL2 = rawSourcePotentials.filterValues { (it and Potential.L2.flag) != 0 }.keys
+                val rawL3 = rawSourcePotentials.filterValues { (it and Potential.L3.flag) != 0 }.keys
+                val rawN = rawSourcePotentials.filterValues { (it and Potential.N.flag) != 0 }.keys
+                val rawPhases = rawL1 + rawL2 + rawL3
+                val rawDCP = rawSourcePotentials.filterValues { (it and Potential.DC_P.flag) != 0 }.keys
+                val rawDCN = rawSourcePotentials.filterValues { (it and Potential.DC_N.flag) != 0 }.keys
+                val rawEarth = rawSourcePotentials.filterValues { (it and (Potential.PE.flag or Potential.GND.flag)) != 0 }.keys
+
+                val shortFaultPins = mutableSetOf<String>()
+                if (shortCircuit) {
+                    tracePinsBetween(rawPhases, rawN, shortFaultPins)
+                    tracePinsBetween(rawL1, rawL2 + rawL3, shortFaultPins)
+                    tracePinsBetween(rawL2, rawL3, shortFaultPins)
+                    tracePinsBetween(rawDCP, rawDCN, shortFaultPins)
+                }
+
+                val earthFaultPins = mutableSetOf<String>()
+                if (isEarthLeakage) {
+                    tracePinsBetween(rawPhases, rawEarth, earthFaultPins)
+                }
+
+                fun getPolePairs(el: NativeElement, def: ComponentDef?): List<Pair<Int, Int>> {
+                    if (def != null && def.contacts.isNotEmpty()) {
+                        return def.contacts.map { Pair(it.nodeId1, it.nodeId2) }
+                    }
+                    if (el.svgData == "breaker") {
+                        return listOf(Pair(0, 3), Pair(1, 4), Pair(2, 5))
+                    }
+                    val n = def?.nodes?.size ?: 2
+                    val pairs = mutableListOf<Pair<Int, Int>>()
+                    for (idx in 0 until n step 2) {
+                        if (idx + 1 < n) pairs.add(Pair(idx, idx + 1))
+                    }
+                    return pairs
+                }
+
+                // 1) Cartridge Fuses (~1.3s thermal melting)
                 for (el in elements) {
                     if (!el.svgData.startsWith("fuse") || el.svgData.startsWith("fuseSwitch")) continue
                     val isIntact = (manualStates[el.id] ?: 1) == 1
                     if (!isIntact) continue
-
                     val def = NativeComponentRegistry.get(el.svgData)
-                    val numNodes = def?.nodes?.size ?: 2
-                    var isFuseInFault = false
-                    for (i in 0 until numNodes step 2) {
-                        val p1 = "${el.id}:$i"
-                        val p2 = "${el.id}:${i + 1}"
-                        if (faultPins.contains(p1) && faultPins.contains(p2)) {
-                            isFuseInFault = true
-                            break
-                        }
+                    val isFuseInFault = getPolePairs(el, def).any { (a, b) ->
+                        shortFaultPins.contains("${el.id}:$a") && shortFaultPins.contains("${el.id}:$b")
                     }
-
                     if (isFuseInFault) {
                         val currentHeat = (fuseHeatTimers[el.id] ?: 0L) + stepDt
                         fuseHeatTimers[el.id] = currentHeat
-                        if (currentHeat >= 1300L) { // ~1.3 detik delay peleburan
+                        if (currentHeat >= 1300L) {
                             manualStates[el.id] = 0 // Frame 1: blown / open circuit
                             fuseBlownElements.add(el.id)
                             newlyBlownFuses.add(el.id)
                             elementFrames[el.id] = 1
-                            converged = false // Re-solve immediately to isolate short circuit
+                            converged = false
                         }
                     } else {
                         val curHeat = fuseHeatTimers[el.id] ?: 0L
@@ -603,6 +718,61 @@ class NativeSimulationEngine {
                             fuseHeatTimers[el.id] = (curHeat - (stepDt * 0.5f).toLong()).coerceAtLeast(0L)
                         }
                     }
+                }
+
+                // 2) Automatic Protection Breakers (MCB/MPCB/TM/RCBO short-circuit trip ~0.9s; RCCB/RCBO earth-leakage trip ~0.8s)
+                for (el in elements) {
+                    val isShortBreaker = el.svgData == "breaker" ||
+                            el.svgData.startsWith("breaker") ||
+                            el.svgData.startsWith("tmBreaker") ||
+                            el.svgData.startsWith("motorBreaker") ||
+                            el.svgData.startsWith("rcboBreaker")
+                    val isEarthBreaker = el.svgData.startsWith("rccbBreaker") ||
+                            el.svgData.startsWith("rcboBreaker")
+                    if (!isShortBreaker && !isEarthBreaker) continue
+                    val isClosedNow = (manualStates[el.id] ?: 0) == 1
+                    if (!isClosedNow) continue
+
+                    val def = NativeComponentRegistry.get(el.svgData)
+                    val pairs = getPolePairs(el, def)
+                    val inShort = isShortBreaker && pairs.any { (a, b) ->
+                        shortFaultPins.contains("${el.id}:$a") && shortFaultPins.contains("${el.id}:$b")
+                    }
+                    val inEarth = isEarthBreaker && pairs.any { (a, b) ->
+                        earthFaultPins.contains("${el.id}:$a") && earthFaultPins.contains("${el.id}:$b")
+                    }
+
+                    if (inShort || inEarth) {
+                        val tripDelay = if (inEarth && !inShort) 800L else 900L
+                        val acc = (breakerTripTimers[el.id] ?: 0L) + stepDt
+                        breakerTripTimers[el.id] = acc
+                        if (acc >= tripDelay) {
+                            manualStates[el.id] = 0 // Trip OPEN
+                            breakerTripTimers.remove(el.id)
+                            if (inEarth && !inShort) {
+                                trippedEarthLeakageElements.add(el.id)
+                            } else {
+                                trippedBreakerElements.add(el.id)
+                            }
+                            newlyTrippedBreakers.add(el.id)
+                            elementFrames[el.id] = 0
+                            converged = false
+                        }
+                    } else {
+                        val curAcc = breakerTripTimers[el.id] ?: 0L
+                        if (curAcc > 0L) {
+                            breakerTripTimers[el.id] = (curAcc - (stepDt * 0.5f).toLong()).coerceAtLeast(0L)
+                        }
+                    }
+                }
+            } else if (stepDt > 0L) {
+                for (k in fuseHeatTimers.keys.toList()) {
+                    val v = (fuseHeatTimers[k] ?: 0L) - (stepDt * 0.5f).toLong()
+                    if (v <= 0L) fuseHeatTimers.remove(k) else fuseHeatTimers[k] = v
+                }
+                for (k in breakerTripTimers.keys.toList()) {
+                    val v = (breakerTripTimers[k] ?: 0L) - (stepDt * 0.5f).toLong()
+                    if (v <= 0L) breakerTripTimers.remove(k) else breakerTripTimers[k] = v
                 }
             }
 
@@ -733,15 +903,21 @@ class NativeSimulationEngine {
             }
 
             // Evaluate Forward-Biased Diodes and Conditional Power Supplies / 3-Phase Generators
-            val POS_MASK = Potential.L1.flag or Potential.L2.flag or Potential.L3.flag or Potential.DC_P.flag
+            val AC_PHASE_MASK = Potential.L1.flag or Potential.L2.flag or Potential.L3.flag
+            val AC_MASK = AC_PHASE_MASK or Potential.N.flag
+            val POS_MASK = AC_PHASE_MASK or Potential.DC_P.flag
             val NEG_MASK = Potential.N.flag or Potential.DC_N.flag
             for (el in elements) {
                 if (el.svgData == "diode") {
                     val p0 = nodePotentialMap["${el.id}:0"] ?: 0
                     val p1 = nodePotentialMap["${el.id}:1"] ?: 0
-                    val isForwardBiased = ((p0 and POS_MASK) != 0 && (p0 and NEG_MASK) == 0 && (p1 and POS_MASK) == 0) ||
-                            ((p1 and NEG_MASK) != 0 && (p1 and POS_MASK) == 0 && (p0 and NEG_MASK) == 0)
-                    if (isForwardBiased && !conductingDiodes.contains(el.id)) {
+                    val hasDc = ((p0 or p1) and (Potential.DC_P.flag or Potential.DC_N.flag)) != 0
+                    val isDcForward = ((p0 and Potential.DC_P.flag) != 0 && (p0 and Potential.DC_N.flag) == 0 && (p1 and Potential.DC_P.flag) == 0) ||
+                            ((p1 and Potential.DC_N.flag) != 0 && (p1 and Potential.DC_P.flag) == 0 && (p0 and Potential.DC_N.flag) == 0)
+                    // Pada AC (bolak-balik), dioda menyearahkan setengah gelombang pada kedua arah polaritas
+                    val isAcHalfWave = !hasDc && (((p0 and AC_MASK) != 0) || ((p1 and AC_MASK) != 0))
+                    val shouldConduct = if (hasDc) isDcForward else isAcHalfWave
+                    if (shouldConduct && !conductingDiodes.contains(el.id)) {
                         conductingDiodes.add(el.id)
                         converged = false
                     }
@@ -781,15 +957,19 @@ class NativeSimulationEngine {
                     val isEnergized = isValidPair(potA1, potA2) || isSeriesActive
 
                     val presetOnMs = (el.presetTime * 1000f).toLong().coerceAtLeast(0L)
+                    val presetOffMs = if (el.presetTimeOff > 0f) (el.presetTimeOff * 1000f).toLong() else presetOnMs
                     val state = timerStates.getOrPut(el.id) {
                         TimerState(
                             presetMs = if (presetOnMs > 0) presetOnMs else 2000L,
-                            presetOffMs = if (presetOnMs > 0) presetOnMs else 2000L
+                            presetOffMs = if (presetOffMs > 0) presetOffMs else 2000L
                         )
                     }
                     state.energized = isEnergized
                     if (presetOnMs > 0) {
                         state.presetMs = presetOnMs
+                    }
+                    if (presetOffMs > 0) {
+                        state.presetOffMs = presetOffMs
                     }
 
                     var nextOutput = state.outputState
@@ -973,15 +1153,17 @@ class NativeSimulationEngine {
                 } else if (el.svgData == "motorDC") {
                     val p1 = nodePotentialMap["${el.id}:0"] ?: 0 // Terminal X1
                     val p2 = nodePotentialMap["${el.id}:1"] ?: 0 // Terminal X2
-                    val hasP1Pos = (p1 and (Potential.L1.flag or Potential.L2.flag or Potential.L3.flag or Potential.DC_P.flag)) != 0
-                    val hasP1Neg = (p1 and (Potential.N.flag or Potential.DC_N.flag)) != 0
-                    val hasP2Pos = (p2 and (Potential.L1.flag or Potential.L2.flag or Potential.L3.flag or Potential.DC_P.flag)) != 0
-                    val hasP2Neg = (p2 and (Potential.N.flag or Potential.DC_N.flag)) != 0
+                    // Motor DC secara teori hanya berputar pada sumber arus searah (DC+ dan DC-), bukan AC!
+                    val hasP1Pos = (p1 and Potential.DC_P.flag) != 0 && (p1 and Potential.DC_N.flag) == 0
+                    val hasP1Neg = (p1 and Potential.DC_N.flag) != 0 && (p1 and Potential.DC_P.flag) == 0
+                    val hasP2Pos = (p2 and Potential.DC_P.flag) != 0 && (p2 and Potential.DC_N.flag) == 0
+                    val hasP2Neg = (p2 and Potential.DC_N.flag) != 0 && (p2 and Potential.DC_P.flag) == 0
+                    val isSeriesDc = isSeriesActive && ((p1 or p2) and (Potential.DC_P.flag or Potential.DC_N.flag)) != 0
 
                     val frame = when {
                         hasP1Pos && hasP2Neg -> 1 // Forward rotation (CW)
                         hasP1Neg && hasP2Pos -> 2 // Reverse rotation (CCW)
-                        isValidPair(p1, p2) || isSeriesActive -> 1 // Fallback beda potensial / seri
+                        isSeriesDc -> if ((p1 and Potential.DC_N.flag) != 0 || (p2 and Potential.DC_P.flag) != 0) 2 else 1
                         else -> 0
                     }
                     elementFrames[el.id] = frame
@@ -1020,50 +1202,61 @@ class NativeSimulationEngine {
                     val v1 = nodePotentialMap["${el.id}:1"] ?: 0
                     val w1 = nodePotentialMap["${el.id}:2"] ?: 0
 
-                    val u2 = nodePotentialMap["${el.id}:3"] ?: 0
-                    val v2 = nodePotentialMap["${el.id}:4"] ?: 0
-                    val w2 = nodePotentialMap["${el.id}:5"] ?: 0
+                    val b3 = nodePotentialMap["${el.id}:3"] ?: 0 // motorStarDelta: W2 | Dahlander/2Speed: U2
+                    val b4 = nodePotentialMap["${el.id}:4"] ?: 0 // motorStarDelta: U2 | Dahlander/2Speed: V2
+                    val b5 = nodePotentialMap["${el.id}:5"] ?: 0 // motorStarDelta: V2 | Dahlander/2Speed: W2
 
                     val all3PhFlags = (Potential.L1.flag or Potential.L2.flag or Potential.L3.flag)
                     val is3Ph_set1 = (u1 != 0 && v1 != 0 && w1 != 0 && ((u1 or v1 or w1) and all3PhFlags) == all3PhFlags)
-                    val is3Ph_set2 = (u2 != 0 && v2 != 0 && w2 != 0 && ((u2 or v2 or w2) and all3PhFlags) == all3PhFlags)
+                    val is3Ph_set2 = (b3 != 0 && b4 != 0 && b5 != 0 && ((b3 or b4 or b5) and all3PhFlags) == all3PhFlags)
 
-                    var isRunning = false
-                    var uAct = u1
-                    var vAct = v1
-                    var wAct = w1
+                    fun isReverseSeq(ua: Int, va: Int, wa: Int): Boolean {
+                        val l1u = (ua and Potential.L1.flag) != 0
+                        val l2u = (ua and Potential.L2.flag) != 0
+                        val l3u = (ua and Potential.L3.flag) != 0
+                        val l1v = (va and Potential.L1.flag) != 0
+                        val l2v = (va and Potential.L2.flag) != 0
+                        val l3v = (va and Potential.L3.flag) != 0
+                        val l1w = (wa and Potential.L1.flag) != 0
+                        val l2w = (wa and Potential.L2.flag) != 0
+                        val l3w = (wa and Potential.L3.flag) != 0
+                        return (l3u && l2v && l1w) || (l1u && l3v && l2w) || (l2u && l1v && l3w)
+                    }
 
+                    var frame = 0
                     if (el.svgData == "motorStarDelta") {
                         val net3 = nodeToNetId["${el.id}:3"]
                         val net4 = nodeToNetId["${el.id}:4"]
                         val net5 = nodeToNetId["${el.id}:5"]
                         val isStarBridge = (net3 != null && net3 == net4 && net4 == net5)
-                        isRunning = is3Ph_set1 && (isStarBridge || is3Ph_set2)
-                    } else {
-                        isRunning = is3Ph_set1 || is3Ph_set2
-                        if (!is3Ph_set1 && is3Ph_set2) {
-                            uAct = u2
-                            vAct = v2
-                            wAct = w2
+                        // Validasi Delta: tiap lilitan (U1-U2, V1-V2, W1-W2) wajib memiliki beda fasa!
+                        val u1Ph = u1 and all3PhFlags
+                        val v1Ph = v1 and all3PhFlags
+                        val w1Ph = w1 and all3PhFlags
+                        val w2Ph = b3 and all3PhFlags
+                        val u2Ph = b4 and all3PhFlags
+                        val v2Ph = b5 and all3PhFlags
+                        val isValidDelta = is3Ph_set2 && (u1Ph != u2Ph) && (v1Ph != v2Ph) && (w1Ph != w2Ph)
+                        if (is3Ph_set1 && !shortCircuit) {
+                            val rev = isReverseSeq(u1, v1, w1)
+                            when {
+                                isValidDelta -> frame = if (rev) 4 else 3 // Delta (Δ) CW/CCW
+                                isStarBridge -> frame = if (rev) 2 else 1 // Star (Y) CW/CCW
+                            }
                         }
-                    }
-
-                    var frame = 0
-                    if (isRunning && !shortCircuit) {
-                        val hasL1_u = (uAct and Potential.L1.flag) != 0
-                        val hasL2_u = (uAct and Potential.L2.flag) != 0
-                        val hasL3_u = (uAct and Potential.L3.flag) != 0
-
-                        val hasL1_v = (vAct and Potential.L1.flag) != 0
-                        val hasL2_v = (vAct and Potential.L2.flag) != 0
-                        val hasL3_v = (vAct and Potential.L3.flag) != 0
-
-                        val hasL1_w = (wAct and Potential.L1.flag) != 0
-                        val hasL2_w = (wAct and Potential.L2.flag) != 0
-                        val hasL3_w = (wAct and Potential.L3.flag) != 0
-
-                        val isReverse = (hasL3_u && hasL2_v && hasL1_w) || (hasL1_u && hasL3_v && hasL2_w) || (hasL2_u && hasL1_v && hasL3_w)
-                        frame = if (isReverse) 2 else 1
+                    } else {
+                        // motorDhalander & motorTwoSpeeds:
+                        // Frame 1/2 = Speed 1 (CW/CCW, tampil angka "1")
+                        // Frame 3/4 = Speed 2 (CW/CCW, tampil angka "2", putaran lebih cepat)
+                        // Frame 5 = Konflik 2 belitan aktif bersamaan (merah peringatan)
+                        if (!shortCircuit) {
+                            when {
+                                is3Ph_set1 && is3Ph_set2 -> frame = 5
+                                is3Ph_set1 -> frame = if (isReverseSeq(u1, v1, w1)) 2 else 1
+                                is3Ph_set2 -> frame = if (isReverseSeq(b3, b4, b5)) 4 else 3
+                                else -> frame = 0
+                            }
+                        }
                     }
                     elementFrames[el.id] = frame
                 } else if (el.svgData == "generator3ph") {
@@ -1146,7 +1339,7 @@ class NativeSimulationEngine {
             val isEnergized = timerStates[el.id]?.energized == true || frame == 1
             if ((el.svgData.startsWith("coil") || el.svgData == "flasher") && isEnergized) activeLoadIds.add(el.id)
             else if ((el.svgData == "lamp" || el.svgData == "lampBlink" || el.svgData == "buzzer" || el.svgData == "siren" || el.svgData == "ring") && isEnergized) activeLoadIds.add(el.id)
-            else if (el.svgData.startsWith("motor") && frame in 1..2) activeLoadIds.add(el.id)
+            else if (el.svgData.startsWith("motor") && frame in 1..4) activeLoadIds.add(el.id)
         }
 
         if (activeLoadIds.isNotEmpty() && !shortCircuit) {
@@ -1386,13 +1579,23 @@ class NativeSimulationEngine {
         }
 
         val isFuseBlown = fuseBlownElements.isNotEmpty() && !shortCircuit
+        val trippedBreakerTags = trippedBreakerElements.mapNotNull { id ->
+            elemMap[id]?.let { it.tag.ifBlank { it.svgData } }
+        }
+        val trippedEarthLeakageTags = trippedEarthLeakageElements.mapNotNull { id ->
+            elemMap[id]?.let { it.tag.ifBlank { it.svgData } }
+        }
         return SimResult(
             elementFrames = elementFrames,
             wirePotentials = wirePotentials,
             shortCircuit = shortCircuit,
             isDcOverheat = isDcOverheat,
+            isEarthLeakage = isEarthLeakage,
             isFuseBlown = isFuseBlown,
             newlyBlownFuses = newlyBlownFuses,
+            trippedBreakerTags = trippedBreakerTags,
+            trippedEarthLeakageTags = trippedEarthLeakageTags,
+            newlyTrippedBreakers = newlyTrippedBreakers,
             activeCoils = activeCoilTags,
             flowingConnectors = flowingConnectors,
             timerStates = timerStates.toMap()

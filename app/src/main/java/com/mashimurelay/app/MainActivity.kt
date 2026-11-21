@@ -126,6 +126,15 @@ class MainActivity : Activity() {
     private var studentPresensi: String? = null
     private var isClassroomExamMode: Boolean = false
 
+    // Classroom Jobsheet State
+    private var activeJobsheetFile: java.io.File? = null
+    private var activeJobsheetFilename: String? = null
+    private var pendingJobsheetProjectName: String? = null
+    private var isJobsheetAvailableOnServer: Boolean = false
+    private var isJobsheetDownloading: Boolean = false
+    private var isOpeningJobsheet: Boolean = false
+    private var jobsheetOpenedAtMs: Long = 0L
+
     private lateinit var canvasView: NativeCanvasView
     private lateinit var btnToggleLibrary: View
     private lateinit var ivToolbarLibraryIcon: ImageView
@@ -526,29 +535,57 @@ class MainActivity : Activity() {
                 updatePill(element)
             }
 
-            override fun onShortCircuit(isShort: Boolean, isDcOverheat: Boolean) {
-                if (isShort) {
-                    cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0dc2626"))
-                    tvAlertShortCircuit.text = if (isDcOverheat) {
-                        "DC OVERHEAT! Kutub (+) dan (-) terhubung tanpa beban"
-                    } else {
-                        "SHORT CIRCUIT! Periksa fasa & netral"
+            private fun refreshSimulationAlertBanner() {
+                val res = canvasView.simResult
+                when {
+                    res?.shortCircuit == true -> {
+                        cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0dc2626"))
+                        tvAlertShortCircuit.text = if (res.isDcOverheat) {
+                            "DC OVERHEAT! Kutub (+) dan (-) terhubung tanpa beban"
+                        } else {
+                            "SHORT CIRCUIT! Periksa fasa & netral pada jalur oranye"
+                        }
+                        cardShortCircuit.visibility = View.VISIBLE
                     }
-                    cardShortCircuit.visibility = View.VISIBLE
-                } else if (canvasView.simResult?.isFuseBlown != true) {
-                    cardShortCircuit.visibility = View.GONE
+                    res?.isEarthLeakage == true -> {
+                        cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0ea580c"))
+                        tvAlertShortCircuit.text = "ARUS BOCOR KE TANAH (PE/GND)! Periksa isolasi fasa"
+                        cardShortCircuit.visibility = View.VISIBLE
+                    }
+                    res?.trippedEarthLeakageTags?.isNotEmpty() == true -> {
+                        val tags = res.trippedEarthLeakageTags.joinToString(", ")
+                        cardShortCircuit.setCardBackgroundColor(Color.parseColor("#d97706"))
+                        tvAlertShortCircuit.text = "ELCB/RCCB TRIP ($tags)! Arus bocor ke tanah terdeteksi"
+                        cardShortCircuit.visibility = View.VISIBLE
+                    }
+                    res?.trippedBreakerTags?.isNotEmpty() == true -> {
+                        val tags = res.trippedBreakerTags.joinToString(", ")
+                        cardShortCircuit.setCardBackgroundColor(Color.parseColor("#d97706"))
+                        tvAlertShortCircuit.text = "BREAKER TRIP ($tags)! Hubung singkat terdeteksi — periksa rangkaian"
+                        cardShortCircuit.visibility = View.VISIBLE
+                    }
+                    res?.isFuseBlown == true -> {
+                        cardShortCircuit.setCardBackgroundColor(Color.parseColor("#d97706"))
+                        tvAlertShortCircuit.text = "FUSE TERPUTUS! Hubung singkat terdeteksi — perbaiki di properti"
+                        cardShortCircuit.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        cardShortCircuit.visibility = View.GONE
+                        cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0dc2626"))
+                    }
                 }
             }
 
+            override fun onShortCircuit(isShort: Boolean, isDcOverheat: Boolean) {
+                refreshSimulationAlertBanner()
+            }
+
             override fun onFuseBlown(isBlown: Boolean) {
-                if (isBlown) {
-                    cardShortCircuit.setCardBackgroundColor(Color.parseColor("#d97706"))
-                    tvAlertShortCircuit.text = "FUSE TERPUTUS! Matikan simulasi & perbaiki di properti"
-                    cardShortCircuit.visibility = View.VISIBLE
-                } else if (canvasView.simResult?.shortCircuit != true) {
-                    cardShortCircuit.visibility = View.GONE
-                    cardShortCircuit.setCardBackgroundColor(Color.parseColor("#f0dc2626"))
-                }
+                refreshSimulationAlertBanner()
+            }
+
+            override fun onBreakerTripped(shortTags: List<String>, earthTags: List<String>, isEarthLeakageActive: Boolean) {
+                refreshSimulationAlertBanner()
             }
 
             override fun onUndoRedoStateChanged(canUndo: Boolean, canRedo: Boolean) {
@@ -1894,6 +1931,13 @@ class MainActivity : Activity() {
                     backgroundTintList = ColorStateList.valueOf(Color.parseColor("#ef4444"))
                     setOnClickListener {
                         WorkspaceManager.deleteProject(this@MainActivity, item.name)
+                        val jsFile = java.io.File(java.io.File(filesDir, "jobsheets"), "${item.name}.pdf")
+                        if (jsFile.exists()) {
+                            jsFile.delete()
+                        }
+                        if (currentProjectName == item.name) {
+                            activeJobsheetFile = null
+                        }
                         refreshWorkspaceList()
                         Toast.makeText(this@MainActivity, "Proyek '${item.name}' dihapus", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
@@ -1931,6 +1975,12 @@ class MainActivity : Activity() {
             val newName = input?.text?.toString()?.trim() ?: ""
             if (newName.isNotEmpty() && newName != item.name) {
                 if (WorkspaceManager.renameProject(this, item.name, newName)) {
+                    val jsDir = java.io.File(filesDir, "jobsheets")
+                    val oldJs = java.io.File(jsDir, "${item.name}.pdf")
+                    if (oldJs.exists()) {
+                        val newJs = java.io.File(jsDir, "$newName.pdf")
+                        oldJs.renameTo(newJs)
+                    }
                     if (currentProjectName == item.name) {
                         setCurrentProject(newName)
                     }
@@ -2302,6 +2352,18 @@ class MainActivity : Activity() {
         currentProjectName = name
         tvDrawerSubtitle.text = name
         SettingsManager.setLastProjectName(this, name)
+        updateActiveJobsheetForProject(name)
+    }
+
+    private fun updateActiveJobsheetForProject(projectName: String) {
+        val jobsheetDir = java.io.File(filesDir, "jobsheets")
+        val projectJobsheet = java.io.File(jobsheetDir, "$projectName.pdf")
+        if (projectJobsheet.exists() && projectJobsheet.length() > 0L) {
+            activeJobsheetFile = projectJobsheet
+        } else {
+            activeJobsheetFile = null
+        }
+        isJobsheetAvailableOnServer = false
     }
 
     private fun restoreLastProjectOrTemplate() {
@@ -2912,6 +2974,106 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun downloadJobsheetInBackground(baseUrl: String, filename: String, onFinished: ((java.io.File?) -> Unit)? = null) {
+        if (isJobsheetDownloading) return
+        isJobsheetDownloading = true
+        val jobsheetDir = java.io.File(filesDir, "jobsheets").apply {
+            if (!exists()) mkdirs()
+        }
+        val safeName = filename.replace(Regex("[^a-zA-Z0-9._-]"), "_").let {
+            if (it.endsWith(".pdf", ignoreCase = true)) it else "$it.pdf"
+        }
+        val stagingFile = java.io.File(jobsheetDir, "staging_task_jobsheet.pdf")
+        val tempFile = java.io.File(jobsheetDir, "temp_task_jobsheet.pdf")
+
+        val downloadUrl = if (baseUrl.endsWith("/jobsheet.pdf") || baseUrl.endsWith("/jobsheet")) {
+            baseUrl
+        } else {
+            "${baseUrl.trimEnd('/')}/jobsheet.pdf"
+        }
+
+        kotlin.concurrent.thread {
+            var successFile: java.io.File? = null
+            try {
+                val url = java.net.URL(downloadUrl)
+                val conn = url.openConnection() as java.net.HttpURLConnection
+                conn.connectTimeout = 10000
+                conn.readTimeout = 20000
+                conn.requestMethod = "GET"
+                val code = conn.responseCode
+                if (code in 200..299) {
+                    conn.inputStream.use { input ->
+                        java.io.FileOutputStream(tempFile).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    if (tempFile.length() > 0L) {
+                        if (stagingFile.exists()) stagingFile.delete()
+                        if (tempFile.renameTo(stagingFile)) {
+                            successFile = stagingFile
+                        } else {
+                            tempFile.copyTo(stagingFile, overwrite = true)
+                            tempFile.delete()
+                            successFile = stagingFile
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                runCatching { tempFile.delete() }
+            } finally {
+                isJobsheetDownloading = false
+                if (successFile != null && successFile.exists() && successFile.length() > 0L) {
+                    activeJobsheetFilename = safeName
+                    val pendingProject = pendingJobsheetProjectName
+                    if (pendingProject != null) {
+                        val projectFile = java.io.File(jobsheetDir, "$pendingProject.pdf")
+                        try {
+                            if (successFile.absolutePath != projectFile.absolutePath) {
+                                successFile.copyTo(projectFile, overwrite = true)
+                            }
+                            if (currentProjectName == pendingProject) {
+                                activeJobsheetFile = projectFile
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        activeJobsheetFile = successFile
+                    }
+                }
+                runOnUiThread {
+                    onFinished?.invoke(activeJobsheetFile)
+                }
+            }
+        }
+    }
+
+    private fun openJobsheetPdfFile(file: java.io.File) {
+        try {
+            val uri: android.net.Uri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                "${packageName}.fileprovider",
+                file
+            )
+            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(android.content.Intent.FLAG_ACTIVITY_NO_HISTORY)
+            }
+            isOpeningJobsheet = true
+            jobsheetOpenedAtMs = android.os.SystemClock.elapsedRealtime()
+            startActivity(intent)
+        } catch (e: android.content.ActivityNotFoundException) {
+            isOpeningJobsheet = false
+            jobsheetOpenedAtMs = 0L
+            android.widget.Toast.makeText(this, "Tidak ada aplikasi pembaca PDF di perangkat ini", android.widget.Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            isOpeningJobsheet = false
+            jobsheetOpenedAtMs = 0L
+            android.widget.Toast.makeText(this, "Gagal membuka jobsheet: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun handleScannedQrPayload(rawPayload: String) {
         val trimmed = rawPayload.trim()
 
@@ -2945,7 +3107,33 @@ class MainActivity : Activity() {
                             .edit()
                             .putBoolean("is_exam_mode", isExam)
                             .apply()
+                        val jobsheetHeader = conn.getHeaderField("X-Has-Jobsheet")
+                        val jobsheetNameHeader = conn.getHeaderField("X-Jobsheet-Name")
+
                         val downloadedText = conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+
+                        var hasJs = jobsheetHeader?.equals("true", ignoreCase = true) == true
+                        var jsName = jobsheetNameHeader?.takeIf { it.isNotBlank() }
+
+                        try {
+                            val rootObj = org.json.JSONObject(downloadedText)
+                            val jsObj = rootObj.optJSONObject("jobsheet")
+                            if (jsObj != null) {
+                                if (!hasJs) hasJs = jsObj.optBoolean("available", false)
+                                if (jsName.isNullOrEmpty()) jsName = jsObj.optString("filename", "").takeIf { it.isNotBlank() }
+                            }
+                        } catch (_: Exception) {}
+
+                        pendingJobsheetProjectName = null
+                        isJobsheetAvailableOnServer = hasJs
+                        activeJobsheetFilename = jsName
+
+                        if (hasJs) {
+                            downloadJobsheetInBackground(serverUrl, jsName ?: "jobsheet.pdf")
+                        } else {
+                            activeJobsheetFile = null
+                        }
+
                         runOnUiThread {
                             showStudentIdentityDialog(downloadedText, serverUrl)
                         }
@@ -3080,6 +3268,7 @@ class MainActivity : Activity() {
             val etStudentNameInput = dialogView.findViewById<EditText>(R.id.etStudentNameInput)
             val etStudentPresensiInput = dialogView.findViewById<EditText>(R.id.etStudentPresensiInput)
             val tvStudentAutoFilename = dialogView.findViewById<TextView>(R.id.tvStudentAutoFilename)
+            val btnViewTaskJobsheet = dialogView.findViewById<Button>(R.id.btnViewTaskJobsheet)
             val btnCancelStudentIdentity = dialogView.findViewById<Button>(R.id.btnCancelStudentIdentity)
             val btnConfirmStudentIdentity = dialogView.findViewById<Button>(R.id.btnConfirmStudentIdentity)
             val btnCloseStudentIdentity = dialogView.findViewById<ImageView>(R.id.btnCloseStudentIdentity)
@@ -3114,8 +3303,43 @@ class MainActivity : Activity() {
             etStudentPresensiInput?.addTextChangedListener(watcher)
             updateFilenamePreview()
 
-            btnCloseStudentIdentity?.setOnClickListener { dialog.dismiss() }
-            btnCancelStudentIdentity?.setOnClickListener { dialog.dismiss() }
+            btnViewTaskJobsheet?.setOnClickListener {
+                if (!isJobsheetAvailableOnServer && (activeJobsheetFile == null || !activeJobsheetFile!!.exists())) {
+                    Toast.makeText(this, "Jobsheet tidak tersedia", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (isJobsheetDownloading) {
+                    Toast.makeText(this, "Sedang mengunduh jobsheet, mohon tunggu sebentar...", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                val readyFile = activeJobsheetFile
+                if (readyFile != null && readyFile.exists() && readyFile.length() > 0L) {
+                    openJobsheetPdfFile(readyFile)
+                } else if (!teacherUrl.isNullOrEmpty()) {
+                    Toast.makeText(this, "Mengunduh jobsheet dari hotspot guru...", Toast.LENGTH_SHORT).show()
+                    downloadJobsheetInBackground(teacherUrl, activeJobsheetFilename ?: "jobsheet.pdf") { file ->
+                        if (file != null && file.exists()) {
+                            openJobsheetPdfFile(file)
+                        } else {
+                            Toast.makeText(this, "Jobsheet tidak tersedia", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "Jobsheet tidak tersedia", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            btnCloseStudentIdentity?.setOnClickListener {
+                dialog.dismiss()
+                updateActiveJobsheetForProject(currentProjectName)
+            }
+            btnCancelStudentIdentity?.setOnClickListener {
+                dialog.dismiss()
+                updateActiveJobsheetForProject(currentProjectName)
+            }
+            dialog.setOnCancelListener {
+                updateActiveJobsheetForProject(currentProjectName)
+            }
 
             btnConfirmStudentIdentity?.setOnClickListener {
                 val inputName = etStudentNameInput?.text?.toString()?.trim() ?: ""
@@ -3147,8 +3371,33 @@ class MainActivity : Activity() {
 
                 dialog.dismiss()
 
+                val jobsheetDir = java.io.File(filesDir, "jobsheets").apply { if (!exists()) mkdirs() }
+                pendingJobsheetProjectName = finalProjectName
+
+                val stagingJs = activeJobsheetFile
+                if (stagingJs != null && stagingJs.exists() && stagingJs.length() > 0L) {
+                    val projectJobsheetFile = java.io.File(jobsheetDir, "$finalProjectName.pdf")
+                    try {
+                        if (stagingJs.absolutePath != projectJobsheetFile.absolutePath) {
+                            stagingJs.copyTo(projectJobsheetFile, overwrite = true)
+                        }
+                        activeJobsheetFile = projectJobsheetFile
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
                 val importedName = WorkspaceManager.importCircuitContent(this, finalProjectName, jsonString)
                 if (importedName != null) {
+                    if (importedName != finalProjectName) {
+                        val oldJs = java.io.File(jobsheetDir, "$finalProjectName.pdf")
+                        val newJs = java.io.File(jobsheetDir, "$importedName.pdf")
+                        if (oldJs.exists()) {
+                            oldJs.renameTo(newJs)
+                            activeJobsheetFile = newJs
+                        }
+                        pendingJobsheetProjectName = importedName
+                    }
                     closeWorkspaceOverlay()
                     val dir = WorkspaceManager.getWorkspaceDir(this)
                     val targetFile = java.io.File(dir, "$importedName.smrl")
@@ -3417,7 +3666,7 @@ class MainActivity : Activity() {
         val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val rotLabel = if (isLandscape) "Ubah ke Portrait" else "Ubah ke Landscape"
 
-        val items = listOf(
+        val items = mutableListOf(
             CompactMenuItem(1, R.drawable.ic_fullscreen, "Layar Penuh") {
                 enterFullscreenMode()
             },
@@ -3435,6 +3684,15 @@ class MainActivity : Activity() {
                 canvasView.fitToScreen()
             }
         )
+
+        val readyFile = activeJobsheetFile
+        if (readyFile != null && readyFile.exists() && readyFile.length() > 0L) {
+            items.add(
+                CompactMenuItem(5, R.drawable.ic_description, "Lihat Jobsheet") {
+                    openJobsheetPdfFile(readyFile)
+                }
+            )
+        }
 
         CompactMenuHelper.show(this, anchor, items, widthDp = 185)
     }
@@ -3563,6 +3821,14 @@ class MainActivity : Activity() {
     override fun onPause() {
         super.onPause()
         triggerAutoSaveIfEnabled(showFeedback = false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isOpeningJobsheet) {
+            isOpeningJobsheet = false
+            jobsheetOpenedAtMs = 0L
+        }
     }
 
     override fun onBackPressed() {

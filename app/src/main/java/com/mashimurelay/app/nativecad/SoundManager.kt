@@ -150,10 +150,10 @@ class SoundManager(private val context: Context) {
             }
         }
 
-        // 1. Motor Running (category == "motors" and frame in 1..2)
+        // 1. Motor Running (category == "motors" and frame in 1..4)
         val hasActiveMotor = elements.any { el ->
             val def = NativeComponentRegistry.get(el.svgData)
-            def?.category == "motors" && (elementFrames[el.id] ?: 0) in 1..2
+            def?.category == "motors" && (elementFrames[el.id] ?: 0) in 1..4
         }
         if (hasActiveMotor) {
             if (streamMotor == 0 && soundMotor != 0) {

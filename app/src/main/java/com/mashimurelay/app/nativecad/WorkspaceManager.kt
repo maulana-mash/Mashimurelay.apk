@@ -154,6 +154,8 @@ object WorkspaceManager {
                 put("frameIndex", el.frameIndex)
                 put("presetTime", el.presetTime.toDouble())
                 put("valueTimeOn", el.presetTime.toDouble())
+                put("presetTimeOff", el.presetTimeOff.toDouble())
+                put("valueTimeOff", el.presetTimeOff.toDouble())
                 put("lampColor", el.lampColor)
                 put("fontSize", el.fontSize.toDouble())
                 put("textColor", el.textColor)
@@ -273,6 +275,18 @@ object WorkspaceManager {
                     obj.has("presetTime") -> obj.optDouble("presetTime", 2.0).toFloat()
                     else -> 2.0f
                 }
+                val presetTimeOff = when {
+                    obj.has("valueTimeOff") -> {
+                        val raw = obj.opt("valueTimeOff")
+                        when (raw) {
+                            is Number -> raw.toFloat()
+                            is String -> raw.trim().replace(',', '.').toFloatOrNull() ?: 0.0f
+                            else -> 0.0f
+                        }
+                    }
+                    obj.has("presetTimeOff") -> obj.optDouble("presetTimeOff", 0.0).toFloat()
+                    else -> 0.0f
+                }
                 val lampColor = obj.optString("lampColor", "yellow")
                 val fontSize = obj.optDouble("fontSize", 24.0).toFloat()
                 val textColor = if (obj.has("textColor")) obj.optString("textColor", "#93c5fd") else if (obj.has("color")) obj.optString("color", "#93c5fd") else "#93c5fd"
@@ -297,6 +311,7 @@ object WorkspaceManager {
                         frameIndex = frameIndex,
                         terminalTags = terminalTags,
                         presetTime = presetTime,
+                        presetTimeOff = presetTimeOff,
                         lampColor = lampColor,
                         fontSize = fontSize,
                         textColor = textColor,
@@ -424,7 +439,7 @@ object WorkspaceManager {
             val comment = el.comment
             val rot = el.canonicalRotation
             val vTimeOn = el.presetTime
-            val vTimeOff = 0.0f
+            val vTimeOff = el.presetTimeOff
             val fontIdx = if (el.svgData == "text") 24 else 0
 
             lines.add("$legacyType@${el.id}@$tagPrefix@$tagNum@$x@$y@$comment@0@2@$vTimeOn@$vTimeOff@$rot@$fontIdx@1@0")

@@ -104,11 +104,13 @@ object NativeComponentRegistry {
                 }
 
                 val nodesList = mutableListOf<TerminalNode>()
+                val seenNodeIds = mutableSetOf<Int>()
                 val nodesArray = obj.optJSONArray("nodes")
                 if (nodesArray != null) {
                     for (i in 0 until nodesArray.length()) {
                         val nodeObj = nodesArray.getJSONObject(i)
                         val idx = nodeObj.optInt("id", i)
+                        if (!seenNodeIds.add(idx)) continue
                         val nodeTag = nodeObj.optString("tag", "")
                         val dirRaw = nodeObj.optString("direction", "0")
                         val dirInt = dirRaw.toIntOrNull() ?: when (dirRaw.lowercase()) {

@@ -13,12 +13,22 @@ enum class Potential(val flag: Int, val color: Int) {
     GND(32, Color.parseColor("#059669")),    // Ground Chasis
     DC_P(64, Color.parseColor("#f43f5e")),   // DC Positif
     DC_N(128, Color.parseColor("#38bdf8")),  // DC Negatif
-    DC_OVERHEAT(192, Color.parseColor("#dc2626")); // DC Overheat / Korslet Membara
+    DC_OVERHEAT(192, Color.parseColor("#dc2626")), // DC Overheat / Korslet Membara
+    AC_SHORT(256, Color.parseColor("#f97316"));    // AC Short Circuit / Earth Fault Per-Jalur
 
     companion object {
         fun fromFlag(flag: Int): Potential {
             if ((flag and DC_P.flag) != 0 && (flag and DC_N.flag) != 0) {
                 return DC_OVERHEAT
+            }
+            val hasL1 = (flag and L1.flag) != 0
+            val hasL2 = (flag and L2.flag) != 0
+            val hasL3 = (flag and L3.flag) != 0
+            val hasN = (flag and N.flag) != 0
+            val hasEarth = (flag and (PE.flag or GND.flag)) != 0
+            val phaseCount = (if (hasL1) 1 else 0) + (if (hasL2) 1 else 0) + (if (hasL3) 1 else 0)
+            if (phaseCount >= 2 || (phaseCount >= 1 && (hasN || hasEarth))) {
+                return AC_SHORT
             }
             return entries.find { it.flag == flag } ?: NONE
         }
@@ -50,6 +60,7 @@ data class NativeElement(
     var frameIndex: Int = 0,
     var terminalTags: MutableList<String> = mutableListOf(),
     var presetTime: Float = 2.0f,
+    var presetTimeOff: Float = 0.0f,
     var lampColor: String = "yellow",
     var fontSize: Float = 24f,
     var textColor: String = "#93c5fd",
@@ -288,8 +299,12 @@ data class SimResult(
     val wirePotentials: Map<Int, Potential>,
     val shortCircuit: Boolean,
     val isDcOverheat: Boolean = false,
+    val isEarthLeakage: Boolean = false,
     val isFuseBlown: Boolean = false,
     val newlyBlownFuses: Set<Int> = emptySet(),
+    val trippedBreakerTags: List<String> = emptyList(),
+    val trippedEarthLeakageTags: List<String> = emptyList(),
+    val newlyTrippedBreakers: Set<Int> = emptySet(),
     val activeCoils: Set<String> = emptySet(),
     val flowingConnectors: Set<Int> = emptySet(),
     val timerStates: Map<Int, TimerState> = emptyMap()

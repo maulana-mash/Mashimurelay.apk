@@ -142,10 +142,11 @@ object SvgComponentRenderer {
         }
 
         // 2b. Untuk komponen motor, jangan pernah menampilkan panah statis bawaan SVG
-        // (strokePath1..4, pathFill3..4) karena panah putaran dan ekornya dirender secara dinamis 60fps oleh NativeCanvasView
+        // (strokePath1, strokePath4, pathFill3..4) karena panah putaran dirender secara dinamis 60fps oleh NativeCanvasView.
+        // Namun strokePath2 ("1") & strokePath3 ("2") pada motorDhalander / motorTwoSpeeds tetap mengikuti <frames>!
         val isMotor = rawSvg.contains("category=\"motors\"") || rawSvg.contains("type=\"motor")
         if (isMotor) {
-            val motorStaticArrowIds = setOf("strokePath1", "strokePath2", "strokePath3", "strokePath4", "pathFill3", "pathFill4")
+            val motorStaticArrowIds = setOf("strokePath1", "strokePath4", "pathFill3", "pathFill4")
             allManagedIds.addAll(motorStaticArrowIds)
             activeIds.removeAll(motorStaticArrowIds)
 
@@ -172,42 +173,45 @@ object SvgComponentRenderer {
             }
         }
 
-        // 4. Terapkan display:inline atau display:none ke setiap elemen yang ID-nya cocok
-        val lines = rawSvg.lines().map { line ->
-            val trimmed = line.trimStart()
-            if (trimmed.startsWith("<pathFrame")) {
-                line
-            } else {
-                var matchedId: String? = null
-                for (id in allManagedIds) {
-                    if (line.contains("id=\"$id\"") || line.contains("id='$id'")) {
-                        matchedId = id
-                        break
-                    }
-                }
+        // 4. Terapkan display:inline atau display:none ke setiap tag elemen SVG (mendukung tag multi-baris Inkscape)
+        val isCoil = rawSvg.contains("category=\"coils\"") || rawSvg.contains("category='coils'") ||
+                rawSvg.contains("tagType=\"timerCoils\"") || rawSvg.contains("flasher", ignoreCase = true) ||
+                rawSvg.contains("type=\"coil\"", ignoreCase = true)
+        val effectiveHex = when {
+            isMotor && frameIndex == 5 -> "#ef4444"
+            isCoil -> "#ef4444"
+            else -> lampHex
+        }
 
-                if (matchedId != null) {
-                    val isCoil = rawSvg.contains("category=\"coils\"") || rawSvg.contains("category='coils'") ||
-                            rawSvg.contains("tagType=\"timerCoils\"") || rawSvg.contains("flasher", ignoreCase = true) ||
-                            rawSvg.contains("type=\"coil\"", ignoreCase = true)
-                    val effectiveHex = if (isCoil) "#ef4444" else lampHex
-                    val shouldBeVisible = activeIds.contains(matchedId)
-                    adjustElementVisibility(line, shouldBeVisible, effectiveHex)
-                } else {
-                    line
-                }
+        val tagRegex = Regex("""<(path|rect|circle|g|ellipse|polygon|polyline|line)\b[^>]*>""", RegexOption.DOT_MATCHES_ALL)
+        val idExtractRegex = Regex("""\bid=["']([^"']+)["']""")
+
+        return tagRegex.replace(rawSvg) { match ->
+            val tagText = match.value
+            val idMatch = idExtractRegex.find(tagText)
+            val matchedId = idMatch?.groupValues?.get(1)
+            if (matchedId != null && allManagedIds.contains(matchedId)) {
+                val shouldBeVisible = activeIds.contains(matchedId)
+                adjustElementVisibility(tagText, shouldBeVisible, effectiveHex, isMotor && frameIndex == 5)
+            } else {
+                tagText
             }
         }
-        return lines.joinToString("\n")
     }
 
-    private fun adjustElementVisibility(line: String, visible: Boolean, lampColorHex: String = "#fbbf24"): String {
-        var clean = line
+    private fun adjustElementVisibility(
+        tag: String,
+        visible: Boolean,
+        lampColorHex: String = "#fbbf24",
+        tintFillPath: Boolean = false
+    ): String {
+        var clean = tag
             .replace(Regex("""\s+display=["'][^"']*["']"""), "")
             .replace(Regex("""display\s*:\s*none\s*;?"""), "")
             .replace(Regex("""display\s*:\s*inline\s*;?"""), "")
 
-        if (visible && (clean.contains("id=\"mainFill1\"") || clean.contains("id='mainFill1'"))) {
+        if (visible && (clean.contains("id=\"mainFill1\"") || clean.contains("id='mainFill1'") ||
+                (tintFillPath && (clean.contains("id=\"fillPath1\"") || clean.contains("id='fillPath1'"))))) {
             clean = clean.replace(Regex("""fill\s*:\s*[^;"]+"""), "fill:$lampColorHex")
         }
 
@@ -220,32 +224,23 @@ object SvgComponentRenderer {
             }
         }
 
+        val openTagRegex = Regex("""^<(path|rect|circle|g|ellipse|polygon|polyline|line)(\s)""")
         return if (visible) {
             if (clean.contains("style=\"")) {
                 clean.replace("style=\"", "style=\"display:inline;")
             } else if (clean.contains("style='")) {
                 clean.replace("style='", "style='display:inline;")
             } else {
-                clean.replace("<path ", "<path display=\"inline\" ")
-                    .replace("<rect ", "<rect display=\"inline\" ")
-                    .replace("<g ", "<g display=\"inline\" ")
+                openTagRegex.replaceFirst(clean, "<$1 display=\"inline\"$2")
             }
         } else {
-            if (clean.contains("style=\"")) {
-                clean.replace("style=\"", "style=\"display:none;")
-                    .replace("<path ", "<path display=\"none\" ")
-                    .replace("<rect ", "<rect display=\"none\" ")
-                    .replace("<g ", "<g display=\"none\" ")
-            } else if (clean.contains("style='")) {
-                clean.replace("style='", "style='display:none;")
-                    .replace("<path ", "<path display=\"none\" ")
-                    .replace("<rect ", "<rect display=\"none\" ")
-                    .replace("<g ", "<g display=\"none\" ")
-            } else {
-                clean.replace("<path ", "<path display=\"none\" ")
-                    .replace("<rect ", "<rect display=\"none\" ")
-                    .replace("<g ", "<g display=\"none\" ")
+            var hidden = openTagRegex.replaceFirst(clean, "<$1 display=\"none\"$2")
+            if (hidden.contains("style=\"")) {
+                hidden = hidden.replace("style=\"", "style=\"display:none;")
+            } else if (hidden.contains("style='")) {
+                hidden = hidden.replace("style='", "style='display:none;")
             }
+            hidden
         }
     }
 

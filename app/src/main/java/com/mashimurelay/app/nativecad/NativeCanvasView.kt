@@ -30,6 +30,7 @@ class NativeCanvasView @JvmOverloads constructor(
         fun onSwitchClicked(element: NativeElement)
         fun onShortCircuit(isShort: Boolean, isDcOverheat: Boolean = false)
         fun onFuseBlown(isBlown: Boolean) {}
+        fun onBreakerTripped(shortTags: List<String>, earthTags: List<String>, isEarthLeakageActive: Boolean) {}
         fun onUndoRedoStateChanged(canUndo: Boolean, canRedo: Boolean) {}
         fun onCircuitModified() {}
         fun onTeacherLockedMoveAttempt() {}
@@ -465,6 +466,7 @@ class NativeCanvasView @JvmOverloads constructor(
         soundManager.stopAllLoops()
         interactionListener?.onShortCircuit(false, false)
         interactionListener?.onFuseBlown(false)
+        interactionListener?.onBreakerTripped(emptyList(), emptyList(), false)
         invalidate()
     }
 
@@ -512,8 +514,16 @@ class NativeCanvasView @JvmOverloads constructor(
         if (simResult?.newlyBlownFuses?.isNotEmpty() == true) {
             soundManager.playFuseBlownSound()
         }
+        if (simResult?.newlyTrippedBreakers?.isNotEmpty() == true) {
+            soundManager.playSwitchClick(this)
+        }
         interactionListener?.onShortCircuit(simResult?.shortCircuit == true, simResult?.isDcOverheat == true)
         interactionListener?.onFuseBlown(simResult?.isFuseBlown == true)
+        interactionListener?.onBreakerTripped(
+            simResult?.trippedBreakerTags ?: emptyList(),
+            simResult?.trippedEarthLeakageTags ?: emptyList(),
+            simResult?.isEarthLeakage == true
+        )
         invalidate()
     }
 
@@ -1084,8 +1094,9 @@ class NativeCanvasView @JvmOverloads constructor(
 
             val pot = curSimResult?.wirePotentials?.get(c.id) ?: Potential.NONE
             val isWireEnergized = isSimulating && pot != Potential.NONE
-            val isDcOverheatWire = isSimulating && (pot == Potential.DC_OVERHEAT || (curSimResult?.isDcOverheat == true && isWireEnergized))
-            val isAcShortWire = isSimulating && (curSimResult?.shortCircuit == true && curSimResult.isDcOverheat != true && isWireEnergized)
+            // Pewarnaan korsleting khusus per-jalur (per-net): hanya kawat yang mengalami korsleting/arus bocor yang menyala oranye/merah membara!
+            val isDcOverheatWire = isSimulating && pot == Potential.DC_OVERHEAT
+            val isAcShortWire = isSimulating && pot == Potential.AC_SHORT
             val isThermalPulsingWire = isDcOverheatWire || isAcShortWire
 
             if (isThermalPulsingWire) {
@@ -1304,12 +1315,13 @@ class NativeCanvasView @JvmOverloads constructor(
                 }
             }
 
-            // Animasi Putaran Motor Listrik (Real-Time 60fps Hardware-Accelerated)
-            if (isSimulating && def.category == "motors" && currentFrame in 1..2) {
+            // Animasi Putaran Motor Listrik (Real-Time 60fps Hardware-Accelerated; 1/2 = Speed 1, 3/4 = Speed 2)
+            if (isSimulating && def.category == "motors" && currentFrame in 1..4) {
                 hasActiveRunningMotor = true
                 val radius = if (el.svgData == "motorDC") 48.5f else 73.5f
-                val isCCW = (currentFrame == 2)
-                drawMotorSpinningArrows(canvas, radius, isCCW)
+                val isCCW = (currentFrame == 2 || currentFrame == 4)
+                val speedMult = if (currentFrame == 3 || currentFrame == 4) 1.85f else 1.0f
+                drawMotorSpinningArrows(canvas, radius, isCCW, speedMult)
             }
 
             canvas.restore()
@@ -1409,10 +1421,10 @@ class NativeCanvasView @JvmOverloads constructor(
         }
     }
 
-    private fun drawMotorSpinningArrows(canvas: Canvas, radius: Float, isCCW: Boolean) {
+    private fun drawMotorSpinningArrows(canvas: Canvas, radius: Float, isCCW: Boolean, speedMultiplier: Float = 1.0f) {
         canvas.save()
         val dir = if (isCCW) -1f else 1f
-        canvas.rotate(motorSpinAngle * dir)
+        canvas.rotate(motorSpinAngle * speedMultiplier * dir)
 
         val strokeW = if (radius < 50f) 6f else 7.5f
         motorArcPaint.strokeWidth = strokeW
@@ -1577,8 +1589,8 @@ class NativeCanvasView @JvmOverloads constructor(
     private fun drawTerminals(canvas: Canvas) {
         for (el in elements) {
             val def = NativeComponentRegistry.get(el.svgData) ?: continue
-            for (node in def.nodes) {
-                val p = el.getWorldNodePos(node.index, def.nodes)
+            for ((listIdx, node) in def.nodes.withIndex()) {
+                val p = el.getWorldNodePos(listIdx, def.nodes)
 
                 if (activeWireStart != null) {
                     canvas.drawCircle(p.x, p.y, 6f, snapPaint)
@@ -1587,9 +1599,9 @@ class NativeCanvasView @JvmOverloads constructor(
                 }
 
                 if (showPinLabels) {
-                    val pinTag = el.getTerminalTag(node.index, node.tag)
+                    val pinTag = el.getTerminalTag(listIdx, node.tag)
                     if (pinTag.isNotEmpty()) {
-                        val worldDir = el.getWorldNodeDirection(node.index, def.nodes)
+                        val worldDir = el.getWorldNodeDirection(listIdx, def.nodes)
                         val textW = terminalLabelPaint.measureText(pinTag)
                         val pinRadius = if (activeWireStart != null) 6f else 3.5f
                         val gap = 5f // 5px jarak bersih dari lingkaran terminal pin sesuai permintaan user

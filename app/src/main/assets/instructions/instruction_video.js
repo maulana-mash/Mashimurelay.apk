@@ -8,1497 +8,1497 @@
 
   // 11 Skenario Video & Naskah Narasi Simulasi Mashimurelay
   const SIMULATION_VIDEOS = {
-  "dol_starter": {
-    "id": "dol_starter",
-    "title": "Rangkaian DOL Starter & Pengunci Mandiri (Self-Holding Relay -KM1)",
-    "videoFile": "01_dol_starter.mp4",
-    "badge": "KOIL KONTAKTOR (-KM1) & KONTAK BANTU NO (13-14)",
-    "duration": 15.0,
-    "telemetry": {
-      "phase_l1": {
-        "standby": "220 V AC (Siaga di Saklar)",
-        "running": "220 V AC (Mengalir Penuh)",
-        "stopping": "0 V (Terputus di Tombol STOP)"
+    "dol_starter": {
+      "id": "dol_starter",
+      "title": "Rangkaian DOL Starter & Pengunci Mandiri (Self-Holding Relay -KM1)",
+      "videoFile": "01_dol_starter.mp4",
+      "badge": "KOIL KONTAKTOR (-KM1) & KONTAK BANTU NO (13-14)",
+      "duration": 20.0,
+      "telemetry": {
+        "phase_l1": {
+          "standby": "220 V AC (Siaga di Saklar)",
+          "running": "220 V AC (Mengalir Penuh)",
+          "stopping": "0 V (Terputus di Tombol STOP)"
+        },
+        "coil_km1": {
+          "standby": "DE-ENERGIZED (OFF)",
+          "running": "ENERGIZED (Medan Magnet Aktif)",
+          "stopping": "DE-ENERGIZED (Fluks Runtuh)"
+        },
+        "latch_contact_13_14": {
+          "standby": "TERBUKA (OPEN)",
+          "running": "TERTUTUP (Latching Aktif)",
+          "stopping": "TERBUKA (OPEN)"
+        },
+        "motor_3phase_power": {
+          "standby": "0 V / 0 A (Mati)",
+          "running": "380 V / 5.0 A (Nominal)",
+          "stopping": "0 V / 0 A (Terisolasi)"
+        },
+        "motor_rpm": {
+          "standby": "0 RPM (Diam)",
+          "running": "1450 RPM (Stabil CW)",
+          "stopping": "800 -> 300 -> 0 RPM (Deselerasi)"
+        }
       },
-      "coil_km1": {
-        "standby": "DE-ENERGIZED (OFF)",
-        "running": "ENERGIZED (Medan Magnet Aktif)",
-        "stopping": "DE-ENERGIZED (Fluks Runtuh)"
-      },
-      "latch_contact_13_14": {
-        "standby": "TERBUKA (OPEN)",
-        "running": "TERTUTUP (Latching Aktif)",
-        "stopping": "TERBUKA (OPEN)"
-      },
-      "motor_3phase_power": {
-        "standby": "0 V / 0 A (Mati)",
-        "running": "380 V / 5.0 A (Nominal)",
-        "stopping": "0 V / 0 A (Terisolasi)"
-      },
-      "motor_rpm": {
-        "standby": "0 RPM (Diam)",
-        "running": "1450 RPM (Stabil CW)",
-        "stopping": "800 -> 300 -> 0 RPM (Deselerasi)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Siaga & Kesiapan Fasa",
+          "narration": "Kondisi awal siaga: Fasa L1 220 Volt telah bertegangan. Push Button STOP S-nol dalam posisi normal tertutup NC. Push Button START S-satu terbuka normal NO. Koil kontaktor KM-satu mati dan rotor motor diam pada nol RPM.",
+          "visual": [
+            "Jalur fasa kontrol L1 menyala merah hingga terminal masukan Push Button STOP (-S0)",
+            "Kontak NC -S0 terhubung rapat normal",
+            "Saklar START -S1 memperlihatkan celah kontak terbuka (NO)",
+            "Motor listrik 3-fasa dalam kondisi abu-abu statis (0 RPM)"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "L1: 220V AC",
+            "-S0: NC (TERHUBUNG)",
+            "-S1: NO (TERBUKA)",
+            "MOTOR: 0 RPM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Pengoperasian Tombol START & Eksitasi Elektromagnetik",
+          "narration": "Operator menekan Push Button START S-satu. Bilah kontak bergerak turun menghubungkan sirkuit kontrol. Partikel arus fasa merah meluncur menuju terminal input A-satu koil kontaktor. Kumparan tembaga koil terenergi penuh, menghasilkan fluks medan elektromagnetik intensif yang memagnetisasi inti besi KM-satu dan menarik armatur.",
+          "visual": [
+            "Tombol hijau -S1 tertekan turun menyambungkan pin 3 ke pin 4",
+            "Partikel arus fasa merah meluncur cepat ke terminal A1 koil kontaktor -KM1",
+            "Inti besi kontaktor berpendar biru terang dengan gelombang medan magnet radial",
+            "Batang armatur tertarik mengatasi tekanan pegas pembalik"
+          ],
+          "on_screen": [
+            "START PRESSED (-S1)",
+            "KONTROL: TERTUTUP (PIN 3-4)",
+            "KOIL -KM1: ENERGIZED",
+            "FLUKSMAGNETIK: AKTIF"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Mekanisme Penguncian Mandiri (Self-Holding) & Pelepasan START",
+          "narration": "Kontak bantu NO tiga belas empat belas menutup serempak bersama armatur. Tercipta lintasan arus paralel mandiri di samping tombol START. Saat operator melepas tombol START dan saklar kembali terbuka, koil tetap bertegangan penuh melalui jalur pengunci tiga belas empat belas yang terkunci rapat.",
+          "visual": [
+            "Bilah kontak bantu 13-14 menutup rapat",
+            "Jalur kabel paralel di samping saklar START menyala merah membawa arus fasa independen",
+            "Tombol START terangkat kembali ke atas (terbuka)",
+            "Arus listrik tetap mengalir mulus ke koil melalui kontak bantu 13-14 (Self-Holding)"
+          ],
+          "on_screen": [
+            "SELF-HOLDING AKTIF",
+            "KONTAK BANTU (13-14): LATCHED",
+            "START (-S1): TERLEPAS (OPEN)",
+            "KOIL -KM1: LOCKED ON"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 16.0,
+          "name": "Penyaluran Daya 3-Fasa & Putaran Nominal Motor",
+          "narration": "Tiga pasang kontak daya utama satu-dua, tiga-empat, dan lima-enam menutup serempak, menghubungkan pasokan daya tiga fasa ke motor induksi. Arus listrik tiga fasa memutar rotor motor induksi hingga mencapai seribu empat ratus lima puluh RPM secara halus dan efisien.",
+          "visual": [
+            "Tiga bilah kontak daya utama berukuran besar menutup serempak",
+            "Tiga kabel tebal fasa daya (L1, L2, L3) seketika menyala terang",
+            "Rotor motor berputar cepat searah jarum jam (CW)",
+            "Instrumen RPM menampilkan angka 1450 RPM stabil dengan indikator hijau 'RUNNING'"
+          ],
+          "on_screen": [
+            "DAYA 3-FASA: TERSAMBUNG",
+            "KONTAK DAYA (1-2, 3-4, 5-6): CLOSED",
+            "DAYA: 380V / 5.0A",
+            "MOTOR: 1450 RPM (RUNNING CW)"
+          ]
+        },
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "name": "Interupsi STOP, Pemutusan Magnetik, & Berhenti",
+          "narration": "Operator menekan Push Button STOP S-nol. Kontak NC terangkat membuka, seketika memutus pasokan fasa L1 ke seluruh sirkuit kontrol. Fluks magnetik koil runtuh lenyap. Pegas pembalik mendorong armatur mundur, membuka seluruh kontak serempak. Motor melambat hingga berhenti total pada nol RPM. Sirkuit kembali ke posisi siaga aman.",
+          "visual": [
+            "Tombol merah -S0 tertekan masuk, kontak NC terbuka memutus arus fasa",
+            "Fluks magnetik koil runtuh lenyap (de-energized)",
+            "Kontak 13-14 dan tiga kontak daya utama membuka serempak",
+            "Putaran motor melambat secara inersia hingga berhenti sempurna (0 RPM)",
+            "Seluruh rangkaian dan motor kembali ke kondisi siaga awal"
+          ],
+          "on_screen": [
+            "STOP PRESSED (-S0)",
+            "SIRKUIT KONTROL: TERPUTUS",
+            "KOIL: DE-ENERGIZED",
+            "DESELERASI: 1450 -> 0 RPM",
+            "STATUS: AMAN (STANDBY)"
+          ]
+        }
+      ],
+      "pillLabel": "01. DOL Starter"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Siaga & Kesiapan Fasa",
-        "narration": "Kondisi awal siaga: Fasa L1 220 Volt telah bertegangan. Push Button STOP S-nol dalam posisi normal tertutup NC. Push Button START S-satu terbuka normal NO. Koil kontaktor KM-satu mati dan rotor motor diam pada nol RPM.",
-        "visual": [
-          "Jalur fasa kontrol L1 menyala merah hingga terminal masukan Push Button STOP (-S0)",
-          "Kontak NC -S0 terhubung rapat normal",
-          "Saklar START -S1 memperlihatkan celah kontak terbuka (NO)",
-          "Motor listrik 3-fasa dalam kondisi abu-abu statis (0 RPM)"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "L1: 220V AC",
-          "-S0: NC (TERHUBUNG)",
-          "-S1: NO (TERBUKA)",
-          "MOTOR: 0 RPM"
-        ]
+    "on_delay": {
+      "id": "on_delay",
+      "title": "Prinsip Kerja Relai Pewaktu On-Delay (Timer Delay ON -KT1)",
+      "videoFile": "02_on_delay.mp4",
+      "badge": "KOIL ON-DELAY (-KT1) & KONTAK TUNDA NO (17-18)",
+      "duration": 20.0,
+      "telemetry": {
+        "coil_kt1": {
+          "standby": "0 V (OFF / Standby)",
+          "counting": "220 V (POWER ON / Mengalir)",
+          "triggered": "220 V (POWER ON / Bertahan)",
+          "reset": "0 V (Daya Terputus / OFF)"
+        },
+        "digital_countdown": {
+          "standby": "5.0s (Preset Siaga)",
+          "counting": "4.9s -> 0.1s (COUNTING)",
+          "triggered": "0.0s (TRIGGERED / SELESAI)",
+          "reset": "Reset ke Siaga Awal"
+        },
+        "delay_contact_17_18": {
+          "standby": "TERBUKA (OPEN)",
+          "counting": "TERBUKA (Menahan Aliran)",
+          "triggered": "TERTUTUP (Snap Action Menutup)",
+          "reset": "TERBUKA (Instant Reset)"
+        },
+        "pilot_lamp_load": {
+          "standby": "PADAM (OFF)",
+          "counting": "PADAM (OFF / Tertahan)",
+          "triggered": "MENYALA TERANG (HIJAU ON)",
+          "reset": "PADAM (OFF)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pengoperasian Tombol START & Eksitasi Elektromagnetik",
-        "narration": "Operator menekan Push Button START S-satu. Bilah kontak bergerak turun menghubungkan sirkuit kontrol. Partikel arus fasa merah meluncur menuju terminal input A-satu koil kontaktor. Kumparan tembaga koil terenergi penuh, menghasilkan fluks medan elektromagnetik intensif yang memagnetisasi inti besi KM-satu dan menarik armatur.",
-        "visual": [
-          "Tombol hijau -S1 tertekan turun menyambungkan pin 3 ke pin 4",
-          "Partikel arus fasa merah meluncur cepat ke terminal A1 koil kontaktor -KM1",
-          "Inti besi kontaktor berpendar biru terang dengan gelombang medan magnet radial",
-          "Batang armatur tertarik mengatasi tekanan pegas pembalik"
-        ],
-        "on_screen": [
-          "START PRESSED (-S1)",
-          "KONTROL: TERTUTUP (PIN 3-4)",
-          "KOIL -KM1: ENERGIZED",
-          "FLUKSMAGNETIK: AKTIF"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.0,
-        "name": "Mekanisme Penguncian Mandiri (Self-Holding) & Pelepasan START",
-        "narration": "Kontak bantu NO tiga belas empat belas menutup serempak bersama armatur. Tercipta lintasan arus paralel mandiri di samping tombol START. Saat operator melepas tombol START dan saklar kembali terbuka, koil tetap bertegangan penuh melalui jalur pengunci tiga belas empat belas yang terkunci rapat.",
-        "visual": [
-          "Bilah kontak bantu 13-14 menutup rapat",
-          "Jalur kabel paralel di samping saklar START menyala merah membawa arus fasa independen",
-          "Tombol START terangkat kembali ke atas (terbuka)",
-          "Arus listrik tetap mengalir mulus ke koil melalui kontak bantu 13-14 (Self-Holding)"
-        ],
-        "on_screen": [
-          "SELF-HOLDING AKTIF",
-          "KONTAK BANTU (13-14): LATCHED",
-          "START (-S1): TERLEPAS (OPEN)",
-          "KOIL -KM1: LOCKED ON"
-        ]
-      },
-      {
-        "start": 9.0,
-        "end": 12.0,
-        "name": "Penyaluran Daya 3-Fasa & Putaran Nominal Motor",
-        "narration": "Tiga pasang kontak daya utama satu-dua, tiga-empat, dan lima-enam menutup serempak, menghubungkan pasokan daya tiga fasa ke motor induksi. Arus listrik tiga fasa memutar rotor motor induksi hingga mencapai seribu empat ratus lima puluh RPM secara halus dan efisien.",
-        "visual": [
-          "Tiga bilah kontak daya utama berukuran besar menutup serempak",
-          "Tiga kabel tebal fasa daya (L1, L2, L3) seketika menyala terang",
-          "Rotor motor berputar cepat searah jarum jam (CW)",
-          "Instrumen RPM menampilkan angka 1450 RPM stabil dengan indikator hijau 'RUNNING'"
-        ],
-        "on_screen": [
-          "DAYA 3-FASA: TERSAMBUNG",
-          "KONTAK DAYA (1-2, 3-4, 5-6): CLOSED",
-          "DAYA: 380V / 5.0A",
-          "MOTOR: 1450 RPM (RUNNING CW)"
-        ]
-      },
-      {
-        "start": 12.0,
-        "end": 15.0,
-        "name": "Interupsi STOP, Pemutusan Magnetik, & Berhenti",
-        "narration": "Operator menekan Push Button STOP S-nol. Kontak NC terangkat membuka, seketika memutus pasokan fasa L1 ke seluruh sirkuit kontrol. Fluks magnetik koil runtuh lenyap. Pegas pembalik mendorong armatur mundur, membuka seluruh kontak serempak. Motor melambat hingga berhenti total pada nol RPM. Sirkuit kembali ke posisi siaga aman.",
-        "visual": [
-          "Tombol merah -S0 tertekan masuk, kontak NC terbuka memutus arus fasa",
-          "Fluks magnetik koil runtuh lenyap (de-energized)",
-          "Kontak 13-14 dan tiga kontak daya utama membuka serempak",
-          "Putaran motor melambat secara inersia hingga berhenti sempurna (0 RPM)",
-          "Seluruh rangkaian dan motor kembali ke kondisi siaga awal"
-        ],
-        "on_screen": [
-          "STOP PRESSED (-S0)",
-          "SIRKUIT KONTROL: TERPUTUS",
-          "KOIL: DE-ENERGIZED",
-          "DESELERASI: 1450 -> 0 RPM",
-          "STATUS: AMAN (STANDBY)"
-        ]
-      }
-    ],
-    "pillLabel": "01. DOL Starter"
-  },
-  "on_delay": {
-    "id": "on_delay",
-    "title": "Prinsip Kerja Relai Pewaktu On-Delay (Timer Delay ON -KT1)",
-    "videoFile": "02_on_delay.mp4",
-    "badge": "KOIL ON-DELAY (-KT1) & KONTAK TUNDA NO (17-18)",
-    "duration": 15.0,
-    "telemetry": {
-      "coil_kt1": {
-        "standby": "0 V (OFF / Standby)",
-        "counting": "220 V (POWER ON / Mengalir)",
-        "triggered": "220 V (POWER ON / Bertahan)",
-        "reset": "0 V (Daya Terputus / OFF)"
-      },
-      "digital_countdown": {
-        "standby": "5.0s (Preset Siaga)",
-        "counting": "4.9s -> 0.1s (COUNTING)",
-        "triggered": "0.0s (TRIGGERED / SELESAI)",
-        "reset": "Reset ke Siaga Awal"
-      },
-      "delay_contact_17_18": {
-        "standby": "TERBUKA (OPEN)",
-        "counting": "TERBUKA (Menahan Aliran)",
-        "triggered": "TERTUTUP (Snap Action Menutup)",
-        "reset": "TERBUKA (Instant Reset)"
-      },
-      "pilot_lamp_load": {
-        "standby": "PADAM (OFF)",
-        "counting": "PADAM (OFF / Tertahan)",
-        "triggered": "MENYALA TERANG (HIJAU ON)",
-        "reset": "PADAM (OFF)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Siaga & Kesiapan Fasa",
+          "narration": "Kondisi awal siaga: Saklar kontrol dalam posisi OFF terbuka. Koil On-Delay KT-satu tidak bertegangan nol Volt. Kontak tunda NO tujuh belas delapan belas terbuka dan lampu indikator padam. Fasa L1 siaga penuh di terminal masukan saklar dan kontak.",
+          "visual": [
+            "Rel fasa L1 menyala merah di bagian atas dan rel Netral biru di bagian bawah",
+            "Saklar kontrol membuka membentuk celah abu-abu",
+            "Koil -KT1 gelap, kontak 17-18 bersimbol payung terbuka",
+            "Lingkaran lampu pilot padam"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "SAKLAR: OPEN (OFF)",
+            "KOIL -KT1: 0V",
+            "KONTAK (17-18): OPEN",
+            "LAMPU BEBAN: PADAM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 6.5,
+          "name": "Pengaktifan Saklar Kontrol & Eksitasi Modul Pewaktu",
+          "narration": "Operator menyalakan saklar kontrol. Arus fasa 220V seketika mengalir masuk ke terminal A-satu A-dua koil On-Delay KT-satu. Rangkaian pewaktu internal terpicu aktif. Indikator daya koil menyala hijau dan tampilan digital HUD memulai hitungan mundur.",
+          "visual": [
+            "Saklar kontrol bergeser lurus ke bawah berwarna hijau terhubung",
+            "Aliran arus listrik fasa merah meluncur turun mengisi terminal input koil -KT1",
+            "Bingkai koil -KT1 berpendar hijau terang",
+            "Angka digital HUD menyala kuning amber menampilkan nilai tunda awal 5.0 detik"
+          ],
+          "on_screen": [
+            "SAKLAR: DITUTUP (ON)",
+            "KOIL -KT1: 220V (POWER ON)",
+            "COUNTDOWN HUD: AKTIF (5.0s)",
+            "MODUL PEWAKTU: INITIALIZED"
+          ]
+        },
+        {
+          "start": 6.5,
+          "end": 11.5,
+          "name": "Proses Hitung Mundur & Penahanan Kontak",
+          "narration": "Koil aktif menghitung mundur dari lima ke nol detik. Mekanisme penunda elektromagnetik menahan armatur agar kontak tidak langsung menutup. Meskipun koil sudah bertegangan penuh, kontak NO tujuh belas delapan belas tetap ditahan terbuka sempurna sehingga lampu beban tetap padam aman.",
+          "visual": [
+            "Angka digital HUD berkurang secara dinamis (4.0s -> 3.0s -> 2.0s -> 1.0s)",
+            "Gelombang pulsa tunda berpendar berulang di sekitar simbol parasut",
+            "Bilah kontak 17-18 tetap berjarak terbuka",
+            "Jalur fasa menuju beban terputus pada pin 17; indikator lampu beban tetap gelap tanpa arus"
+          ],
+          "on_screen": [
+            "COUNTDOWN: 4.0s -> 1.0s",
+            "PENAHANAN AKTIF: CONTACT HELD OPEN",
+            "KOIL: 220V (BERTAHAN)",
+            "BEBAN: AMAN PADAM"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 16.0,
+          "name": "Waktu Tunda Tuntas, Snap Action Menutup, & Beban Aktif",
+          "narration": "Tepat saat hitungan mencapai nol detik, mekanisme penahan melepaskan armatur dan kontak NO tujuh belas delapan belas membanting menutup seketika. Arus fasa 220V meluncur lancar melalui kontak tujuh belas delapan belas menuju lampu indikator, menyalakan beban secara optimal.",
+          "visual": [
+            "Angka HUD berkedip hijau '0.0s'",
+            "Bilah kontak 17-18 membanting menutup rapat menyambungkan pin 17 ke pin 18 dengan garis hijau tebal",
+            "Aliran listrik fasa merah mengalir deras masuk ke terminal X1 lampu beban",
+            "Lampu menyala hijau terang berpendar dengan label 'ON'"
+          ],
+          "on_screen": [
+            "TIMER: 0.0s (TRIGGERED!)",
+            "KONTAK (17-18): SNAP ACTION CLOSED",
+            "TEGANGAN BEBAN: 220V",
+            "PILOT LAMP: MENYALA HIJAU (ON)"
+          ]
+        },
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "name": "Pemutusan Saklar, Instant Reset, & Kembali Siaga",
+          "narration": "Operator membuka saklar kontrol. Daya 220V ke koil terputus seketika. Kontak tujuh belas delapan belas langsung membuka seketika tanpa penundaan, mematikan lampu dan mengembalikan sistem ke siaga aman.",
+          "visual": [
+            "Saklar kontrol terangkat membuka kembali ke posisi miring abu-abu",
+            "Jalur merah ke koil padam menjadi abu-abu netral",
+            "Bilah kontak 17-18 terangkat membuka seketika (instant reset)",
+            "Lampu indikator langsung padam total, dan timer HUD kembali ke angka preset 5.0s siaga"
+          ],
+          "on_screen": [
+            "SAKLAR: OPEN (OFF)",
+            "KOIL -KT1: 0V (POWER OFF)",
+            "INSTANT RESET: KONTAK MEMBUKA",
+            "BEBAN: PADAM",
+            "STATUS: SIAGA (STANDBY)"
+          ]
+        }
+      ],
+      "pillLabel": "02. On-Delay Timer"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Siaga & Kesiapan Fasa",
-        "narration": "Kondisi awal siaga: Saklar kontrol dalam posisi OFF terbuka. Koil On-Delay KT-satu tidak bertegangan nol Volt. Kontak tunda NO tujuh belas delapan belas terbuka dan lampu indikator padam. Fasa L1 siaga penuh di terminal masukan saklar dan kontak.",
-        "visual": [
-          "Rel fasa L1 menyala merah di bagian atas dan rel Netral biru di bagian bawah",
-          "Saklar kontrol membuka membentuk celah abu-abu",
-          "Koil -KT1 gelap, kontak 17-18 bersimbol payung terbuka",
-          "Lingkaran lampu pilot padam"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "SAKLAR: OPEN (OFF)",
-          "KOIL -KT1: 0V",
-          "KONTAK (17-18): OPEN",
-          "LAMPU BEBAN: PADAM"
-        ]
+    "off_delay": {
+      "id": "off_delay",
+      "title": "Prinsip Kerja Relai Pewaktu Off-Delay (Timer Delay OFF -KT1)",
+      "videoFile": "03_off_delay.mp4",
+      "badge": "KOIL OFF-DELAY (-KT1) & DELAY RELEASE NO (17-18)",
+      "duration": 20.0,
+      "telemetry": {
+        "coil_kt1": {
+          "active": "220 V (POWER ON)",
+          "delay_count": "0 V (Daya Luar Putus)",
+          "time_up": "0 V (OFF / Energi Habis)",
+          "safe_stop": "0 V (OFF / Siaga)"
+        },
+        "digital_countdown": {
+          "active": "Preset Siaga (Ready)",
+          "delay_count": "5.0s -> 0.1s (HOLDING COUNT)",
+          "time_up": "0.0s (TIME UP)",
+          "safe_stop": "Reset ke Siaga Awal"
+        },
+        "delay_contact_17_18": {
+          "active": "TERTUTUP (Instant Close)",
+          "delay_count": "TERTUTUP (Ditahan Kapasitor)",
+          "time_up": "TERBUKA (Snap Action Membuka)",
+          "safe_stop": "TERBUKA (Aman Terisolasi)"
+        },
+        "cooling_fan": {
+          "active": "BERPUTAR (1200 RPM)",
+          "delay_count": "BERPUTAR (Membuang Panas Sisa)",
+          "time_up": "MELAMBAT (Deselerasi)",
+          "safe_stop": "BERHENTI (0 RPM)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pengaktifan Saklar Kontrol & Eksitasi Modul Pewaktu",
-        "narration": "Operator menyalakan saklar kontrol. Arus fasa 220V seketika mengalir masuk ke terminal A-satu A-dua koil On-Delay KT-satu. Rangkaian pewaktu internal terpicu aktif. Indikator daya koil menyala hijau dan tampilan digital HUD memulai hitungan mundur.",
-        "visual": [
-          "Saklar kontrol bergeser lurus ke bawah berwarna hijau terhubung",
-          "Aliran arus listrik fasa merah meluncur turun mengisi terminal input koil -KT1",
-          "Bingkai koil -KT1 berpendar hijau terang",
-          "Angka digital HUD menyala kuning amber menampilkan nilai tunda awal 5.0 detik"
-        ],
-        "on_screen": [
-          "SAKLAR: DITUTUP (ON)",
-          "KOIL -KT1: 220V (POWER ON)",
-          "COUNTDOWN HUD: AKTIF (5.0s)",
-          "MODUL PEWAKTU: INITIALIZED"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Proses Hitung Mundur & Penahanan Kontak",
-        "narration": "Koil aktif menghitung mundur dari lima ke nol detik. Mekanisme penunda elektromagnetik menahan armatur agar kontak tidak langsung menutup. Meskipun koil sudah bertegangan penuh, kontak NO tujuh belas delapan belas tetap ditahan terbuka sempurna sehingga lampu beban tetap padam aman.",
-        "visual": [
-          "Angka digital HUD berkurang secara dinamis (4.0s -> 3.0s -> 2.0s -> 1.0s)",
-          "Gelombang pulsa tunda berpendar berulang di sekitar simbol parasut",
-          "Bilah kontak 17-18 tetap berjarak terbuka",
-          "Jalur fasa menuju beban terputus pada pin 17; indikator lampu beban tetap gelap tanpa arus"
-        ],
-        "on_screen": [
-          "COUNTDOWN: 4.0s -> 1.0s",
-          "PENAHANAN AKTIF: CONTACT HELD OPEN",
-          "KOIL: 220V (BERTAHAN)",
-          "BEBAN: AMAN PADAM"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Waktu Tunda Tuntas, Snap Action Menutup, & Beban Aktif",
-        "narration": "Tepat saat hitungan mencapai nol detik, mekanisme penahan melepaskan armatur dan kontak NO tujuh belas delapan belas membanting menutup seketika. Arus fasa 220V meluncur lancar melalui kontak tujuh belas delapan belas menuju lampu indikator, menyalakan beban secara optimal.",
-        "visual": [
-          "Angka HUD berkedip hijau '0.0s'",
-          "Bilah kontak 17-18 membanting menutup rapat menyambungkan pin 17 ke pin 18 dengan garis hijau tebal",
-          "Aliran listrik fasa merah mengalir deras masuk ke terminal X1 lampu beban",
-          "Lampu menyala hijau terang berpendar dengan label 'ON'"
-        ],
-        "on_screen": [
-          "TIMER: 0.0s (TRIGGERED!)",
-          "KONTAK (17-18): SNAP ACTION CLOSED",
-          "TEGANGAN BEBAN: 220V",
-          "PILOT LAMP: MENYALA HIJAU (ON)"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Pemutusan Saklar, Instant Reset, & Kembali Siaga",
-        "narration": "Operator membuka saklar kontrol. Daya 220V ke koil terputus seketika. Kontak tujuh belas delapan belas langsung membuka seketika tanpa penundaan, mematikan lampu dan mengembalikan sistem ke siaga aman.",
-        "visual": [
-          "Saklar kontrol terangkat membuka kembali ke posisi miring abu-abu",
-          "Jalur merah ke koil padam menjadi abu-abu netral",
-          "Bilah kontak 17-18 terangkat membuka seketika (instant reset)",
-          "Lampu indikator langsung padam total, dan timer HUD kembali ke angka preset 5.0s siaga"
-        ],
-        "on_screen": [
-          "SAKLAR: OPEN (OFF)",
-          "KOIL -KT1: 0V (POWER OFF)",
-          "INSTANT RESET: KONTAK MEMBUKA",
-          "BEBAN: PADAM",
-          "STATUS: SIAGA (STANDBY)"
-        ]
-      }
-    ],
-    "pillLabel": "02. On-Delay Timer"
-  },
-  "off_delay": {
-    "id": "off_delay",
-    "title": "Prinsip Kerja Relai Pewaktu Off-Delay (Timer Delay OFF -KT1)",
-    "videoFile": "03_off_delay.mp4",
-    "badge": "KOIL OFF-DELAY (-KT1) & DELAY RELEASE NO (17-18)",
-    "duration": 15.0,
-    "telemetry": {
-      "coil_kt1": {
-        "active": "220 V (POWER ON)",
-        "delay_count": "0 V (Daya Luar Putus)",
-        "time_up": "0 V (OFF / Energi Habis)",
-        "safe_stop": "0 V (OFF / Siaga)"
-      },
-      "digital_countdown": {
-        "active": "Preset Siaga (Ready)",
-        "delay_count": "5.0s -> 0.1s (HOLDING COUNT)",
-        "time_up": "0.0s (TIME UP)",
-        "safe_stop": "Reset ke Siaga Awal"
-      },
-      "delay_contact_17_18": {
-        "active": "TERTUTUP (Instant Close)",
-        "delay_count": "TERTUTUP (Ditahan Kapasitor)",
-        "time_up": "TERBUKA (Snap Action Membuka)",
-        "safe_stop": "TERBUKA (Aman Terisolasi)"
-      },
-      "cooling_fan": {
-        "active": "BERPUTAR (1200 RPM)",
-        "delay_count": "BERPUTAR (Membuang Panas Sisa)",
-        "time_up": "MELAMBAT (Deselerasi)",
-        "safe_stop": "BERHENTI (0 RPM)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Daya Awal Terhubung & Kontak Seketika Menutup",
+          "narration": "Daya awal terhubung: Saklar kontrol dinyalakan. Koil Off-Delay KT-satu bertegangan 220V dan kontak tunda NO tujuh belas delapan belas langsung menutup seketika tanpa penundaan. Kipas pendingin berputar normal.",
+          "visual": [
+            "Saklar kontrol hijau tertutup rapat",
+            "Arus fasa merah mengalir ke koil -KT1",
+            "Kontak 17-18 tertutup rapat menyalurkan daya ke beban motor kipas yang berputar pada 1200 RPM"
+          ],
+          "on_screen": [
+            "DAYA UTAMA: CONNECTED (220V)",
+            "KOIL -KT1: ENERGIZED",
+            "KONTAK (17-18): INSTANT CLOSE",
+            "KIPAS PENDINGIN: 1200 RPM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 6.5,
+          "name": "Pemutusan Saklar Daya & Pemicuan Rangkaian Tunda",
+          "narration": "Operator mematikan saklar kontrol. Pasokan tegangan luar ke koil seketika terputus nol Volt. Hilangnya pasokan daya luar langsung memicu sirkuit pelepasan muatan kapasitor internal untuk mempertahankan medan armatur.",
+          "visual": [
+            "Saklar kontrol membuka membentuk celah abu-abu",
+            "Jalur merah suplai utama padam, menghentikan pasokan daya langsung dari rel fasa",
+            "Tampilan HUD digital pada koil menyala kuning amber dan memulai hitungan mundur waktu tunda (5.0s -> 4.5s)"
+          ],
+          "on_screen": [
+            "DAYA LUAR: TERPUTUS (0V)",
+            "SISTEM OFF-DELAY: TERPICU",
+            "KAPASITOR INTERNAL: DISCHARGING",
+            "TIMER HUD: 5.0s -> 4.5s"
+          ]
+        },
+        {
+          "start": 6.5,
+          "end": 11.5,
+          "name": "Fase Penahanan Waktu Tunda (Delay Holding)",
+          "narration": "Meskipun daya luar telah mati, kontak tujuh belas delapan belas tetap ditahan menutup rapat menggunakan cadangan energi internal relai. Kipas pendingin terus berputar stabil mendinginkan sistem dan membuang panas sisa mesin pasca-operasi.",
+          "visual": [
+            "Simbol kontak tunda 17-18 tetap tersambung hijau rapat",
+            "Garis daya menuju beban tetap dialiri arus dari sumber daya beban independen",
+            "Bilah kipas pendingin terus berputar pada 1200 RPM dengan indikator aliran udara hijau",
+            "Angka countdown HUD menurun mantap hingga 0.5s"
+          ],
+          "on_screen": [
+            "OFF-DELAY HOLDING ACTIVE",
+            "KONTAK (17-18): DITAHAN TERTUTUP",
+            "KIPAS: TETAP MEMBUANG PANAS (1200 RPM)",
+            "TIMER: TAHAN 4.0s -> 0.5s"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 16.0,
+          "name": "Waktu Tunda Habis & Snap Action Membuka",
+          "narration": "Tepat saat hitungan mencapai nol detik, cadangan energi internal habis. Pegas pembalik membanting kontak tujuh belas delapan belas terbuka seketika. Arus ke motor kipas terputus total. Sirkuit beban terisolasi sempurna tanpa adanya tegangan kerja.",
+          "visual": [
+            "Angka timer HUD berkedip merah '0.0s'",
+            "Bilah kontak 17-18 terlempar membuka ke posisi celah aman (snap open)",
+            "Jalur fasa beban padam seketika menjadi abu-abu netral",
+            "Arus listrik berhenti mengalir ke terminal motor kipas"
+          ],
+          "on_screen": [
+            "TIMER: 0.0s (TIME UP)",
+            "ENERGI INTERNAL: HABIS",
+            "KONTAK (17-18): SNAP ACTION OPEN",
+            "ARUS BEBAN: 0.0 A (ISOLATED)"
+          ]
+        },
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "name": "Deselerasi, Berhenti Total, & Kondisi Siaga",
+          "narration": "Akibat gaya gesek bantalan poros, putaran motor kipas melambat secara bertahap dari 1200 RPM ke nol RPM. Seluruh sistem berada dalam kondisi dingin, mati total, dan siap untuk siklus kerja berikutnya.",
+          "visual": [
+            "Putaran bilah kipas melambat secara visual hingga berhenti berputar",
+            "Indikator RPM turun ke 0 RPM",
+            "Indikator kipas berubah abu-abu padam dengan label 'BERHENTI (0 RPM)'",
+            "Seluruh sirkuit berada pada kondisi siaga aman"
+          ],
+          "on_screen": [
+            "DESELERASI: 1200 -> 0 RPM",
+            "KIPAS PENDINGIN: BERHENTI (0 RPM)",
+            "PENDINGINAN SELESAI: AMAN",
+            "STATUS: SIAGA (STANDBY)"
+          ]
+        }
+      ],
+      "pillLabel": "03. Off-Delay Timer"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Daya Awal Terhubung & Kontak Seketika Menutup",
-        "narration": "Daya awal terhubung: Saklar kontrol dinyalakan. Koil Off-Delay KT-satu bertegangan 220V dan kontak tunda NO tujuh belas delapan belas langsung menutup seketika tanpa penundaan. Kipas pendingin berputar normal.",
-        "visual": [
-          "Saklar kontrol hijau tertutup rapat",
-          "Arus fasa merah mengalir ke koil -KT1",
-          "Kontak 17-18 tertutup rapat menyalurkan daya ke beban motor kipas yang berputar pada 1200 RPM"
-        ],
-        "on_screen": [
-          "DAYA UTAMA: CONNECTED (220V)",
-          "KOIL -KT1: ENERGIZED",
-          "KONTAK (17-18): INSTANT CLOSE",
-          "KIPAS PENDINGIN: 1200 RPM"
-        ]
+    "thermal_overload": {
+      "id": "thermal_overload",
+      "title": "Proteksi Beban Lebih Termal (Thermal Overload Relay Trip -FR1)",
+      "videoFile": "04_thermal_overload.mp4",
+      "badge": "ELEMEN BIMETAL (-F1), NC 95-96, NO 97-98 (ALARM)",
+      "duration": 20.0,
+      "telemetry": {
+        "motor_current": {
+          "normal": "4.9 A (Nominal Aman)",
+          "overload": "18.2 A (Overload Ekstrem)",
+          "accumulating": "18.2 A (Pemanasan Cepat)",
+          "trip": "0.0 A (Terputus Total)",
+          "isolated": "0.0 A (Aman Terisolasi)"
+        },
+        "bimetal_strip": {
+          "normal": "Dingin (Lurus Sempurna)",
+          "overload": "Mulai Hangat (Mulai Bengkok)",
+          "accumulating": "Panas Tinggi (Bengkok Kritis)",
+          "trip": "Memicu Tuas Snap Trip",
+          "isolated": "Mulai Mendingin Perlahan"
+        },
+        "nc_contact_95_96": {
+          "normal": "TERTUTUP (Koil ON)",
+          "overload": "TERTUTUP (Menahan)",
+          "accumulating": "TERTUTUP (Batas Akhir)",
+          "trip": "TERBUKA (Koil Padam)",
+          "isolated": "TERBUKA (Terkunci Mekanis)"
+        },
+        "no_contact_97_98": {
+          "normal": "TERBUKA (Alarm OFF)",
+          "overload": "TERBUKA (Alarm OFF)",
+          "accumulating": "TERBUKA (Alarm OFF)",
+          "trip": "TERTUTUP (Alarm ON)",
+          "isolated": "TERTUTUP (Alarm Tetap ON)"
+        },
+        "motor_status": {
+          "normal": "BERPUTAR (1450 RPM)",
+          "overload": "OVERLOAD (Getaran)",
+          "accumulating": "OVERLOAD (Bahaya Panas)",
+          "trip": "DESELERASI (Melambat)",
+          "isolated": "BERHENTI (0 RPM)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pemutusan Saklar Daya & Pemicuan Rangkaian Tunda",
-        "narration": "Operator mematikan saklar kontrol. Pasokan tegangan luar ke koil seketika terputus nol Volt. Hilangnya pasokan daya luar langsung memicu sirkuit pelepasan muatan kapasitor internal untuk mempertahankan medan armatur.",
-        "visual": [
-          "Saklar kontrol membuka membentuk celah abu-abu",
-          "Jalur merah suplai utama padam, menghentikan pasokan daya langsung dari rel fasa",
-          "Tampilan HUD digital pada koil menyala kuning amber dan memulai hitungan mundur waktu tunda (5.0s -> 4.5s)"
-        ],
-        "on_screen": [
-          "DAYA LUAR: TERPUTUS (0V)",
-          "SISTEM OFF-DELAY: TERPICU",
-          "KAPASITOR INTERNAL: DISCHARGING",
-          "TIMER HUD: 5.0s -> 4.5s"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Fase Penahanan Waktu Tunda (Delay Holding)",
-        "narration": "Meskipun daya luar telah mati, kontak tujuh belas delapan belas tetap ditahan menutup rapat menggunakan cadangan energi internal relai. Kipas pendingin terus berputar stabil mendinginkan sistem dan membuang panas sisa mesin pasca-operasi.",
-        "visual": [
-          "Simbol kontak tunda 17-18 tetap tersambung hijau rapat",
-          "Garis daya menuju beban tetap dialiri arus dari sumber daya beban independen",
-          "Bilah kipas pendingin terus berputar pada 1200 RPM dengan indikator aliran udara hijau",
-          "Angka countdown HUD menurun mantap hingga 0.5s"
-        ],
-        "on_screen": [
-          "OFF-DELAY HOLDING ACTIVE",
-          "KONTAK (17-18): DITAHAN TERTUTUP",
-          "KIPAS: TETAP MEMBUANG PANAS (1200 RPM)",
-          "TIMER: TAHAN 4.0s -> 0.5s"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Waktu Tunda Habis & Snap Action Membuka",
-        "narration": "Tepat saat hitungan mencapai nol detik, cadangan energi internal habis. Pegas pembalik membanting kontak tujuh belas delapan belas terbuka seketika. Arus ke motor kipas terputus total. Sirkuit beban terisolasi sempurna tanpa adanya tegangan kerja.",
-        "visual": [
-          "Angka timer HUD berkedip merah '0.0s'",
-          "Bilah kontak 17-18 terlempar membuka ke posisi celah aman (snap open)",
-          "Jalur fasa beban padam seketika menjadi abu-abu netral",
-          "Arus listrik berhenti mengalir ke terminal motor kipas"
-        ],
-        "on_screen": [
-          "TIMER: 0.0s (TIME UP)",
-          "ENERGI INTERNAL: HABIS",
-          "KONTAK (17-18): SNAP ACTION OPEN",
-          "ARUS BEBAN: 0.0 A (ISOLATED)"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Deselerasi, Berhenti Total, & Kondisi Siaga",
-        "narration": "Akibat gaya gesek bantalan poros, putaran motor kipas melambat secara bertahap dari 1200 RPM ke nol RPM. Seluruh sistem berada dalam kondisi dingin, mati total, dan siap untuk siklus kerja berikutnya.",
-        "visual": [
-          "Putaran bilah kipas melambat secara visual hingga berhenti berputar",
-          "Indikator RPM turun ke 0 RPM",
-          "Indikator kipas berubah abu-abu padam dengan label 'BERHENTI (0 RPM)'",
-          "Seluruh sirkuit berada pada kondisi siaga aman"
-        ],
-        "on_screen": [
-          "DESELERASI: 1200 -> 0 RPM",
-          "KIPAS PENDINGIN: BERHENTI (0 RPM)",
-          "PENDINGINAN SELESAI: AMAN",
-          "STATUS: SIAGA (STANDBY)"
-        ]
-      }
-    ],
-    "pillLabel": "03. Off-Delay Timer"
-  },
-  "thermal_overload": {
-    "id": "thermal_overload",
-    "title": "Proteksi Beban Lebih Termal (Thermal Overload Relay Trip -FR1)",
-    "videoFile": "04_thermal_overload.mp4",
-    "badge": "ELEMEN BIMETAL (-F1), NC 95-96, NO 97-98 (ALARM)",
-    "duration": 15.0,
-    "telemetry": {
-      "motor_current": {
-        "normal": "4.9 A (Nominal Aman)",
-        "overload": "18.2 A (Overload Ekstrem)",
-        "accumulating": "18.2 A (Pemanasan Cepat)",
-        "trip": "0.0 A (Terputus Total)",
-        "isolated": "0.0 A (Aman Terisolasi)"
-      },
-      "bimetal_strip": {
-        "normal": "Dingin (Lurus Sempurna)",
-        "overload": "Mulai Hangat (Mulai Bengkok)",
-        "accumulating": "Panas Tinggi (Bengkok Kritis)",
-        "trip": "Memicu Tuas Snap Trip",
-        "isolated": "Mulai Mendingin Perlahan"
-      },
-      "nc_contact_95_96": {
-        "normal": "TERTUTUP (Koil ON)",
-        "overload": "TERTUTUP (Menahan)",
-        "accumulating": "TERTUTUP (Batas Akhir)",
-        "trip": "TERBUKA (Koil Padam)",
-        "isolated": "TERBUKA (Terkunci Mekanis)"
-      },
-      "no_contact_97_98": {
-        "normal": "TERBUKA (Alarm OFF)",
-        "overload": "TERBUKA (Alarm OFF)",
-        "accumulating": "TERBUKA (Alarm OFF)",
-        "trip": "TERTUTUP (Alarm ON)",
-        "isolated": "TERTUTUP (Alarm Tetap ON)"
-      },
-      "motor_status": {
-        "normal": "BERPUTAR (1450 RPM)",
-        "overload": "OVERLOAD (Getaran)",
-        "accumulating": "OVERLOAD (Bahaya Panas)",
-        "trip": "DESELERASI (Melambat)",
-        "isolated": "BERHENTI (0 RPM)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Operasi Normal Arus Beban Penuh",
+          "narration": "Operasi normal beban penuh: Motor berputar stabil pada 1450 RPM dengan arus kerja 4.9 Ampere. Elemen bimetal TOR dalam kondisi dingin dan lurus. Kontak kontrol NC sembilan puluh lima sembilan puluh enam tertutup rapat menjaga koil kontaktor tetap aktif.",
+          "visual": [
+            "Tiga jalur arus daya berwarna hijau mengalir mulus melewati strip bimetal lurus",
+            "Ammeter menunjukkan 4.9 A",
+            "Kontak NC 95-96 tersambung rapat",
+            "Rotor motor induksi berputar halus pada 1450 RPM"
+          ],
+          "on_screen": [
+            "STATUS: OPERASI NORMAL",
+            "ARUS MOTOR: 4.9 A",
+            "BIMETAL TOR: LURUS DINGIN",
+            "KONTAK NC (95-96): TERTUTUP",
+            "MOTOR: 1450 RPM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Terjadinya Beban Lebih Mekanis (Overload)",
+          "narration": "Terjadi kemacetan beban mekanis pada poros motor, menyebabkan lonjakan arus listrik drastis hingga mencapai 18.2 Ampere. Arus tinggi melintasi kawat pemanas di sekeliling dua lempeng logam bimetal dengan koefisien pemuaian termal yang berbeda.",
+          "visual": [
+            "Beban motor memancarkan getaran peringatan",
+            "Angka ammeter melonjak cepat dari 4.9 A menjadi 18.2 A berwarna kuning peringatan",
+            "Strip bimetal mulai berpendar merah oranye menandakan kenaikan suhu termal I kuadrat R"
+          ],
+          "on_screen": [
+            "PERINGATAN: OVERLOAD MEKANIS",
+            "ARUS MOTOR: 18.2 A (LONJAKAN!)",
+            "DISIPASI PANAS: I² x R MENINGKAT",
+            "BIMETAL: MEMANAS CEPAT"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Pemuaian Termal Diferensial & Pergeseran Tuas",
+          "narration": "Lempeng logam sisi luar memuai jauh lebih cepat dibandingkan sisi dalam, memaksa batang bimetal melengkung secara bertahap mendorong tuas pemicu mekanis. Semakin tinggi lonjakan arus, semakin cepat bimetal melengkung mencapai batas toleransi mekanik pembebasan pegas.",
+          "visual": [
+            "Strip bimetal melengkung ke arah kanan secara dramatis",
+            "Ujung bimetal menyentuh dan mulai mendorong mekanisme tuas geser internal TOR",
+            "Tuas geser mencapai titik kritis pengait pegas trip",
+            "Indikator temperatur internal menampilkan status kritis mendekati 100%"
+          ],
+          "on_screen": [
+            "PEMUAIAN TERMOL DIFERENSIAL",
+            "BIMETAL: MELENGKUNG KRITIS",
+            "MEKANISME: MENDORONG TUAS TRIP",
+            "SUHU: MENDEKATI AMBANG BATAS"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 15.5,
+          "name": "Snap Action Trip Mekanik & Pemutusan Rangkaian",
+          "narration": "Lengkungan bimetal melepaskan pengait pegas snap action. Kontak bantu NC sembilan puluh lima sembilan puluh enam seketika terlontar membuka, memutus suplai ke koil kontaktor utama. Hilangnya medan magnet kontaktor membuka tiga pasang kontak daya utama, memutus total pasokan arus 18.2A ke motor.",
+          "visual": [
+            "Tuas trip membanting dengan animasi pegas kilat",
+            "Bilah kontak NC 95-96 terlempar membuka",
+            "Arus ke koil kontaktor seketika padam",
+            "Tiga kontak daya utama kontaktor membuka serempak",
+            "Arus 3-fasa terputus total (0.0 A) menghentikan bahaya panas berlebih"
+          ],
+          "on_screen": [
+            "SNAP ACTION TRIP!",
+            "KONTAK NC (95-96): MEMBUKA (OPEN)",
+            "KOIL KONTAKTOR: DE-ENERGIZED",
+            "KONTAK UTAMA: TERBUKA (0.0 A)"
+          ]
+        },
+        {
+          "start": 15.5,
+          "end": 20.0,
+          "name": "Aktivasi Alarm Trip & Isolasi Sistem Aman",
+          "narration": "Bersamaan dengan membukanya kontak NC, kontak bantu NO sembilan puluh tujuh sembilan puluh delapan menutup rapat untuk mengalirkan arus ke sirkuit sinyal gangguan. Belitan kawat tembaga stator motor terselamatkan dari bahaya terbakar atau meleleh. Sistem terkunci aman hingga operator melakukan tombol reset manual.",
+          "visual": [
+            "Kontak NO 97-98 menutup menghubungkan jalur lampu indikator alarm",
+            "Lampu pilot kuning menyala terang berkedip dengan status 'TRIP OVERLOAD'",
+            "Rotor motor berhenti total (0 RPM)",
+            "Teks banner pengaman 'SISTEM TERPROTEKSI OVERLOAD - AMAN' muncul di layar kanvas"
+          ],
+          "on_screen": [
+            "KONTAK NO (97-98): CLOSED (ALARM ON)",
+            "LAMPU TRIP: KUNING BERKEDIP",
+            "MOTOR: BERHENTI (0 RPM)",
+            "STATOR MOTOR: TERSELAMATKAN DARI TERBAKAR",
+            "STATUS: TERKUNCI AMAN (PERLU RESET)"
+          ]
+        }
+      ],
+      "pillLabel": "04. Thermal Overload"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Operasi Normal Arus Beban Penuh",
-        "narration": "Operasi normal beban penuh: Motor berputar stabil pada 1450 RPM dengan arus kerja 4.9 Ampere. Elemen bimetal TOR dalam kondisi dingin dan lurus. Kontak kontrol NC sembilan puluh lima sembilan puluh enam tertutup rapat menjaga koil kontaktor tetap aktif.",
-        "visual": [
-          "Tiga jalur arus daya berwarna hijau mengalir mulus melewati strip bimetal lurus",
-          "Ammeter menunjukkan 4.9 A",
-          "Kontak NC 95-96 tersambung rapat",
-          "Rotor motor induksi berputar halus pada 1450 RPM"
-        ],
-        "on_screen": [
-          "STATUS: OPERASI NORMAL",
-          "ARUS MOTOR: 4.9 A",
-          "BIMETAL TOR: LURUS DINGIN",
-          "KONTAK NC (95-96): TERTUTUP",
-          "MOTOR: 1450 RPM"
-        ]
+    "short_circuit": {
+      "id": "short_circuit",
+      "title": "Proteksi Hubung Singkat MCB (Magnetic Trip Instantaneous -QF1)",
+      "videoFile": "05_short_circuit.mp4",
+      "badge": "SOLENOID TRIP ELEKTROMAGNETIK & DEION ARC CHUTE",
+      "duration": 20.0,
+      "telemetry": {
+        "circuit_current": {
+          "normal": "5.2 A (Arus Beban Normal)",
+          "fault": "> 1000 A (Lonjakan Korsleting)",
+          "pulse": "> 1000 A (Puncak Arus Gangguan)",
+          "clearing": "Padam ke 0.0 A (< 10 ms)",
+          "safe": "0.0 A (Terputus Total)"
+        },
+        "mcb_solenoid": {
+          "normal": "Pasif (Gaya Tarik Rendah)",
+          "fault": "Eksitasi Instan Berenergi Tinggi",
+          "pulse": "Fluks Magnetik Ekstrem",
+          "clearing": "Menembakkan Batang Plunger",
+          "safe": "Runtuh Lenyap / Pasif"
+        },
+        "mcb_lever": {
+          "normal": "ON (Tuas Hijau / Tegak)",
+          "fault": "ON (Korsleting Terdeteksi)",
+          "pulse": "Memicu Mekanisme Latch",
+          "clearing": "Terlempar ke OFF (TRIP Merah)",
+          "safe": "Terkunci di Posisi OFF"
+        },
+        "protection_status": {
+          "normal": "AMAN (Normal Operating)",
+          "fault": "WARNING (Short Circuit Fault)",
+          "pulse": "ALERT (Magnetic Pulse Active)",
+          "clearing": "MCB TRIPPED (Trip Kilat)",
+          "safe": "AMAN (Kabel Tembaga Terlindungi)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Terjadinya Beban Lebih Mekanis (Overload)",
-        "narration": "Terjadi kemacetan beban mekanis pada poros motor, menyebabkan lonjakan arus listrik drastis hingga mencapai 18.2 Ampere. Arus tinggi melintasi kawat pemanas di sekeliling dua lempeng logam bimetal dengan koefisien pemuaian termal yang berbeda.",
-        "visual": [
-          "Beban motor memancarkan getaran peringatan",
-          "Angka ammeter melonjak cepat dari 4.9 A menjadi 18.2 A berwarna kuning peringatan",
-          "Strip bimetal mulai berpendar merah oranye menandakan kenaikan suhu termal I kuadrat R"
-        ],
-        "on_screen": [
-          "PERINGATAN: OVERLOAD MEKANIS",
-          "ARUS MOTOR: 18.2 A (LONJAKAN!)",
-          "DISIPASI PANAS: I² x R MENINGKAT",
-          "BIMETAL: MEMANAS CEPAT"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Pemuaian Termal Diferensial & Pergeseran Tuas",
-        "narration": "Lempeng logam sisi luar memuai jauh lebih cepat dibandingkan sisi dalam, memaksa batang bimetal melengkung secara bertahap mendorong tuas pemicu mekanis. Semakin tinggi lonjakan arus, semakin cepat bimetal melengkung mencapai batas toleransi mekanik pembebasan pegas.",
-        "visual": [
-          "Strip bimetal melengkung ke arah kanan secara dramatis",
-          "Ujung bimetal menyentuh dan mulai mendorong mekanisme tuas geser internal TOR",
-          "Tuas geser mencapai titik kritis pengait pegas trip",
-          "Indikator temperatur internal menampilkan status kritis mendekati 100%"
-        ],
-        "on_screen": [
-          "PEMUAIAN TERMOL DIFERENSIAL",
-          "BIMETAL: MELENGKUNG KRITIS",
-          "MEKANISME: MENDORONG TUAS TRIP",
-          "SUHU: MENDEKATI AMBANG BATAS"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Snap Action Trip Mekanik & Pemutusan Rangkaian",
-        "narration": "Lengkungan bimetal melepaskan pengait pegas snap action. Kontak bantu NC sembilan puluh lima sembilan puluh enam seketika terlontar membuka, memutus suplai ke koil kontaktor utama. Hilangnya medan magnet kontaktor membuka tiga pasang kontak daya utama, memutus total pasokan arus 18.2A ke motor.",
-        "visual": [
-          "Tuas trip membanting dengan animasi pegas kilat",
-          "Bilah kontak NC 95-96 terlempar membuka",
-          "Arus ke koil kontaktor seketika padam",
-          "Tiga kontak daya utama kontaktor membuka serempak",
-          "Arus 3-fasa terputus total (0.0 A) menghentikan bahaya panas berlebih"
-        ],
-        "on_screen": [
-          "SNAP ACTION TRIP!",
-          "KONTAK NC (95-96): MEMBUKA (OPEN)",
-          "KOIL KONTAKTOR: DE-ENERGIZED",
-          "KONTAK UTAMA: TERBUKA (0.0 A)"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Aktivasi Alarm Trip & Isolasi Sistem Aman",
-        "narration": "Bersamaan dengan membukanya kontak NC, kontak bantu NO sembilan puluh tujuh sembilan puluh delapan menutup rapat untuk mengalirkan arus ke sirkuit sinyal gangguan. Belitan kawat tembaga stator motor terselamatkan dari bahaya terbakar atau meleleh. Sistem terkunci aman hingga operator melakukan tombol reset manual.",
-        "visual": [
-          "Kontak NO 97-98 menutup menghubungkan jalur lampu indikator alarm",
-          "Lampu pilot kuning menyala terang berkedip dengan status 'TRIP OVERLOAD'",
-          "Rotor motor berhenti total (0 RPM)",
-          "Teks banner pengaman 'SISTEM TERPROTEKSI OVERLOAD - AMAN' muncul di layar kanvas"
-        ],
-        "on_screen": [
-          "KONTAK NO (97-98): CLOSED (ALARM ON)",
-          "LAMPU TRIP: KUNING BERKEDIP",
-          "MOTOR: BERHENTI (0 RPM)",
-          "STATOR MOTOR: TERSELAMATKAN DARI TERBAKAR",
-          "STATUS: TERKUNCI AMAN (PERLU RESET)"
-        ]
-      }
-    ],
-    "pillLabel": "04. Thermal Overload"
-  },
-  "short_circuit": {
-    "id": "short_circuit",
-    "title": "Proteksi Hubung Singkat MCB (Magnetic Trip Instantaneous -QF1)",
-    "videoFile": "05_short_circuit.mp4",
-    "badge": "SOLENOID TRIP ELEKTROMAGNETIK & DEION ARC CHUTE",
-    "duration": 15.0,
-    "telemetry": {
-      "circuit_current": {
-        "normal": "5.2 A (Arus Beban Normal)",
-        "fault": "> 1000 A (Lonjakan Korsleting)",
-        "pulse": "> 1000 A (Puncak Arus Gangguan)",
-        "clearing": "Padam ke 0.0 A (< 10 ms)",
-        "safe": "0.0 A (Terputus Total)"
-      },
-      "mcb_solenoid": {
-        "normal": "Pasif (Gaya Tarik Rendah)",
-        "fault": "Eksitasi Instan Berenergi Tinggi",
-        "pulse": "Fluks Magnetik Ekstrem",
-        "clearing": "Menembakkan Batang Plunger",
-        "safe": "Runtuh Lenyap / Pasif"
-      },
-      "mcb_lever": {
-        "normal": "ON (Tuas Hijau / Tegak)",
-        "fault": "ON (Korsleting Terdeteksi)",
-        "pulse": "Memicu Mekanisme Latch",
-        "clearing": "Terlempar ke OFF (TRIP Merah)",
-        "safe": "Terkunci di Posisi OFF"
-      },
-      "protection_status": {
-        "normal": "AMAN (Normal Operating)",
-        "fault": "WARNING (Short Circuit Fault)",
-        "pulse": "ALERT (Magnetic Pulse Active)",
-        "clearing": "MCB TRIPPED (Trip Kilat)",
-        "safe": "AMAN (Kabel Tembaga Terlindungi)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Operasi Normal Beban Kerja",
+          "narration": "Integritas isolasi kabel aman: Sirkuit beroperasi pada arus kerja 5.2 Ampere. MCB berada pada posisi ON tertutup. Solenoid pengindera magnetik berada dalam kondisi pasif tanpa gaya penolakan mekanis.",
+          "visual": [
+            "Jalur fasa menyalurkan daya secara mulus ke beban",
+            "Tuas MCB berwarna hijau pada posisi ON",
+            "Lilitan solenoid MCB dialiri arus normal tanpa tanda eksitasi berlebih",
+            "Ammeter membaca 5.2 A stabil"
+          ],
+          "on_screen": [
+            "STATUS: OPERASI NORMAL",
+            "ARUS: 5.2 A",
+            "TUAS MCB: ON (TERTUTUP)",
+            "SOLENOID: PASIF",
+            "KABEL: AMAN"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Terjadinya Gangguan Hubung Singkat (Short Circuit)",
+          "narration": "Terjadinya gangguan hubung singkat: Isolasi konduktor fasa L1 rusak dan bersentuhan langsung dengan kawat netral N tanpa melalui hambatan impedansi beban. Impedansi loop sirkuit mendekati nol ohm, mengakibatkan arus listrik melonjak seketika hingga melampaui 1000 Ampere.",
+          "visual": [
+            "Titik sentuh fasa dan netral memancarkan kilatan percikan busur api kuning terang",
+            "Nilai ammeter melonjak drastis dan berkedip merah melampaui 1000 A",
+            "Gelombang partikel listrik merah bergerak dengan kecepatan sangat tinggi melintasi konduktor",
+            "Banner peringatan bahaya berkedip di layar"
+          ],
+          "on_screen": [
+            "BAHAYA: KORSLETING LISTRIK!",
+            "ARUS: > 1000 AMPERE (LONJAKAN EKSTREM!)",
+            "IMPEDANSI LOOP: ~ 0 OHM",
+            "TITIK GANGGUAN: PERCIKAN BUSUR API"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Pembangkitan Gaya Magnetik Kilat Solenoid",
+          "narration": "Arus gangguan raksasa melintasi kumparan solenoid magnetik MCB, seketika membangkitkan medan elektromagnetik berenergi sangat tinggi. Medan magnet yang sangat kuat melontarkan batang pendorong baja ke depan dengan gaya mekanis dahsyat dalam pecahan detik.",
+          "visual": [
+            "Lilitan solenoid MCB memancarkan medan fluks elektromagnetik biru cerah berkekuatan tinggi di sekeliling inti besi baja",
+            "Batang plunger baja meluncur cepat menghantam kait pengunci mekanisme trip (trip latch)",
+            "Garis-garis gaya fluks magnetik radial melingkupi solenoid secara intensif"
+          ],
+          "on_screen": [
+            "SOLENOID MCB: EKSITASI KILAT",
+            "MEDAN ELEKTROMAGNETIK: EKSTREM",
+            "PLUNGER BAJA: DILONTARKAN KEDEPAN",
+            "TARGET: MENGHANTAM TRIP LATCH"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 15.5,
+          "name": "Snap Action Pemutusan Tuas MCB & Pemadaman Arc (<10ms)",
+          "narration": "Hantaman plunger membebaskan mekanisme pegas pratekan. Kontak MCB membanting membuka dan tuas terlempar turun ke posisi OFF dalam waktu kurang dari sepuluh milidetik. Busur api listrik yang timbul saat kontak membuka ditarik masuk ke celah pelat pemadam arc chute dan dipadamkan seketika.",
+          "visual": [
+            "Tuas MCB terlempar turun menjadi merah 'OFF (TRIP)'",
+            "Bilah kontak utama berpisah cepat membentuk celah isolasi udara",
+            "Kilatan api busur tersedot ke kisi-kisi pelat pemadam arc chute dan padam total tanpa merusak komponen sekitar",
+            "Waktu respon tercatat sangat cepat: < 10 ms"
+          ],
+          "on_screen": [
+            "MCB TRIPPED! (< 10 ms)",
+            "TUAS MCB: TERBANTING KE OFF",
+            "KONTAK DAYA: SNAP OPEN",
+            "ARC CHUTE: BUSUR API DIPADAMKAN"
+          ]
+        },
+        {
+          "start": 15.5,
+          "end": 20.0,
+          "name": "Arus Padam Total & Instalasi Kabel Terlindungi",
+          "narration": "Arus hubung singkat padam total ke nol Ampere, melenyapkan bahaya termal ekstrem dan ledakan busur listrik. Tindakan proteksi elektromagnetik super cepat mencegah kabel tembaga meleleh atau memicu kebakaran fatal pada instalasi panel.",
+          "visual": [
+            "Nilai ammeter kembali ke 0.0 A",
+            "Seluruh jalur sirkuit berubah abu-abu netral terisolasi total dari sumber catu daya",
+            "Layar kanvas menampilkan konfirmasi status proteksi hijau 'KABEL TERLINDUNGI - MCB BERHASIL MENGISOLASI GANGGUAN'"
+          ],
+          "on_screen": [
+            "ARUS SIRKUIT: 0.0 A (PADAM TOTAL)",
+            "BAHAYA KEBAKARAN: BERHASIL DICEGAH",
+            "KABEL TEMBAGA: AMAN TERLINDUNGI",
+            "STATUS SISTEM: AMAN TERISOLASI"
+          ]
+        }
+      ],
+      "pillLabel": "05. Short Circuit MCB"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Operasi Normal Beban Kerja",
-        "narration": "Integritas isolasi kabel aman: Sirkuit beroperasi pada arus kerja 5.2 Ampere. MCB berada pada posisi ON tertutup. Solenoid pengindera magnetik berada dalam kondisi pasif tanpa gaya penolakan mekanis.",
-        "visual": [
-          "Jalur fasa menyalurkan daya secara mulus ke beban",
-          "Tuas MCB berwarna hijau pada posisi ON",
-          "Lilitan solenoid MCB dialiri arus normal tanpa tanda eksitasi berlebih",
-          "Ammeter membaca 5.2 A stabil"
-        ],
-        "on_screen": [
-          "STATUS: OPERASI NORMAL",
-          "ARUS: 5.2 A",
-          "TUAS MCB: ON (TERTUTUP)",
-          "SOLENOID: PASIF",
-          "KABEL: AMAN"
-        ]
+    "klakson_relay": {
+      "id": "klakson_relay",
+      "title": "Rangkaian Klakson Otomotif dengan Relay 4-Kaki (Terminal 30, 87, 85, 86)",
+      "videoFile": "06_klakson_relay.mp4",
+      "badge": "RELAY 4-KAKI OTOMOTIF (30, 87, 85, 86) & DUAL HORN",
+      "duration": 20.0,
+      "telemetry": {
+        "battery_voltage": {
+          "standby": "12.6 V DC (Siaga Penuh)",
+          "pressed": "12.5 V DC (Beban Kontrol)",
+          "energized": "12.2 V DC (Arus Beban Aktif)",
+          "honking": "12.2 V DC (Stabil)",
+          "released": "12.6 V DC (Pulih Siaga)"
+        },
+        "control_current_85_86": {
+          "standby": "0.0 A (Tombol Terbuka)",
+          "pressed": "0.35 A (Koil Terenergi)",
+          "energized": "0.35 A (Bertahan)",
+          "honking": "0.35 A (Bertahan)",
+          "released": "0.0 A (Terputus Seketika)"
+        },
+        "power_current_30_87": {
+          "standby": "0.0 A (Kontak Terbuka)",
+          "pressed": "0.0 A (Menunggu Armatur)",
+          "energized": "10.5 A (Arus Penuh Klakson)",
+          "honking": "10.5 A (Bunyi Kontinu)",
+          "released": "0.0 A (Padam Total)"
+        },
+        "horn_diaphragm_sound": {
+          "standby": "DIAM (Senyap 0 dB)",
+          "pressed": "DIAM (Transisi Daya)",
+          "energized": "BERGETAR CEPAT (Bunyi Nyaring)",
+          "honking": "110 dB (Akustik Aktif)",
+          "released": "DIAM (Senyap 0 dB)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Terjadinya Gangguan Hubung Singkat (Short Circuit)",
-        "narration": "Terjadinya gangguan hubung singkat: Isolasi konduktor fasa L1 rusak dan bersentuhan langsung dengan kawat netral N tanpa melalui hambatan impedansi beban. Impedansi loop sirkuit mendekati nol ohm, mengakibatkan arus listrik melonjak seketika hingga melampaui 1000 Ampere.",
-        "visual": [
-          "Titik sentuh fasa dan netral memancarkan kilatan percikan busur api kuning terang",
-          "Nilai ammeter melonjak drastis dan berkedip merah melampaui 1000 A",
-          "Gelombang partikel listrik merah bergerak dengan kecepatan sangat tinggi melintasi konduktor",
-          "Banner peringatan bahaya berkedip di layar"
-        ],
-        "on_screen": [
-          "BAHAYA: KORSLETING LISTRIK!",
-          "ARUS: > 1000 AMPERE (LONJAKAN EKSTREM!)",
-          "IMPEDANSI LOOP: ~ 0 OHM",
-          "TITIK GANGGUAN: PERCIKAN BUSUR API"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Pembangkitan Gaya Magnetik Kilat Solenoid",
-        "narration": "Arus gangguan raksasa melintasi kumparan solenoid magnetik MCB, seketika membangkitkan medan elektromagnetik berenergi sangat tinggi. Medan magnet yang sangat kuat melontarkan batang pendorong baja ke depan dengan gaya mekanis dahsyat dalam pecahan detik.",
-        "visual": [
-          "Lilitan solenoid MCB memancarkan medan fluks elektromagnetik biru cerah berkekuatan tinggi di sekeliling inti besi baja",
-          "Batang plunger baja meluncur cepat menghantam kait pengunci mekanisme trip (trip latch)",
-          "Garis-garis gaya fluks magnetik radial melingkupi solenoid secara intensif"
-        ],
-        "on_screen": [
-          "SOLENOID MCB: EKSITASI KILAT",
-          "MEDAN ELEKTROMAGNETIK: EKSTREM",
-          "PLUNGER BAJA: DILONTARKAN KEDEPAN",
-          "TARGET: MENGHANTAM TRIP LATCH"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Snap Action Pemutusan Tuas MCB & Pemadaman Arc (<10ms)",
-        "narration": "Hantaman plunger membebaskan mekanisme pegas pratekan. Kontak MCB membanting membuka dan tuas terlempar turun ke posisi OFF dalam waktu kurang dari sepuluh milidetik. Busur api listrik yang timbul saat kontak membuka ditarik masuk ke celah pelat pemadam arc chute dan dipadamkan seketika.",
-        "visual": [
-          "Tuas MCB terlempar turun menjadi merah 'OFF (TRIP)'",
-          "Bilah kontak utama berpisah cepat membentuk celah isolasi udara",
-          "Kilatan api busur tersedot ke kisi-kisi pelat pemadam arc chute dan padam total tanpa merusak komponen sekitar",
-          "Waktu respon tercatat sangat cepat: < 10 ms"
-        ],
-        "on_screen": [
-          "MCB TRIPPED! (< 10 ms)",
-          "TUAS MCB: TERBANTING KE OFF",
-          "KONTAK DAYA: SNAP OPEN",
-          "ARC CHUTE: BUSUR API DIPADAMKAN"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Arus Padam Total & Instalasi Kabel Terlindungi",
-        "narration": "Arus hubung singkat padam total ke nol Ampere, melenyapkan bahaya termal ekstrem dan ledakan busur listrik. Tindakan proteksi elektromagnetik super cepat mencegah kabel tembaga meleleh atau memicu kebakaran fatal pada instalasi panel.",
-        "visual": [
-          "Nilai ammeter kembali ke 0.0 A",
-          "Seluruh jalur sirkuit berubah abu-abu netral terisolasi total dari sumber catu daya",
-          "Layar kanvas menampilkan konfirmasi status proteksi hijau 'KABEL TERLINDUNGI - MCB BERHASIL MENGISOLASI GANGGUAN'"
-        ],
-        "on_screen": [
-          "ARUS SIRKUIT: 0.0 A (PADAM TOTAL)",
-          "BAHAYA KEBAKARAN: BERHASIL DICEGAH",
-          "KABEL TEMBAGA: AMAN TERLINDUNGI",
-          "STATUS SISTEM: AMAN TERISOLASI"
-        ]
-      }
-    ],
-    "pillLabel": "05. Short Circuit MCB"
-  },
-  "klakson_relay": {
-    "id": "klakson_relay",
-    "title": "Rangkaian Klakson Otomotif dengan Relay 4-Kaki (Terminal 30, 87, 85, 86)",
-    "videoFile": "06_klakson_relay.mp4",
-    "badge": "RELAY 4-KAKI OTOMOTIF (30, 87, 85, 86) & DUAL HORN",
-    "duration": 15.0,
-    "telemetry": {
-      "battery_voltage": {
-        "standby": "12.6 V DC (Siaga Penuh)",
-        "pressed": "12.5 V DC (Beban Kontrol)",
-        "energized": "12.2 V DC (Arus Beban Aktif)",
-        "honking": "12.2 V DC (Stabil)",
-        "released": "12.6 V DC (Pulih Siaga)"
-      },
-      "control_current_85_86": {
-        "standby": "0.0 A (Tombol Terbuka)",
-        "pressed": "0.35 A (Koil Terenergi)",
-        "energized": "0.35 A (Bertahan)",
-        "honking": "0.35 A (Bertahan)",
-        "released": "0.0 A (Terputus Seketika)"
-      },
-      "power_current_30_87": {
-        "standby": "0.0 A (Kontak Terbuka)",
-        "pressed": "0.0 A (Menunggu Armatur)",
-        "energized": "10.5 A (Arus Penuh Klakson)",
-        "honking": "10.5 A (Bunyi Kontinu)",
-        "released": "0.0 A (Padam Total)"
-      },
-      "horn_diaphragm_sound": {
-        "standby": "DIAM (Senyap 0 dB)",
-        "pressed": "DIAM (Transisi Daya)",
-        "energized": "BERGETAR CEPAT (Bunyi Nyaring)",
-        "honking": "110 dB (Akustik Aktif)",
-        "released": "DIAM (Senyap 0 dB)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Siaga & Kesiapan Daya Baterai",
+          "narration": "Kondisi awal siaga: Baterai 12V menyuplai tegangan ke sekering utama. Terminal daya tiga puluh dan terminal koil delapan puluh enam relay dalam posisi siaga bertegangan. Saklar klakson pada setir dalam posisi terbuka.",
+          "visual": [
+            "Rel positif merah menyala 12V dari kutub baterai melewati sekering menuju terminal 30 dan terminal 86 relay",
+            "Saklar tombol di setir memperlihatkan celah kontak terbuka",
+            "Unit klakson ganda dalam keadaan senyap padam (0 dB)",
+            "Voltmeter membaca 12.6 V DC stabil"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "BATERAI: 12.6 V DC",
+            "TERMINAL 30 & 86: 12V STANDBY",
+            "TOMBOL SETIR: OPEN",
+            "KLAKSON: SENYAP (0 dB)"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Penekanan Tombol Klakson & Arus Kontrol Mengalir",
+          "narration": "Pengemudi menekan tombol klakson pada roda kemudi, menghubungkan terminal delapan puluh lima koil relay langsung ke massa sasis kendaraan. Arus kontrol kecil 0.35 Ampere membangkitkan fluks medan elektromagnetik pada inti besi relay tanpa membebani saklar setir.",
+          "visual": [
+            "Tombol klakson setir bergerak turun menutup kontak",
+            "Garis arus kontrol merah muda mengalir dari terminal 86 melintasi lilitan koil keluar menuju terminal 85 ke simbol ground massa",
+            "Inti besi relay berpendar biru terang dengan gelombang magnetik menarik pelat armatur tembaga ke arah bawah melawan pegas penahan",
+            "Arus kontrol terukur sangat aman: 0.35 A"
+          ],
+          "on_screen": [
+            "TOMBOL SETIR: DITEKAN (CLOSED)",
+            "JALUR MASSA (PIN 85): TERHUBUNG",
+            "ARUS KONTROL: 0.35 A (SANGAT RINGAN)",
+            "KOIL RELAY: ELEKTROMAGNETIK AKTIF"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.0,
+          "name": "Penutupan Kontak Daya & Penyaluran Arus Besar",
+          "narration": "Tarikan magnet membanting kontak terminal tiga puluh ke terminal delapan puluh tujuh secara rapat. Sirkuit arus utama terhubung instan. Arus besar meluncur langsung dari baterai melewati kontak relay menuju unit klakson ganda tanpa melewati tombol setir.",
+          "visual": [
+            "Bilah kontak tebal berayun menutup menghubungkan terminal 30 ke 87",
+            "Garis kabel merah tebal menyala terang mengalirkan arus daya utama",
+            "Indikator amperemeter melonjak dari 0.0A ke 10.5A",
+            "Dua unit klakson menerima pasokan daya 12V penuh dengan drop tegangan minimal"
+          ],
+          "on_screen": [
+            "KONTAK DAYA (30-87): SNAP ACTION CLOSED",
+            "ARUS BEBAN: 10.5 AMPERE (ARUS BESAR)",
+            "SAKLAR SETIR AMAN DARI ARUS BESAR",
+            "SUPORSI DAYA PENUH KE DUAL HORN"
+          ]
+        },
+        {
+          "start": 11.0,
+          "end": 16.0,
+          "name": "Osilasi Diafragma Klakson & Bunyi Akustik Nyaring",
+          "narration": "Arus listrik menggerakkan pemutus kontak internal klakson, membuat diafragma bergetar pada frekuensi tinggi. Klakson menghasilkan tingkat tekanan suara 110 desibel secara konstan dan stabil untuk keselamatan berkendara.",
+          "visual": [
+            "Rumah klakson bergetar cepat dengan animasi gelombang suara akustik melingkar berwarna kuning keemasan memancar keluar",
+            "Panel instrumen menampilkan indikator suara 'HORN ACTIVE (110 dB)'",
+            "Arus 10.5A terbaca stabil di kanvas telemetri"
+          ],
+          "on_screen": [
+            "DIAFRAGMA KLAKSON: BERGETAR CEPAT",
+            "OUTPUT AKUSTIK: 110 dB (NYARING)",
+            "DUAL DISC HORN: BERBUNYI HARMONIS",
+            "ARUS BEBAN: 10.5 A STABIL"
+          ]
+        },
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "name": "Pelepasan Tombol & Pemutusan Aman Beban",
+          "narration": "Pengemudi melepas tombol klakson. Jalur massa terminal delapan puluh lima terputus seketika, melenyapkan medan magnet koil relay. Pegas pembalik mendorong kontak tiga puluh delapan puluh tujuh membuka seketika. Klakson berhenti bersuara dan sistem kembali ke posisi siaga aman.",
+          "visual": [
+            "Tombol klakson setir terangkat membuka",
+            "Aliran arus kontrol padam menjadi abu-abu netral, menghilangkan fluks medan magnet pada koil",
+            "Bilah kontak daya 87 terlempar membuka kembali",
+            "Aliran arus daya padam total (0.0 A), getaran klakson berhenti senyap, dan sirkuit kembali ke status siaga"
+          ],
+          "on_screen": [
+            "TOMBOL SETIR: RELEASED (OPEN)",
+            "MEDAN MAGNET: RUNTUH (OFF)",
+            "KONTAK (30-87): PEGAS MEMBUKA",
+            "ARUS TOTAL: 0.0 A (SENYAP 0 dB)",
+            "STATUS: SIAGA (STANDBY)"
+          ]
+        }
+      ],
+      "pillLabel": "06. Klakson Relay 4-Pin"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Siaga & Kesiapan Daya Baterai",
-        "narration": "Kondisi awal siaga: Baterai 12V menyuplai tegangan ke sekering utama. Terminal daya tiga puluh dan terminal koil delapan puluh enam relay dalam posisi siaga bertegangan. Saklar klakson pada setir dalam posisi terbuka.",
-        "visual": [
-          "Rel positif merah menyala 12V dari kutub baterai melewati sekering menuju terminal 30 dan terminal 86 relay",
-          "Saklar tombol di setir memperlihatkan celah kontak terbuka",
-          "Unit klakson ganda dalam keadaan senyap padam (0 dB)",
-          "Voltmeter membaca 12.6 V DC stabil"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "BATERAI: 12.6 V DC",
-          "TERMINAL 30 & 86: 12V STANDBY",
-          "TOMBOL SETIR: OPEN",
-          "KLAKSON: SENYAP (0 dB)"
-        ]
+    "lampu_sein_flasher": {
+      "id": "lampu_sein_flasher",
+      "title": "Rangkaian Lampu Tanda Belok (Sein) & Hazard dengan Modul Flasher Otomotif",
+      "videoFile": "07_lampu_sein_flasher.mp4",
+      "badge": "MODUL FLASHER 3-PIN (B, L, E) & SAKLAR SEIN/HAZARD",
+      "duration": 20.0,
+      "telemetry": {
+        "ignition_switch": {
+          "standby": "ON (IG 12V Aktif)",
+          "left_on": "ON (12V)",
+          "flashing": "ON (12V)",
+          "hazard_on": "ON (Hazard Bebas IG)",
+          "off": "ON (Siaga)"
+        },
+        "flasher_frequency": {
+          "standby": "0 CPM (Tidak Aktif)",
+          "left_on": "85 CPM (Siklus Kedip Normal)",
+          "flashing": "85 CPM (Osilasi Periodik)",
+          "hazard_on": "85 CPM (Beban 4 Lampu)",
+          "off": "0 CPM (Padam)"
+        },
+        "total_load_current": {
+          "standby": "0.0 A",
+          "left_on": "3.5 A (2 x 21W + Indikator)",
+          "flashing": "Berdenyut 3.5A <-> 0A",
+          "hazard_on": "7.0 A (4 x 21W Bohlam)",
+          "off": "0.0 A"
+        },
+        "left_lamps_status": {
+          "standby": "PADAM",
+          "left_on": "BERKEDIP KUNING AMBER",
+          "flashing": "BERKEDIP (Sinkron)",
+          "hazard_on": "BERKEDIP BERSAMA",
+          "off": "PADAM"
+        },
+        "right_lamps_status": {
+          "standby": "PADAM",
+          "left_on": "PADAM (Terisolasi Saklar)",
+          "flashing": "PADAM (Terisolasi Saklar)",
+          "hazard_on": "BERKEDIP BERSAMA",
+          "off": "PADAM"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Penekanan Tombol Klakson & Arus Kontrol Mengalir",
-        "narration": "Pengemudi menekan tombol klakson pada roda kemudi, menghubungkan terminal delapan puluh lima koil relay langsung ke massa sasis kendaraan. Arus kontrol kecil 0.35 Ampere membangkitkan fluks medan elektromagnetik pada inti besi relay tanpa membebani saklar setir.",
-        "visual": [
-          "Tombol klakson setir bergerak turun menutup kontak",
-          "Garis arus kontrol merah muda mengalir dari terminal 86 melintasi lilitan koil keluar menuju terminal 85 ke simbol ground massa",
-          "Inti besi relay berpendar biru terang dengan gelombang magnetik menarik pelat armatur tembaga ke arah bawah melawan pegas penahan",
-          "Arus kontrol terukur sangat aman: 0.35 A"
-        ],
-        "on_screen": [
-          "TOMBOL SETIR: DITEKAN (CLOSED)",
-          "JALUR MASSA (PIN 85): TERHUBUNG",
-          "ARUS KONTROL: 0.35 A (SANGAT RINGAN)",
-          "KOIL RELAY: ELEKTROMAGNETIK AKTIF"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Penutupan Kontak Daya & Penyaluran Arus Besar",
-        "narration": "Tarikan magnet membanting kontak terminal tiga puluh ke terminal delapan puluh tujuh secara rapat. Sirkuit arus utama terhubung instan. Arus besar meluncur langsung dari baterai melewati kontak relay menuju unit klakson ganda tanpa melewati tombol setir.",
-        "visual": [
-          "Bilah kontak tebal berayun menutup menghubungkan terminal 30 ke 87",
-          "Garis kabel merah tebal menyala terang mengalirkan arus daya utama",
-          "Indikator amperemeter melonjak dari 0.0A ke 10.5A",
-          "Dua unit klakson menerima pasokan daya 12V penuh dengan drop tegangan minimal"
-        ],
-        "on_screen": [
-          "KONTAK DAYA (30-87): SNAP ACTION CLOSED",
-          "ARUS BEBAN: 10.5 AMPERE (ARUS BESAR)",
-          "SAKLAR SETIR AMAN DARI ARUS BESAR",
-          "SUPORSI DAYA PENUH KE DUAL HORN"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Osilasi Diafragma Klakson & Bunyi Akustik Nyaring",
-        "narration": "Arus listrik menggerakkan pemutus kontak internal klakson, membuat diafragma bergetar pada frekuensi tinggi. Klakson menghasilkan tingkat tekanan suara 110 desibel secara konstan dan stabil untuk keselamatan berkendara.",
-        "visual": [
-          "Rumah klakson bergetar cepat dengan animasi gelombang suara akustik melingkar berwarna kuning keemasan memancar keluar",
-          "Panel instrumen menampilkan indikator suara 'HORN ACTIVE (110 dB)'",
-          "Arus 10.5A terbaca stabil di kanvas telemetri"
-        ],
-        "on_screen": [
-          "DIAFRAGMA KLAKSON: BERGETAR CEPAT",
-          "OUTPUT AKUSTIK: 110 dB (NYARING)",
-          "DUAL DISC HORN: BERBUNYI HARMONIS",
-          "ARUS BEBAN: 10.5 A STABIL"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Pelepasan Tombol & Pemutusan Aman Beban",
-        "narration": "Pengemudi melepas tombol klakson. Jalur massa terminal delapan puluh lima terputus seketika, melenyapkan medan magnet koil relay. Pegas pembalik mendorong kontak tiga puluh delapan puluh tujuh membuka seketika. Klakson berhenti bersuara dan sistem kembali ke posisi siaga aman.",
-        "visual": [
-          "Tombol klakson setir terangkat membuka",
-          "Aliran arus kontrol padam menjadi abu-abu netral, menghilangkan fluks medan magnet pada koil",
-          "Bilah kontak daya 87 terlempar membuka kembali",
-          "Aliran arus daya padam total (0.0 A), getaran klakson berhenti senyap, dan sirkuit kembali ke status siaga"
-        ],
-        "on_screen": [
-          "TOMBOL SETIR: RELEASED (OPEN)",
-          "MEDAN MAGNET: RUNTUH (OFF)",
-          "KONTAK (30-87): PEGAS MEMBUKA",
-          "ARUS TOTAL: 0.0 A (SENYAP 0 dB)",
-          "STATUS: SIAGA (STANDBY)"
-        ]
-      }
-    ],
-    "pillLabel": "06. Klakson Relay 4-Pin"
-  },
-  "lampu_sein_flasher": {
-    "id": "lampu_sein_flasher",
-    "title": "Rangkaian Lampu Tanda Belok (Sein) & Hazard dengan Modul Flasher Otomotif",
-    "videoFile": "07_lampu_sein_flasher.mp4",
-    "badge": "MODUL FLASHER 3-PIN (B, L, E) & SAKLAR SEIN/HAZARD",
-    "duration": 15.0,
-    "telemetry": {
-      "ignition_switch": {
-        "standby": "ON (IG 12V Aktif)",
-        "left_on": "ON (12V)",
-        "flashing": "ON (12V)",
-        "hazard_on": "ON (Hazard Bebas IG)",
-        "off": "ON (Siaga)"
-      },
-      "flasher_frequency": {
-        "standby": "0 CPM (Tidak Aktif)",
-        "left_on": "85 CPM (Siklus Kedip Normal)",
-        "flashing": "85 CPM (Osilasi Periodik)",
-        "hazard_on": "85 CPM (Beban 4 Lampu)",
-        "off": "0 CPM (Padam)"
-      },
-      "total_load_current": {
-        "standby": "0.0 A",
-        "left_on": "3.5 A (2 x 21W + Indikator)",
-        "flashing": "Berdenyut 3.5A <-> 0A",
-        "hazard_on": "7.0 A (4 x 21W Bohlam)",
-        "off": "0.0 A"
-      },
-      "left_lamps_status": {
-        "standby": "PADAM",
-        "left_on": "BERKEDIP KUNING AMBER",
-        "flashing": "BERKEDIP (Sinkron)",
-        "hazard_on": "BERKEDIP BERSAMA",
-        "off": "PADAM"
-      },
-      "right_lamps_status": {
-        "standby": "PADAM",
-        "left_on": "PADAM (Terisolasi Saklar)",
-        "flashing": "PADAM (Terisolasi Saklar)",
-        "hazard_on": "BERKEDIP BERSAMA",
-        "off": "PADAM"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Siaga & Catu Daya Kunci Kontak",
+          "narration": "Kondisi awal siaga: Kunci kontak posisi ON mengalirkan tegangan 12V ke terminal input B flasher. Saklar sein berada di posisi netral tengah dan saklar hazard terbuka. Seluruh lampu padam aman.",
+          "visual": [
+            "Garis merah 12V siaga di terminal B (49) flasher otomotif",
+            "Saklar tuas kombinasi sein berada tepat di titik tengah netral",
+            "Empat bohlam lampu sein di sudut kendaraan dalam kondisi padam abu-abu",
+            "Modul flasher dalam status diam (0 CPM)"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "KUNCI KONTAK: ON (12V)",
+            "TERMINAL B (49): 12V SIAGA",
+            "SAKLAR SEIN: NETRAL (OFF)",
+            "4 LAMPU SEIN: PADAM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Pengaktifan Saklar Sein Kiri & Pemicuan Modul Flasher",
+          "narration": "Pengemudi menggeser tuas saklar ke arah kiri. Sirkuit menghubungkan terminal L flasher ke dua bohlam lampu sein kiri dan indikator dashboard. Masuknya beban filamen lampu memicu rangkaian flasher untuk mulai mengedipkan arus secara teratur.",
+          "visual": [
+            "Tuas saklar sein bergeser ke kiri menghubungkan pin kontak kiri",
+            "Garis arus listrik meluncur mengalir ke filamen bohlam depan dan belakang kiri",
+            "Inti modul flasher berdenyut ritmis",
+            "Arus 3.5 Ampere terbaca di instrumen pengukur pada fasa menyala pertama"
+          ],
+          "on_screen": [
+            "SAKLAR SEIN: KIRI (LEFT ON)",
+            "TERMINAL L (49a): TERHUBUNG KE BEBAN",
+            "ARUS BEBAN: 3.5 A (2 x 21W)",
+            "FLASHER: TERPICU AKTIF"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Osilasi Kedipan Ritmis 85 Siklus per Menit",
+          "narration": "Flasher memutus dan menyambungkan kontak secara bergantian pada frekuensi standar 85 kedipan per menit sesuai regulasi keselamatan lalu lintas. Saklar kombinasi memastikan lampu sein sisi kanan tetap padam total tanpa adanya arus bocor.",
+          "visual": [
+            "Dua bohlam sein kiri dan indikator panah dashboard berkedip serempak kuning amber terang",
+            "Siklus nyala dan padam seimbang (0.35s ON / 0.35s OFF)",
+            "Dua bohlam kanan tetap berwarna abu-abu padam terisolasi sempurna",
+            "Arus berdenyut secara periodik antara 3.5A dan 0.0A"
+          ],
+          "on_screen": [
+            "FREKUENSI: 85 KEDIPAN / MENIT (CPM)",
+            "SEIN KIRI: BERKEDIP AMBER SINKRON",
+            "SEIN KANAN: TERISOLASI TOTAL (PADAM)",
+            "SIKLUS: 0.35s ON / 0.35s OFF"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 16.5,
+          "name": "Pengaktifan Saklar Darurat Hazard",
+          "narration": "Pengemudi menekan tombol segitiga merah hazard. Saklar hazard menghubungkan kedua jalur cabang kiri dan kanan secara paralel serempak. Beban arus meningkat menjadi 7.0 Ampere. Keempat lampu sein di keempat sudut kendaraan berkedip serempak menandakan status darurat.",
+          "visual": [
+            "Tombol merah hazard ditekan masuk",
+            "Bilah ganda saklar hazard menjembatani jalur lampu kiri dan kanan secara paralel sekaligus",
+            "Keempat bohlam di sudut luar kendaraan menyala terang kuning amber secara serentak bersama kedua panah indikator di instrumen dashboard",
+            "Amperemeter melonjak berdenyut pada 7.0 A"
+          ],
+          "on_screen": [
+            "TOMBOL HAZARD: DITEKAN (EMERGENCY ON)",
+            "PARALEL CABANG: KIRI & KANAN TERHUBUNG",
+            "4 BOHLAM SEIN: BERKEDIP SERENTAK",
+            "ARUS BEBAN GANDA: 7.0 A"
+          ]
+        },
+        {
+          "start": 16.5,
+          "end": 20.0,
+          "name": "Penonaktifan Sistem & Kondisi Siaga",
+          "narration": "Tombol hazard dilepas kembali ke posisi OFF dan saklar sein kembali ke posisi netral tengah. Rangkaian flasher berhenti berdenyut saat beban filamen terputus. Seluruh lampu padam aman dan sistem kembali ke posisi siaga.",
+          "visual": [
+            "Tombol hazard terangkat membuka",
+            "Saklar sein kembali lurus di tengah",
+            "Hubungan paralel terlepas seketika",
+            "Aliran arus kembali ke 0.0 A, seluruh bohlam sein padam sempurna, dan sirkuit kembali ke status siap operasi"
+          ],
+          "on_screen": [
+            "HAZARD: OFF & SEIN: NETRAL",
+            "MODUL FLASHER: BERHENTI OSILASI",
+            "ARUS: 0.0 A (PADAM SEMPURNA)",
+            "STATUS: SIAGA AMAN (STANDBY)"
+          ]
+        }
+      ],
+      "pillLabel": "07. Sein & Hazard Flasher"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Siaga & Catu Daya Kunci Kontak",
-        "narration": "Kondisi awal siaga: Kunci kontak posisi ON mengalirkan tegangan 12V ke terminal input B flasher. Saklar sein berada di posisi netral tengah dan saklar hazard terbuka. Seluruh lampu padam aman.",
-        "visual": [
-          "Garis merah 12V siaga di terminal B (49) flasher otomotif",
-          "Saklar tuas kombinasi sein berada tepat di titik tengah netral",
-          "Empat bohlam lampu sein di sudut kendaraan dalam kondisi padam abu-abu",
-          "Modul flasher dalam status diam (0 CPM)"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "KUNCI KONTAK: ON (12V)",
-          "TERMINAL B (49): 12V SIAGA",
-          "SAKLAR SEIN: NETRAL (OFF)",
-          "4 LAMPU SEIN: PADAM"
-        ]
+    "lampu_kepala_relay": {
+      "id": "lampu_kepala_relay",
+      "title": "Sistem Lampu Kepala (Headlamp) Jauh/Dekat dengan Relay 5-Kaki (Terminal 30, 87, 87a, 85, 86)",
+      "videoFile": "08_lampu_kepala_relay.mp4",
+      "badge": "RELAY 5-KAKI SPDT (30, 87a, 87, 85, 86) & HEADLAMP H4",
+      "duration": 20.0,
+      "telemetry": {
+        "main_light_switch": {
+          "standby": "OFF (Terbuka)",
+          "low_on": "ON (Menyuplai 12V ke 30)",
+          "dimmer_transition": "ON (12V Tetap Mengalir)",
+          "high_on": "ON (12V Tetap Mengalir)",
+          "off": "OFF (Terputus Total)"
+        },
+        "relay_coil_85_86": {
+          "standby": "0 V (De-energized)",
+          "low_on": "0 V (De-energized / Pasif)",
+          "dimmer_transition": "12 V (Transisi Koil Aktif)",
+          "high_on": "12 V (Energized Penuh)",
+          "off": "0 V (Padam)"
+        },
+        "nc_contact_30_87a": {
+          "standby": "TERTUTUP (Normally Closed)",
+          "low_on": "TERTUTUP (Menyalurkan Arus)",
+          "dimmer_transition": "TERBUKA (Terlempar Lepas)",
+          "high_on": "TERBUKA (Terisolasi Aman)",
+          "off": "TERTUTUP (Tanpa Arus)"
+        },
+        "no_contact_30_87": {
+          "standby": "TERBUKA (Normally Open)",
+          "low_on": "TERBUKA (Tanpa Arus)",
+          "dimmer_transition": "TERTUTUP (Snap Action)",
+          "high_on": "TERTUTUP (Tersambung Rapat)",
+          "off": "TERBUKA (Pegas Pembalik)"
+        },
+        "low_beam_filaments": {
+          "standby": "PADAM",
+          "low_on": "MENYALA TERANG (Kuning/Putih)",
+          "dimmer_transition": "PADAM (Terputus di 87a)",
+          "high_on": "PADAM",
+          "off": "PADAM"
+        },
+        "high_beam_filaments": {
+          "standby": "PADAM",
+          "low_on": "PADAM",
+          "dimmer_transition": "MENYALA TERANG (Kuning/Putih)",
+          "high_on": "MENYALA + Indikator Biru ON",
+          "off": "PADAM"
+        },
+        "total_load_current": {
+          "standby": "0.0 A",
+          "low_on": "9.2 A (2 x 55W)",
+          "dimmer_transition": "10.0 A (2 x 60W)",
+          "high_on": "10.0 A (Stabil)",
+          "off": "0.0 A"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pengaktifan Saklar Sein Kiri & Pemicuan Modul Flasher",
-        "narration": "Pengemudi menggeser tuas saklar ke arah kiri. Sirkuit menghubungkan terminal L flasher ke dua bohlam lampu sein kiri dan indikator dashboard. Masuknya beban filamen lampu memicu rangkaian flasher untuk mulai mengedipkan arus secara teratur.",
-        "visual": [
-          "Tuas saklar sein bergeser ke kiri menghubungkan pin kontak kiri",
-          "Garis arus listrik meluncur mengalir ke filamen bohlam depan dan belakang kiri",
-          "Inti modul flasher berdenyut ritmis",
-          "Arus 3.5 Ampere terbaca di instrumen pengukur pada fasa menyala pertama"
-        ],
-        "on_screen": [
-          "SAKLAR SEIN: KIRI (LEFT ON)",
-          "TERMINAL L (49a): TERHUBUNG KE BEBAN",
-          "ARUS BEBAN: 3.5 A (2 x 21W)",
-          "FLASHER: TERPICU AKTIF"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Osilasi Kedipan Ritmis 85 Siklus per Menit",
-        "narration": "Flasher memutus dan menyambungkan kontak secara bergantian pada frekuensi standar 85 kedipan per menit sesuai regulasi keselamatan lalu lintas. Saklar kombinasi memastikan lampu sein sisi kanan tetap padam total tanpa adanya arus bocor.",
-        "visual": [
-          "Dua bohlam sein kiri dan indikator panah dashboard berkedip serempak kuning amber terang",
-          "Siklus nyala dan padam seimbang (0.35s ON / 0.35s OFF)",
-          "Dua bohlam kanan tetap berwarna abu-abu padam terisolasi sempurna",
-          "Arus berdenyut secara periodik antara 3.5A dan 0.0A"
-        ],
-        "on_screen": [
-          "FREKUENSI: 85 KEDIPAN / MENIT (CPM)",
-          "SEIN KIRI: BERKEDIP AMBER SINKRON",
-          "SEIN KANAN: TERISOLASI TOTAL (PADAM)",
-          "SIKLUS: 0.35s ON / 0.35s OFF"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Pengaktifan Saklar Darurat Hazard",
-        "narration": "Pengemudi menekan tombol segitiga merah hazard. Saklar hazard menghubungkan kedua jalur cabang kiri dan kanan secara paralel serempak. Beban arus meningkat menjadi 7.0 Ampere. Keempat lampu sein di keempat sudut kendaraan berkedip serempak menandakan status darurat.",
-        "visual": [
-          "Tombol merah hazard ditekan masuk",
-          "Bilah ganda saklar hazard menjembatani jalur lampu kiri dan kanan secara paralel sekaligus",
-          "Keempat bohlam di sudut luar kendaraan menyala terang kuning amber secara serentak bersama kedua panah indikator di instrumen dashboard",
-          "Amperemeter melonjak berdenyut pada 7.0 A"
-        ],
-        "on_screen": [
-          "TOMBOL HAZARD: DITEKAN (EMERGENCY ON)",
-          "PARALEL CABANG: KIRI & KANAN TERHUBUNG",
-          "4 BOHLAM SEIN: BERKEDIP SERENTAK",
-          "ARUS BEBAN GANDA: 7.0 A"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Penonaktifan Sistem & Kondisi Siaga",
-        "narration": "Tombol hazard dilepas kembali ke posisi OFF dan saklar sein kembali ke posisi netral tengah. Rangkaian flasher berhenti berdenyut saat beban filamen terputus. Seluruh lampu padam aman dan sistem kembali ke posisi siaga.",
-        "visual": [
-          "Tombol hazard terangkat membuka",
-          "Saklar sein kembali lurus di tengah",
-          "Hubungan paralel terlepas seketika",
-          "Aliran arus kembali ke 0.0 A, seluruh bohlam sein padam sempurna, dan sirkuit kembali ke status siap operasi"
-        ],
-        "on_screen": [
-          "HAZARD: OFF & SEIN: NETRAL",
-          "MODUL FLASHER: BERHENTI OSILASI",
-          "ARUS: 0.0 A (PADAM SEMPURNA)",
-          "STATUS: SIAGA AMAN (STANDBY)"
-        ]
-      }
-    ],
-    "pillLabel": "07. Sein & Hazard Flasher"
-  },
-  "lampu_kepala_relay": {
-    "id": "lampu_kepala_relay",
-    "title": "Sistem Lampu Kepala (Headlamp) Jauh/Dekat dengan Relay 5-Kaki (Terminal 30, 87, 87a, 85, 86)",
-    "videoFile": "08_lampu_kepala_relay.mp4",
-    "badge": "RELAY 5-KAKI SPDT (30, 87a, 87, 85, 86) & HEADLAMP H4",
-    "duration": 15.0,
-    "telemetry": {
-      "main_light_switch": {
-        "standby": "OFF (Terbuka)",
-        "low_on": "ON (Menyuplai 12V ke 30)",
-        "dimmer_transition": "ON (12V Tetap Mengalir)",
-        "high_on": "ON (12V Tetap Mengalir)",
-        "off": "OFF (Terputus Total)"
-      },
-      "relay_coil_85_86": {
-        "standby": "0 V (De-energized)",
-        "low_on": "0 V (De-energized / Pasif)",
-        "dimmer_transition": "12 V (Transisi Koil Aktif)",
-        "high_on": "12 V (Energized Penuh)",
-        "off": "0 V (Padam)"
-      },
-      "nc_contact_30_87a": {
-        "standby": "TERTUTUP (Normally Closed)",
-        "low_on": "TERTUTUP (Menyalurkan Arus)",
-        "dimmer_transition": "TERBUKA (Terlempar Lepas)",
-        "high_on": "TERBUKA (Terisolasi Aman)",
-        "off": "TERTUTUP (Tanpa Arus)"
-      },
-      "no_contact_30_87": {
-        "standby": "TERBUKA (Normally Open)",
-        "low_on": "TERBUKA (Tanpa Arus)",
-        "dimmer_transition": "TERTUTUP (Snap Action)",
-        "high_on": "TERTUTUP (Tersambung Rapat)",
-        "off": "TERBUKA (Pegas Pembalik)"
-      },
-      "low_beam_filaments": {
-        "standby": "PADAM",
-        "low_on": "MENYALA TERANG (Kuning/Putih)",
-        "dimmer_transition": "PADAM (Terputus di 87a)",
-        "high_on": "PADAM",
-        "off": "PADAM"
-      },
-      "high_beam_filaments": {
-        "standby": "PADAM",
-        "low_on": "PADAM",
-        "dimmer_transition": "MENYALA TERANG (Kuning/Putih)",
-        "high_on": "MENYALA + Indikator Biru ON",
-        "off": "PADAM"
-      },
-      "total_load_current": {
-        "standby": "0.0 A",
-        "low_on": "9.2 A (2 x 55W)",
-        "dimmer_transition": "10.0 A (2 x 60W)",
-        "high_on": "10.0 A (Stabil)",
-        "off": "0.0 A"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Siaga & Kesiapan Catu Daya",
+          "narration": "Kondisi awal siaga: Baterai 12V menyuplai tegangan ke sekering proteksi. Saklar lampu utama terbuka, koil relay 5-kaki tidak aktif, kontak NC 87a tertutup secara mekanik, dan kedua filamen headlamp padam.",
+          "visual": [
+            "Rel 12V merah siaga di terminal masukan saklar utama",
+            "Bilah kontak relay bertumpu rapat pada terminal NC 87a",
+            "Bohlam lampu kepala H4 ganda dalam kondisi padam abu-abu",
+            "Arus beban membaca 0.0 A"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "SAKLAR UTAMA: OFF",
+            "RELAY 5-PIN: DE-ENERGIZED",
+            "KONTAK NC (30-87a): CLOSED DEFAULT",
+            "HEADLAMP: PADAM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Pengaktifan Saklar Utama & Lampu Dekat Menyala",
+          "narration": "Pengemudi menyalakan saklar lampu kepala. Tegangan 12V seketika mengalir masuk ke terminal kontak bersama tiga puluh pada relay 5-kaki. Karena koil belum diaktifkan, arus langsung meluncur melalui kontak normal tertutup 87a menuju filamen lampu dekat.",
+          "visual": [
+            "Saklar lampu utama menutup berwarna hijau",
+            "Arus 12V meluncur masuk mengisi terminal bersama 30 pada relay",
+            "Arus 9.2 Ampere mengalir melewati terminal 87a menyalakan filamen atas lampu H4",
+            "Berkas cahaya lampu dekat menyorot ke bawah berwarna kuning/putih terang"
+          ],
+          "on_screen": [
+            "SAKLAR UTAMA: ON",
+            "TERMINAL BERSAMA (30): 12V MASUK",
+            "JALUR NC (87a): AKTIF MENGALIR",
+            "LAMPU DEKAT (LOW BEAM): MENYALA (9.2 A)"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Pengalihan Saklar Dimmer ke Lampu Jauh",
+          "narration": "Pengemudi menggerakkan tuas dimmer ke posisi lampu jauh, menghubungkan terminal delapan puluh enam koil relay ke sumber tegangan 12V. Medan elektromagnetik menarik armatur mengatasi tekanan pegas, melepaskan bilah kontak dari terminal 87a dan membanting rapat ke terminal 87.",
+          "visual": [
+            "Saklar dimmer bergeser menghubungkan arus kontrol kecil ke terminal 86 koil",
+            "Inti besi relay berpendar biru magnetik",
+            "Bilah kontak terlepas dari 87a (mematikan lampu dekat) dan seketika menempel rapat pada terminal 87 (changeover action)"
+          ],
+          "on_screen": [
+            "SAKLAR DIMMER: HI BEAM AKTIF",
+            "KOIL (85-86): ENERGIZED",
+            "CHANGEOVER ACTION: 87a -> 87",
+            "LAMPU DEKAT: PADAM INSTAN"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 16.0,
+          "name": "Lampu Jauh Menyala Terang & Indikator Biru Aktif",
+          "narration": "Aliran arus daya sepuluh Ampere berpindah mengalir melalui terminal delapan puluh tujuh menuju filamen lampu jauh di kedua headlamp. Arus paralel kecil menyalakan lampu indikator High Beam berwarna biru pada panel instrumen dashboard sebagai konfirmasi visual.",
+          "visual": [
+            "Filamen bawah bohlam H4 berpendar sangat terang",
+            "Berkas cahaya memancar lurus mendatar ke depan dengan jangkauan pandang jauh",
+            "Simbol lampu jauh warna biru terang menyala di instrumen pengemudi",
+            "Pembacaan amperemeter menunjukkan 10.0A stabil"
+          ],
+          "on_screen": [
+            "JALUR NO (87): MENYALURKAN 10.0 A",
+            "LAMPU JAUH (HIGH BEAM): MENYALA PENUH",
+            "BERKAS CAHAYA: MENYOROT LURUS JAUH",
+            "INDIKATOR DASHBOARD: BIRU AKTIF"
+          ]
+        },
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "name": "Pemutusan Saklar Utama & Kembali Siaga",
+          "narration": "Pengemudi mematikan saklar utama lampu kepala. Pasokan tegangan 12V ke terminal tiga puluh terputus seketika. Seluruh filamen headlamp dan indikator biru padam total. Sistem siap untuk siklus penyalaan berikutnya.",
+          "visual": [
+            "Saklar utama membuka kembali ke posisi netral abu-abu",
+            "Aliran arus listrik terputus dari terminal 30",
+            "Arus sirkuit kembali ke 0.0 A, lampu kepala padam sempurna, dan kontak mekanik relay kembali ke posisi default tanpa arus"
+          ],
+          "on_screen": [
+            "SAKLAR UTAMA: OFF",
+            "TERMINAL 30: DAYA TERPUTUS",
+            "ARUS TOTAL: 0.0 A (PADAM SEMPURNA)",
+            "STATUS: SIAGA AMAN (STANDBY)"
+          ]
+        }
+      ],
+      "pillLabel": "08. Lampu Kepala 5-Pin"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Siaga & Kesiapan Catu Daya",
-        "narration": "Kondisi awal siaga: Baterai 12V menyuplai tegangan ke sekering proteksi. Saklar lampu utama terbuka, koil relay 5-kaki tidak aktif, kontak NC 87a tertutup secara mekanik, dan kedua filamen headlamp padam.",
-        "visual": [
-          "Rel 12V merah siaga di terminal masukan saklar utama",
-          "Bilah kontak relay bertumpu rapat pada terminal NC 87a",
-          "Bohlam lampu kepala H4 ganda dalam kondisi padam abu-abu",
-          "Arus beban membaca 0.0 A"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "SAKLAR UTAMA: OFF",
-          "RELAY 5-PIN: DE-ENERGIZED",
-          "KONTAK NC (30-87a): CLOSED DEFAULT",
-          "HEADLAMP: PADAM"
-        ]
+    "motor_starter_bendix": {
+      "id": "motor_starter_bendix",
+      "title": "Sistem Motor Starter & Solenoid Magnetic Switch (Terminal 30, 50, C)",
+      "videoFile": "09_motor_starter_bendix.mp4",
+      "badge": "SOLENOID PULL/HOLD COIL, PINION BENDIX & FLYWHEEL",
+      "duration": 20.0,
+      "telemetry": {
+        "ignition_switch": {
+          "standby": "ON (12V Siaga)",
+          "start": "START (ST Terminal 50 Terhubung)",
+          "mesh": "START (ST Tetap Ditahan)",
+          "crank": "START (Mesin Mulai Berputar)",
+          "running": "ON (ST Terlepas Membuka)"
+        },
+        "solenoid_coil_current": {
+          "standby": "0.0 A",
+          "start": "35.0 A (Pull-in + Hold-in)",
+          "mesh": "12.0 A (Hold-in Coil Saja)",
+          "crank": "12.0 A (Menahan Plunger)",
+          "running": "0.0 A (Koil Padam)"
+        },
+        "starter_motor_current": {
+          "standby": "0.0 A (Kontak Terbuka)",
+          "start": "0.0 A (Pinion Sedang Meluncur)",
+          "mesh": "180.0 A (Arus Inrush Puncak)",
+          "crank": "120.0 A (Arus Cranking Stabil)",
+          "running": "0.0 A (Terputus Total)"
+        },
+        "bendix_pinion_position": {
+          "standby": "Mundur Bebas (Disengaged)",
+          "start": "Meluncur Maju ke Flywheel",
+          "mesh": "Menaut Rapat ke Ring Gear",
+          "crank": "Terkunci Memutar Flywheel",
+          "running": "Mundur Cepat (Disengaged)"
+        },
+        "engine_flywheel_speed": {
+          "standby": "0 RPM (Mesin Mati)",
+          "start": "0 RPM (Siap Diputar)",
+          "mesh": "60 RPM -> 180 RPM (Cranking)",
+          "crank": "220 RPM (Putaran Start Mesin)",
+          "running": "900 RPM (Mesin Hidup Idle Mandiri)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pengaktifan Saklar Utama & Lampu Dekat Menyala",
-        "narration": "Pengemudi menyalakan saklar lampu kepala. Tegangan 12V seketika mengalir masuk ke terminal kontak bersama tiga puluh pada relay 5-kaki. Karena koil belum diaktifkan, arus langsung meluncur melalui kontak normal tertutup 87a menuju filamen lampu dekat.",
-        "visual": [
-          "Saklar lampu utama menutup berwarna hijau",
-          "Arus 12V meluncur masuk mengisi terminal bersama 30 pada relay",
-          "Arus 9.2 Ampere mengalir melewati terminal 87a menyalakan filamen atas lampu H4",
-          "Berkas cahaya lampu dekat menyorot ke bawah berwarna kuning/putih terang"
-        ],
-        "on_screen": [
-          "SAKLAR UTAMA: ON",
-          "TERMINAL BERSAMA (30): 12V MASUK",
-          "JALUR NC (87a): AKTIF MENGALIR",
-          "LAMPU DEKAT (LOW BEAM): MENYALA (9.2 A)"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Pengalihan Saklar Dimmer ke Lampu Jauh",
-        "narration": "Pengemudi menggerakkan tuas dimmer ke posisi lampu jauh, menghubungkan terminal delapan puluh enam koil relay ke sumber tegangan 12V. Medan elektromagnetik menarik armatur mengatasi tekanan pegas, melepaskan bilah kontak dari terminal 87a dan membanting rapat ke terminal 87.",
-        "visual": [
-          "Saklar dimmer bergeser menghubungkan arus kontrol kecil ke terminal 86 koil",
-          "Inti besi relay berpendar biru magnetik",
-          "Bilah kontak terlepas dari 87a (mematikan lampu dekat) dan seketika menempel rapat pada terminal 87 (changeover action)"
-        ],
-        "on_screen": [
-          "SAKLAR DIMMER: HI BEAM AKTIF",
-          "KOIL (85-86): ENERGIZED",
-          "CHANGEOVER ACTION: 87a -> 87",
-          "LAMPU DEKAT: PADAM INSTAN"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Lampu Jauh Menyala Terang & Indikator Biru Aktif",
-        "narration": "Aliran arus daya sepuluh Ampere berpindah mengalir melalui terminal delapan puluh tujuh menuju filamen lampu jauh di kedua headlamp. Arus paralel kecil menyalakan lampu indikator High Beam berwarna biru pada panel instrumen dashboard sebagai konfirmasi visual.",
-        "visual": [
-          "Filamen bawah bohlam H4 berpendar sangat terang",
-          "Berkas cahaya memancar lurus mendatar ke depan dengan jangkauan pandang jauh",
-          "Simbol lampu jauh warna biru terang menyala di instrumen pengemudi",
-          "Pembacaan amperemeter menunjukkan 10.0A stabil"
-        ],
-        "on_screen": [
-          "JALUR NO (87): MENYALURKAN 10.0 A",
-          "LAMPU JAUH (HIGH BEAM): MENYALA PENUH",
-          "BERKAS CAHAYA: MENYOROT LURUS JAUH",
-          "INDIKATOR DASHBOARD: BIRU AKTIF"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Pemutusan Saklar Utama & Kembali Siaga",
-        "narration": "Pengemudi mematikan saklar utama lampu kepala. Pasokan tegangan 12V ke terminal tiga puluh terputus seketika. Seluruh filamen headlamp dan indikator biru padam total. Sistem siap untuk siklus penyalaan berikutnya.",
-        "visual": [
-          "Saklar utama membuka kembali ke posisi netral abu-abu",
-          "Aliran arus listrik terputus dari terminal 30",
-          "Arus sirkuit kembali ke 0.0 A, lampu kepala padam sempurna, dan kontak mekanik relay kembali ke posisi default tanpa arus"
-        ],
-        "on_screen": [
-          "SAKLAR UTAMA: OFF",
-          "TERMINAL 30: DAYA TERPUTUS",
-          "ARUS TOTAL: 0.0 A (PADAM SEMPURNA)",
-          "STATUS: SIAGA AMAN (STANDBY)"
-        ]
-      }
-    ],
-    "pillLabel": "08. Lampu Kepala 5-Pin"
-  },
-  "motor_starter_bendix": {
-    "id": "motor_starter_bendix",
-    "title": "Sistem Motor Starter & Solenoid Magnetic Switch (Terminal 30, 50, C)",
-    "videoFile": "09_motor_starter_bendix.mp4",
-    "badge": "SOLENOID PULL/HOLD COIL, PINION BENDIX & FLYWHEEL",
-    "duration": 15.0,
-    "telemetry": {
-      "ignition_switch": {
-        "standby": "ON (12V Siaga)",
-        "start": "START (ST Terminal 50 Terhubung)",
-        "mesh": "START (ST Tetap Ditahan)",
-        "crank": "START (Mesin Mulai Berputar)",
-        "running": "ON (ST Terlepas Membuka)"
-      },
-      "solenoid_coil_current": {
-        "standby": "0.0 A",
-        "start": "35.0 A (Pull-in + Hold-in)",
-        "mesh": "12.0 A (Hold-in Coil Saja)",
-        "crank": "12.0 A (Menahan Plunger)",
-        "running": "0.0 A (Koil Padam)"
-      },
-      "starter_motor_current": {
-        "standby": "0.0 A (Kontak Terbuka)",
-        "start": "0.0 A (Pinion Sedang Meluncur)",
-        "mesh": "180.0 A (Arus Inrush Puncak)",
-        "crank": "120.0 A (Arus Cranking Stabil)",
-        "running": "0.0 A (Terputus Total)"
-      },
-      "bendix_pinion_position": {
-        "standby": "Mundur Bebas (Disengaged)",
-        "start": "Meluncur Maju ke Flywheel",
-        "mesh": "Menaut Rapat ke Ring Gear",
-        "crank": "Terkunci Memutar Flywheel",
-        "running": "Mundur Cepat (Disengaged)"
-      },
-      "engine_flywheel_speed": {
-        "standby": "0 RPM (Mesin Mati)",
-        "start": "0 RPM (Siap Diputar)",
-        "mesh": "60 RPM -> 180 RPM (Cranking)",
-        "crank": "220 RPM (Putaran Start Mesin)",
-        "running": "900 RPM (Mesin Hidup Idle Mandiri)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Siaga & Catu Daya Kabel Induk Aki",
+          "narration": "Kondisi awal siaga: Kabel induk tembaga tebal menyuplai tegangan baterai 12V langsung ke terminal 30 solenoid starter. Kunci kontak berada pada posisi ON, terminal start 50 terbuka, dan mesin dalam kondisi mati nol RPM.",
+          "visual": [
+            "Kabel tembaga tebal merah menghubungkan aki ke terminal 30 solenoid starter",
+            "Plunger baja berada di posisi belakang dengan pegas pembalik tertekan santai",
+            "Gigi pinion terpisah berjarak dari roda gila (flywheel)",
+            "Mesin dan starter dalam status diam 0 RPM"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "TERMINAL 30: 12V (KABEL INDUK AKI)",
+            "TERMINAL 50: OPEN",
+            "PINION BENDIX: DISENGAGED",
+            "MESIN: 0 RPM (MATI)"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Kunci Kontak Posisi START & Eksitasi Koil Ganda",
+          "narration": "Pengemudi memutar kunci ke posisi START, mengalirkan arus listrik dari terminal lima puluh ke kumparan penarik Pull-in Coil dan penahan Hold-in Coil. Gaya elektromagnetik gabungan yang sangat besar menarik batang plunger baja ke dalam inti solenoid dengan kecepatan tinggi.",
+          "visual": [
+            "Kontak saklar START menutup menghubungkan terminal 50",
+            "Arus kontrol 35 Ampere mengisi kumparan ganda solenoid starter",
+            "Inti solenoid berpendar biru kuat",
+            "Plunger baja tertarik melesat ke arah dalam mengatasi perlawanan pegas pembalik"
+          ],
+          "on_screen": [
+            "KUNCI KONTAK: POSISI START",
+            "TERMINAL 50: 12V TERHUBUNG",
+            "KOIL SOLENOID: PULL-IN & HOLD-IN AKTIF (35A)",
+            "PLUNGER BAJA: TERTARIK CEPAT"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.0,
+          "name": "Pendorongan Gigi Pinion & Penautan Roda Gila",
+          "narration": "Ujung depan plunger mengungkit tuas garpu pendorong, melontarkan gigi pinion bendix ke depan menaut rapat ke roda gila. Di akhir langkah plunger, lempeng tembaga tebal menjembatani terminal 30 dan terminal C, menghubungkan daya utama.",
+          "visual": [
+            "Tuas garpu berporos tengah mengayun maju",
+            "Gigi pinion bendix bergerak maju pada poros berulir spiral dan mengunci rapat gigi roda gila mesin",
+            "Pelat tembaga tebal menghantam kontak terminal 30 dan terminal C secara rapat",
+            "Sirkuit motor starter terhubung langsung ke kutub positif baterai"
+          ],
+          "on_screen": [
+            "SHIFT LEVER: MENGAYUN MAJU",
+            "PINION BENDIX: MENAUT KE FLYWHEEL RING GEAR",
+            "PELAT TEMBAGA: MENUTUP TERMINAL 30 & C",
+            "DAYA MOTOR STARTER: TERHUBUNG PENUH"
+          ]
+        },
+        {
+          "start": 11.0,
+          "end": 16.0,
+          "name": "Penyaluran Arus Cranking Raksasa & Putaran Mesin",
+          "narration": "Arus daya raksasa meluncur memutar armatur motor starter DC dengan torsi putar yang sangat tinggi. Gigi pinion memutar roda gila mesin hingga mencapai kecepatan putar awal 220 RPM untuk memulai siklus pembakaran internal.",
+          "visual": [
+            "Kabel tembaga utama menyala merah terang membara",
+            "Amperemeter melonjak tajam ke angka 180 A lalu stabil di 120 A",
+            "Roda gila mesin berputar cepat dengan animasi cincin hijau putaran",
+            "Indikator RPM mesin naik dari 0 ke 220 RPM"
+          ],
+          "on_screen": [
+            "ARUS CRANKING: 180 A -> 120 A (INRUSH)",
+            "TORSI TINGGI: MOTOR DC SERI BERPUTAR",
+            "FLYWHEEL MESIN: CRANKING 220 RPM",
+            "SIKLUS PEMBAKARAN DIMULAI"
+          ]
+        },
+        {
+          "start": 16.0,
+          "end": 20.0,
+          "name": "Pelepasan Kunci Kontak, Retraksi Pinion, & Mesin Hidup",
+          "narration": "Mesin telah hidup mandiri. Pengemudi melepas kunci kontak; terminal lima puluh terputus dan medan magnet solenoid padam. Pegas pembalik mendorong plunger mundur, membuka lempeng kontak utama dan menarik pinion lepas dari roda gila. Mesin idle normal pada 900 RPM.",
+          "visual": [
+            "Kunci kontak membal kembali ke posisi ON",
+            "Aliran arus ke terminal 50 terputus, kumparan hold-in kehilangan medan magnet",
+            "Gigi pinion meluncur mundur terlepas dari roda gila (overrunning clutch)",
+            "Arus motor starter padam total (0.0 A), dan mesin terus berputar mandiri pada 900 RPM"
+          ],
+          "on_screen": [
+            "KUNCI KONTAK: BALIK KE POSISI ON",
+            "TERMINAL 50: 0V (SOLENOID OFF)",
+            "PINION BENDIX: RETRAKSI MUNDUR BEBAS",
+            "MOTOR STARTER: 0.0 A (OFF)",
+            "MESIN HIDUP MANDIRI: 900 RPM IDLE"
+          ]
+        }
+      ],
+      "pillLabel": "09. Starter Solenoid Bendix"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Siaga & Catu Daya Kabel Induk Aki",
-        "narration": "Kondisi awal siaga: Kabel induk tembaga tebal menyuplai tegangan baterai 12V langsung ke terminal 30 solenoid starter. Kunci kontak berada pada posisi ON, terminal start 50 terbuka, dan mesin dalam kondisi mati nol RPM.",
-        "visual": [
-          "Kabel tembaga tebal merah menghubungkan aki ke terminal 30 solenoid starter",
-          "Plunger baja berada di posisi belakang dengan pegas pembalik tertekan santai",
-          "Gigi pinion terpisah berjarak dari roda gila (flywheel)",
-          "Mesin dan starter dalam status diam 0 RPM"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "TERMINAL 30: 12V (KABEL INDUK AKI)",
-          "TERMINAL 50: OPEN",
-          "PINION BENDIX: DISENGAGED",
-          "MESIN: 0 RPM (MATI)"
-        ]
+    "wiper_auto_stop": {
+      "id": "wiper_auto_stop",
+      "title": "Sistem Motor Wiper dengan Mekanisme Parkir Otomatis (Auto-Stop Cam Switch)",
+      "videoFile": "10_wiper_auto_stop.mp4",
+      "badge": "CAM PARK SWITCH, WORM GEAR & WIPER BLADE 0 PARK",
+      "duration": 20.0,
+      "telemetry": {
+        "wiper_switch": {
+          "parked": "OFF (Terbuka)",
+          "switched_on": "LOW (Terhubung ke 12V)",
+          "sweeping": "LOW (Bilah Bergerak)",
+          "switched_off": "OFF (Dimatikan di Tengah Kaca)",
+          "park_complete": "OFF (Tetap Posisi OFF)"
+        },
+        "power_supply_path": {
+          "parked": "Tidak Ada Arus (0V)",
+          "switched_on": "Jalur Saklar Utama (12V)",
+          "sweeping": "Jalur Saklar Utama (12V)",
+          "switched_off": "Jalur Cam Otomatis (12V B-S)",
+          "park_complete": "Terputus di Celah Nok Isolator"
+        },
+        "cam_park_switch": {
+          "parked": "Di Celah Isolator (OPEN)",
+          "switched_on": "Berputar Menutup Pelat",
+          "sweeping": "Menutup Mengalirkan Arus",
+          "switched_off": "TERTUTUP (Menyuplai Darurat)",
+          "park_complete": "Tepat Menyentuh Celah (OPEN)"
+        },
+        "wiper_blade_position": {
+          "parked": "Sudut Bawah Kaca (Parkir 0°)",
+          "switched_on": "Mengayun Naik (0° -> 75°)",
+          "sweeping": "Ayunan Penuh (75° -> 45°)",
+          "switched_off": "Berada di Tengah Kaca (45°)",
+          "park_complete": "Kembali ke Bawah Kaca (0° Parkir)"
+        },
+        "wiper_motor_current": {
+          "parked": "0.0 A",
+          "switched_on": "3.2 A (Beban Kerja Normal)",
+          "sweeping": "3.2 A (Stabil)",
+          "switched_off": "3.2 A (Arus dari Cam Parkir)",
+          "park_complete": "0.0 A (Berhenti Presisi)"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Kunci Kontak Posisi START & Eksitasi Koil Ganda",
-        "narration": "Pengemudi memutar kunci ke posisi START, mengalirkan arus listrik dari terminal lima puluh ke kumparan penarik Pull-in Coil dan penahan Hold-in Coil. Gaya elektromagnetik gabungan yang sangat besar menarik batang plunger baja ke dalam inti solenoid dengan kecepatan tinggi.",
-        "visual": [
-          "Kontak saklar START menutup menghubungkan terminal 50",
-          "Arus kontrol 35 Ampere mengisi kumparan ganda solenoid starter",
-          "Inti solenoid berpendar biru kuat",
-          "Plunger baja tertarik melesat ke arah dalam mengatasi perlawanan pegas pembalik"
-        ],
-        "on_screen": [
-          "KUNCI KONTAK: POSISI START",
-          "TERMINAL 50: 12V TERHUBUNG",
-          "KOIL SOLENOID: PULL-IN & HOLD-IN AKTIF (35A)",
-          "PLUNGER BAJA: TERTARIK CEPAT"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Pendorongan Gigi Pinion & Penautan Roda Gila",
-        "narration": "Ujung depan plunger mengungkit tuas garpu pendorong, melontarkan gigi pinion bendix ke depan menaut rapat ke roda gila. Di akhir langkah plunger, lempeng tembaga tebal menjembatani terminal 30 dan terminal C, menghubungkan daya utama.",
-        "visual": [
-          "Tuas garpu berporos tengah mengayun maju",
-          "Gigi pinion bendix bergerak maju pada poros berulir spiral dan mengunci rapat gigi roda gila mesin",
-          "Pelat tembaga tebal menghantam kontak terminal 30 dan terminal C secara rapat",
-          "Sirkuit motor starter terhubung langsung ke kutub positif baterai"
-        ],
-        "on_screen": [
-          "SHIFT LEVER: MENGAYUN MAJU",
-          "PINION BENDIX: MENAUT KE FLYWHEEL RING GEAR",
-          "PELAT TEMBAGA: MENUTUP TERMINAL 30 & C",
-          "DAYA MOTOR STARTER: TERHUBUNG PENUH"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Penyaluran Arus Cranking Raksasa & Putaran Mesin",
-        "narration": "Arus daya raksasa meluncur memutar armatur motor starter DC dengan torsi putar yang sangat tinggi. Gigi pinion memutar roda gila mesin hingga mencapai kecepatan putar awal 220 RPM untuk memulai siklus pembakaran internal.",
-        "visual": [
-          "Kabel tembaga utama menyala merah terang membara",
-          "Amperemeter melonjak tajam ke angka 180 A lalu stabil di 120 A",
-          "Roda gila mesin berputar cepat dengan animasi cincin hijau putaran",
-          "Indikator RPM mesin naik dari 0 ke 220 RPM"
-        ],
-        "on_screen": [
-          "ARUS CRANKING: 180 A -> 120 A (INRUSH)",
-          "TORSI TINGGI: MOTOR DC SERI BERPUTAR",
-          "FLYWHEEL MESIN: CRANKING 220 RPM",
-          "SIKLUS PEMBAKARAN DIMULAI"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Pelepasan Kunci Kontak, Retraksi Pinion, & Mesin Hidup",
-        "narration": "Mesin telah hidup mandiri. Pengemudi melepas kunci kontak; terminal lima puluh terputus dan medan magnet solenoid padam. Pegas pembalik mendorong plunger mundur, membuka lempeng kontak utama dan menarik pinion lepas dari roda gila. Mesin idle normal pada 900 RPM.",
-        "visual": [
-          "Kunci kontak membal kembali ke posisi ON",
-          "Aliran arus ke terminal 50 terputus, kumparan hold-in kehilangan medan magnet",
-          "Gigi pinion meluncur mundur terlepas dari roda gila (overrunning clutch)",
-          "Arus motor starter padam total (0.0 A), dan mesin terus berputar mandiri pada 900 RPM"
-        ],
-        "on_screen": [
-          "KUNCI KONTAK: BALIK KE POSISI ON",
-          "TERMINAL 50: 0V (SOLENOID OFF)",
-          "PINION BENDIX: RETRAKSI MUNDUR BEBAS",
-          "MOTOR STARTER: 0.0 A (OFF)",
-          "MESIN HIDUP MANDIRI: 900 RPM IDLE"
-        ]
-      }
-    ],
-    "pillLabel": "09. Starter Solenoid Bendix"
-  },
-  "wiper_auto_stop": {
-    "id": "wiper_auto_stop",
-    "title": "Sistem Motor Wiper dengan Mekanisme Parkir Otomatis (Auto-Stop Cam Switch)",
-    "videoFile": "10_wiper_auto_stop.mp4",
-    "badge": "CAM PARK SWITCH, WORM GEAR & WIPER BLADE 0 PARK",
-    "duration": 15.0,
-    "telemetry": {
-      "wiper_switch": {
-        "parked": "OFF (Terbuka)",
-        "switched_on": "LOW (Terhubung ke 12V)",
-        "sweeping": "LOW (Bilah Bergerak)",
-        "switched_off": "OFF (Dimatikan di Tengah Kaca)",
-        "park_complete": "OFF (Tetap Posisi OFF)"
-      },
-      "power_supply_path": {
-        "parked": "Tidak Ada Arus (0V)",
-        "switched_on": "Jalur Saklar Utama (12V)",
-        "sweeping": "Jalur Saklar Utama (12V)",
-        "switched_off": "Jalur Cam Otomatis (12V B-S)",
-        "park_complete": "Terputus di Celah Nok Isolator"
-      },
-      "cam_park_switch": {
-        "parked": "Di Celah Isolator (OPEN)",
-        "switched_on": "Berputar Menutup Pelat",
-        "sweeping": "Menutup Mengalirkan Arus",
-        "switched_off": "TERTUTUP (Menyuplai Darurat)",
-        "park_complete": "Tepat Menyentuh Celah (OPEN)"
-      },
-      "wiper_blade_position": {
-        "parked": "Sudut Bawah Kaca (Parkir 0°)",
-        "switched_on": "Mengayun Naik (0° -> 75°)",
-        "sweeping": "Ayunan Penuh (75° -> 45°)",
-        "switched_off": "Berada di Tengah Kaca (45°)",
-        "park_complete": "Kembali ke Bawah Kaca (0° Parkir)"
-      },
-      "wiper_motor_current": {
-        "parked": "0.0 A",
-        "switched_on": "3.2 A (Beban Kerja Normal)",
-        "sweeping": "3.2 A (Stabil)",
-        "switched_off": "3.2 A (Arus dari Cam Parkir)",
-        "park_complete": "0.0 A (Berhenti Presisi)"
-      }
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Parkir & Celah Isolator Nok",
+          "narration": "Posisi parkir sempurna: Saklar wiper posisi OFF. Bilah wiper beristirahat di sudut bawah kaca. Kontak cam parkir mandiri berada tepat di atas celah segmen isolator piringan nok tanpa arus listrik.",
+          "visual": [
+            "Dua bilah wiper terbaring mendatar di posisi bawah kaca depan (0°)",
+            "Di dalam rumah motor, kontak geser cam berada tepat di atas celah isolator non-konduktif",
+            "Arus listrik terbaca 0.0 A",
+            "Sistem dalam status siaga parkir rapi"
+          ],
+          "on_screen": [
+            "POSISI: PARKIR SEMPURNA (0°)",
+            "SAKLAR WIPER: OFF",
+            "KONTAK CAM: DI CELAH ISOLATOR (OPEN)",
+            "MOTOR WIPER: 0.0 A",
+            "PANDANGAN PENGEMUDI: BERSIH"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Pengaktifan Saklar Wiper & Gerak Ayunan Pertama",
+          "narration": "Pengemudi memutar saklar ke posisi LOW. Arus 12V mengalir langsung melalui saklar utama menuju sikat kecepatan rendah motor wiper DC. Motor memutar piringan nok keluar dari celah isolator, seketika menghubungkan pelat konduktor cam ke sumber baterai konstan B.",
+          "visual": [
+            "Saklar wiper bergeser ke posisi LOW berwarna hijau",
+            "Garis arus merah meluncur masuk ke terminal +1 motor DC, memutar roda gigi cacing",
+            "Bilah wiper mulai terangkat mengayun naik melintasi kaca",
+            "Kontak geser cam berputar dan kini bertumpu di atas piringan kuningan konduktif yang terhubung ke aki"
+          ],
+          "on_screen": [
+            "SAKLAR WIPER: POSISI LOW (ON)",
+            "ARUS UTAMA: 12V MASUK KE MOTOR DC (3.2A)",
+            "WORM GEAR: BERPUTAR",
+            "KONTAK CAM: MENUTUP DI PELAT KUNINGAN",
+            "BILAH WIPER: MENGAYUN NAIK"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Ayunan Normal & Penyediaan Sirkuit Paralel",
+          "narration": "Mekanisme batang engkol mengubah putaran roda gigi menjadi gerakan bolak-balik menyapu air hujan dari kaca depan. Selama piringan nok berputar di luar celah isolator, kontak cam menyediakan jalur arus alternatif yang siap mengambil alih daya kapan saja.",
+          "visual": [
+            "Bilah wiper mengayun mencapai sudut maksimum 75° dan berbalik mengayun turun",
+            "Permukaan kaca tersapu bersih secara dinamis",
+            "Jalur kabel sekunder dari baterai melewati kontak cam piringan menyala kuning siaga menyalurkan daya paralel ke sikat motor",
+            "Arus stabil terbaca 3.2 A"
+          ],
+          "on_screen": [
+            "SIKLUS AYUNAN KACA: 0° <-> 75°",
+            "LINKAGE CRANK: GERAK BOLAK-BALIK",
+            "JALUR CAM AUTO-PARK: STANDBY AKTIF",
+            "ARUS KERJA: 3.2 A STABIL"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 16.5,
+          "name": "Saklar Dimatikan di Tengah Kaca & Pengambilalihan Cam",
+          "narration": "Pengemudi mematikan saklar wiper saat bilah berada di tengah kaca depan. Pasokan arus dari saklar utama seketika terputus total. Meskipun saklar OFF, motor wiper tidak berhenti! Arus cadangan tetap mengalir dari baterai melalui kontak cam yang masih menempel di pelat kuningan.",
+          "visual": [
+            "Saklar wiper diputar ke OFF",
+            "Jalur utama dari saklar padam menjadi abu-abu netral",
+            "Bilah wiper sedang berada di posisi miring 45°",
+            "Jalur kontak cam seketika mengambil alih aliran arus berwarna merah terang",
+            "Motor terus berputar mantap mendorong bilah wiper melanjutkan ayunannya menuju titik bawah"
+          ],
+          "on_screen": [
+            "SAKLAR WIPER: DIMATIKAN (OFF)",
+            "POSISI BILAH: DI TENGAH KACA (45°)",
+            "JALUR UTAMA: TERPUTUS!",
+            "AUTO-PARK CAM TAKEOVER: MENYUPLAI ARUS",
+            "MOTOR: TETAP BERPUTAR KE ARAH PARKIR"
+          ]
+        },
+        {
+          "start": 16.5,
+          "end": 20.0,
+          "name": "Celah Isolator Tercapai & Berhenti Parkir Sempurna",
+          "narration": "Saat bilah wiper tepat menyentuh sudut bawah kaca, piringan nok berputar tepat mengarahkan celah isolator di bawah kontak geser. Kontak geser cam tergelincir masuk ke celah isolator non-konduktif. Aliran arus listrik ke motor terputus seketika. Motor berhenti tepat pada posisi parkir semula tanpa menghalangi pandangan pengemudi.",
+          "visual": [
+            "Kontak geser cam tergelincir masuk ke celah isolator non-konduktif",
+            "Aliran arus listrik ke motor terputus seketika (0.0 A)",
+            "Bilah wiper berhenti presisi di tepi bawah kaca depan (0°)",
+            "Layar kanvas menampilkan konfirmasi status hijau 'AUTO-PARK COMPLETE (0°)'"
+          ],
+          "on_screen": [
+            "CELAH ISOLATOR NOK: TERCAPAI",
+            "KONTAK CAM: TERPUTUS (OPEN)",
+            "ARUS MOTOR: 0.0 A (STOP PRESISI)",
+            "POSISI BILAH: TEPAT DI TEPI BAWAH (0°)",
+            "AUTO-PARK COMPLETE - SUKSES"
+          ]
+        }
+      ],
+      "pillLabel": "10. Wiper Auto-Stop Park"
     },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Parkir & Celah Isolator Nok",
-        "narration": "Posisi parkir sempurna: Saklar wiper posisi OFF. Bilah wiper beristirahat di sudut bawah kaca. Kontak cam parkir mandiri berada tepat di atas celah segmen isolator piringan nok tanpa arus listrik.",
-        "visual": [
-          "Dua bilah wiper terbaring mendatar di posisi bawah kaca depan (0°)",
-          "Di dalam rumah motor, kontak geser cam berada tepat di atas celah isolator non-konduktif",
-          "Arus listrik terbaca 0.0 A",
-          "Sistem dalam status siaga parkir rapi"
-        ],
-        "on_screen": [
-          "POSISI: PARKIR SEMPURNA (0°)",
-          "SAKLAR WIPER: OFF",
-          "KONTAK CAM: DI CELAH ISOLATOR (OPEN)",
-          "MOTOR WIPER: 0.0 A",
-          "PANDANGAN PENGEMUDI: BERSIH"
-        ]
+    "pengapian_tci": {
+      "id": "pengapian_tci",
+      "title": "Sistem Pengapian Elektronik Transistor (TCI & Koil Pengapian Otomotif)",
+      "videoFile": "11_pengapian_tci.mp4",
+      "badge": "TRANSISTOR NPN IGNITER, KOIL 25kV & SPARK PLUG PLASMA",
+      "duration": 20.0,
+      "telemetry": {
+        "transistor_base_trigger": {
+          "standby": "0 V (Transistor OFF)",
+          "dwell": "5.0 V (Transistor Jenuh ON)",
+          "cut_off": "Drop ke 0 V (Pemutusan Cepat)",
+          "spark": "0 V (Menunggu Pulsa Baru)",
+          "cyclic": "Pulsa Kotak Berkala (Square Wave)"
+        },
+        "primary_coil_current": {
+          "standby": "0.0 A",
+          "dwell": "Naik Eksponensial (0A -> 4.5A)",
+          "cut_off": "Terputus Seketika (4.5A -> 0A)",
+          "spark": "0.0 A",
+          "cyclic": "Berosilasi Sinkron"
+        },
+        "magnetic_flux_core": {
+          "standby": "0 Weber (Kosong)",
+          "dwell": "Terbangkitkan Maksimal",
+          "cut_off": "Runtuh Kilat (< 50 mikrodetik)",
+          "spark": "Kosong",
+          "cyclic": "Terisi & Runtuh Siklik"
+        },
+        "secondary_induced_voltage": {
+          "standby": "0 Volt",
+          "dwell": "~200 V (Induksi Rendah Awal)",
+          "cut_off": "Melonjak ke 25.000 Volt AC",
+          "spark": "25.000 V (Breakdown Udara)",
+          "cyclic": "Pulsa Tegangan Tinggi 25 kV"
+        },
+        "spark_plug_gap_condition": {
+          "standby": "Padam (Udara Terisolasi)",
+          "dwell": "Padam (Menahan Tegangan)",
+          "cut_off": "Terionisasi Plasma",
+          "spark": "LONCATAN BUNGA API BIRU UNGU",
+          "cyclic": "Percikan Sinkron Pembakaran"
+        }
       },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pengaktifan Saklar Wiper & Gerak Ayunan Pertama",
-        "narration": "Pengemudi memutar saklar ke posisi LOW. Arus 12V mengalir langsung melalui saklar utama menuju sikat kecepatan rendah motor wiper DC. Motor memutar piringan nok keluar dari celah isolator, seketika menghubungkan pelat konduktor cam ke sumber baterai konstan B.",
-        "visual": [
-          "Saklar wiper bergeser ke posisi LOW berwarna hijau",
-          "Garis arus merah meluncur masuk ke terminal +1 motor DC, memutar roda gigi cacing",
-          "Bilah wiper mulai terangkat mengayun naik melintasi kaca",
-          "Kontak geser cam berputar dan kini bertumpu di atas piringan kuningan konduktif yang terhubung ke aki"
-        ],
-        "on_screen": [
-          "SAKLAR WIPER: POSISI LOW (ON)",
-          "ARUS UTAMA: 12V MASUK KE MOTOR DC (3.2A)",
-          "WORM GEAR: BERPUTAR",
-          "KONTAK CAM: MENUTUP DI PELAT KUNINGAN",
-          "BILAH WIPER: MENGAYUN NAIK"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Ayunan Normal & Penyediaan Sirkuit Paralel",
-        "narration": "Mekanisme batang engkol mengubah putaran roda gigi menjadi gerakan bolak-balik menyapu air hujan dari kaca depan. Selama piringan nok berputar di luar celah isolator, kontak cam menyediakan jalur arus alternatif yang siap mengambil alih daya kapan saja.",
-        "visual": [
-          "Bilah wiper mengayun mencapai sudut maksimum 75° dan berbalik mengayun turun",
-          "Permukaan kaca tersapu bersih secara dinamis",
-          "Jalur kabel sekunder dari baterai melewati kontak cam piringan menyala kuning siaga menyalurkan daya paralel ke sikat motor",
-          "Arus stabil terbaca 3.2 A"
-        ],
-        "on_screen": [
-          "SIKLUS AYUNAN KACA: 0° <-> 75°",
-          "LINKAGE CRANK: GERAK BOLAK-BALIK",
-          "JALUR CAM AUTO-PARK: STANDBY AKTIF",
-          "ARUS KERJA: 3.2 A STABIL"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Saklar Dimatikan di Tengah Kaca & Pengambilalihan Cam",
-        "narration": "Pengemudi mematikan saklar wiper saat bilah berada di tengah kaca depan. Pasokan arus dari saklar utama seketika terputus total. Meskipun saklar OFF, motor wiper tidak berhenti! Arus cadangan tetap mengalir dari baterai melalui kontak cam yang masih menempel di pelat kuningan.",
-        "visual": [
-          "Saklar wiper diputar ke OFF",
-          "Jalur utama dari saklar padam menjadi abu-abu netral",
-          "Bilah wiper sedang berada di posisi miring 45°",
-          "Jalur kontak cam seketika mengambil alih aliran arus berwarna merah terang",
-          "Motor terus berputar mantap mendorong bilah wiper melanjutkan ayunannya menuju titik bawah"
-        ],
-        "on_screen": [
-          "SAKLAR WIPER: DIMATIKAN (OFF)",
-          "POSISI BILAH: DI TENGAH KACA (45°)",
-          "JALUR UTAMA: TERPUTUS!",
-          "AUTO-PARK CAM TAKEOVER: MENYUPLAI ARUS",
-          "MOTOR: TETAP BERPUTAR KE ARAH PARKIR"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Celah Isolator Tercapai & Berhenti Parkir Sempurna",
-        "narration": "Saat bilah wiper tepat menyentuh sudut bawah kaca, piringan nok berputar tepat mengarahkan celah isolator di bawah kontak geser. Kontak geser cam tergelincir masuk ke celah isolator non-konduktif. Aliran arus listrik ke motor terputus seketika. Motor berhenti tepat pada posisi parkir semula tanpa menghalangi pandangan pengemudi.",
-        "visual": [
-          "Kontak geser cam tergelincir masuk ke celah isolator non-konduktif",
-          "Aliran arus listrik ke motor terputus seketika (0.0 A)",
-          "Bilah wiper berhenti presisi di tepi bawah kaca depan (0°)",
-          "Layar kanvas menampilkan konfirmasi status hijau 'AUTO-PARK COMPLETE (0°)'"
-        ],
-        "on_screen": [
-          "CELAH ISOLATOR NOK: TERCAPAI",
-          "KONTAK CAM: TERPUTUS (OPEN)",
-          "ARUS MOTOR: 0.0 A (STOP PRESISI)",
-          "POSISI BILAH: TEPAT DI TEPI BAWAH (0°)",
-          "AUTO-PARK COMPLETE - SUKSES"
-        ]
-      }
-    ],
-    "pillLabel": "10. Wiper Auto-Stop Park"
-  },
-  "pengapian_tci": {
-    "id": "pengapian_tci",
-    "title": "Sistem Pengapian Elektronik Transistor (TCI & Koil Pengapian Otomotif)",
-    "videoFile": "11_pengapian_tci.mp4",
-    "badge": "TRANSISTOR NPN IGNITER, KOIL 25kV & SPARK PLUG PLASMA",
-    "duration": 15.0,
-    "telemetry": {
-      "transistor_base_trigger": {
-        "standby": "0 V (Transistor OFF)",
-        "dwell": "5.0 V (Transistor Jenuh ON)",
-        "cut_off": "Drop ke 0 V (Pemutusan Cepat)",
-        "spark": "0 V (Menunggu Pulsa Baru)",
-        "cyclic": "Pulsa Kotak Berkala (Square Wave)"
-      },
-      "primary_coil_current": {
-        "standby": "0.0 A",
-        "dwell": "Naik Eksponensial (0A -> 4.5A)",
-        "cut_off": "Terputus Seketika (4.5A -> 0A)",
-        "spark": "0.0 A",
-        "cyclic": "Berosilasi Sinkron"
-      },
-      "magnetic_flux_core": {
-        "standby": "0 Weber (Kosong)",
-        "dwell": "Terbangkitkan Maksimal",
-        "cut_off": "Runtuh Kilat (< 50 mikrodetik)",
-        "spark": "Kosong",
-        "cyclic": "Terisi & Runtuh Siklik"
-      },
-      "secondary_induced_voltage": {
-        "standby": "0 Volt",
-        "dwell": "~200 V (Induksi Rendah Awal)",
-        "cut_off": "Melonjak ke 25.000 Volt AC",
-        "spark": "25.000 V (Breakdown Udara)",
-        "cyclic": "Pulsa Tegangan Tinggi 25 kV"
-      },
-      "spark_plug_gap_condition": {
-        "standby": "Padam (Udara Terisolasi)",
-        "dwell": "Padam (Menahan Tegangan)",
-        "cut_off": "Terionisasi Plasma",
-        "spark": "LONCATAN BUNGA API BIRU UNGU",
-        "cyclic": "Percikan Sinkron Pembakaran"
-      }
-    },
-    "steps": [
-      {
-        "start": 0.0,
-        "end": 2.5,
-        "name": "Kondisi Awal Siaga & Catu Daya Kunci Kontak",
-        "narration": "Kondisi awal siaga: Kunci kontak posisi ON menyuplai tegangan baterai 12V ke terminal positif kumparan primer koil pengapian. Transistor dalam kondisi mati cut-off dan celah busi padam.",
-        "visual": [
-          "Rel 12V merah siaga di terminal masukan primer koil pengapian",
-          "Transistor daya NPN memperlihatkan jalur kolektor-emitor terbuka",
-          "Celah elektroda busi 0.8 mm dalam kondisi padam gelap",
-          "Tegangan sekunder membaca 0 Volt"
-        ],
-        "on_screen": [
-          "STATUS: SIAGA (STANDBY)",
-          "KUNCI KONTAK: ON (12V)",
-          "TERMINAL (+) PRIMER: 12V SIAGA",
-          "TRANSISTOR NPN: CUT-OFF (OFF)",
-          "CELAH BUSI (0.8 mm): PADAM"
-        ]
-      },
-      {
-        "start": 2.5,
-        "end": 5.5,
-        "name": "Pulsa Pemicu Basis & Kejenuhan Arus Primer",
-        "narration": "Sensor poros engkol mengirimkan sinyal pemicu 5V ke basis transistor, mengaktifkan transistor pengapian ke kondisi jenuh. Arus primer 4.5 Ampere mengalir melintasi ratusan lilitan primer, membangun fluks medan elektromagnetik padat pada inti besi koil.",
-        "visual": [
-          "Sinyal pulsa kotak hijau 5V masuk ke terminal basis transistor",
-          "Jalur kolektor ke emitor transistor seketika terhubung ke massa sasis kendaraan",
-          "Lilitan kawat primer koil berpendar merah",
-          "Garis medan magnet biru pekat melingkar memenuhi inti besi laminar koil pengapian",
-          "Arus primer naik mencapai 4.5 A (Dwell Time)"
-        ],
-        "on_screen": [
-          "SINYAL BASIS: PULSA 5V AKTIF",
-          "TRANSISTOR NPN: SATURATION ON (JENUH)",
-          "DWELL TIME: ARUS PRIMER NAIK (4.5 A)",
-          "INTI BESI: FLUKS MAGNET TERBANGKITKAN"
-        ]
-      },
-      {
-        "start": 5.5,
-        "end": 9.5,
-        "name": "Pemutusan Kilat Transistor & Runtuhnya Fluks Magnet",
-        "narration": "Sinyal basis tiba-tiba dihentikan ke nol Volt. Transistor mati seketika, memutus arus primer dalam waktu kurang dari lima puluh mikrodetik. Garis gaya magnetik yang runtuh dengan kecepatan ultra-tinggi memotong puluhan ribu lilitan kawat tembaga halus kumparan sekunder.",
-        "visual": [
-          "Tegangan basis drop ke 0V",
-          "Transistor menghentikan aliran arus primer ke massa seketika",
-          "Garis arus primer padam mendadak",
-          "Medan fluks magnetik biru di inti besi menyusut dan lenyap secara kilat (< 50 µs)",
-          "Induksi elektromagnetik dahsyat terjadi pada lilitan sekunder"
-        ],
-        "on_screen": [
-          "SINYAL BASIS: DROP KE 0V",
-          "TRANSISTOR: CUT-OFF INSTAN (< 50 µs)",
-          "ARUS PRIMER: TERPUTUS KILAT (4.5A -> 0A)",
-          "MEDAN MAGNET: RUNTUH EKSTREM (COLLAPSE)"
-        ]
-      },
-      {
-        "start": 9.5,
-        "end": 12.5,
-        "name": "Induksi Tegangan Tinggi 25.000 Volt & Percikan Busi",
-        "narration": "Prinsip induksi bersama melipatgandakan tegangan hingga mencapai lonjakan 25.000 Volt pada terminal tegangan tinggi koil. Tegangan 25.000V menembus tahanan dielektrik celah udara busi 0.8 mm, memercikkan bunga api plasma biru keunguan bersuhu tinggi.",
-        "visual": [
-          "Kabel tegangan tinggi sekunder berpendar ungu menyala terang",
-          "Voltmeter sekunder melonjak tajam menampilkan angka 25.000 V",
-          "Celah antara elektroda tengah dan elektroda massa busi meledakkan percikan bunga api plasma biru ungu yang menyala terang",
-          "Udara pada celah busi mengalami ionisasi breakdown plasma"
-        ],
-        "on_screen": [
-          "MUTUAL INDUCTION: 25.000 VOLT AC!",
-          "KABEL TEGANGAN TINGGI: BERPENDAR UNGU",
-          "IONISASI CELAH UDARA (0.8 mm): TEMBUS",
-          "SPARK PLUG: BUNGA API PLASMA BIRU UNGU"
-        ]
-      },
-      {
-        "start": 12.5,
-        "end": 15.0,
-        "name": "Siklus Pengapian Berulang & Sinkronisasi Mesin",
-        "narration": "Energi induksi tersalurkan sempurna ke ruang bakar, tegangan sekunder kembali normal dan celah busi kembali terisolasi. Pengapian elektronik TCI terus mengulang siklus ini ribuan kali per menit dengan timing presisi tinggi untuk menjaga mesin bekerja bertenaga.",
-        "visual": [
-          "Percikan api plasma mereda",
-          "Saluran sekunder kembali siap menerima siklus induksi berikutnya",
-          "Banner status hijau menampilkan 'TCI IGNITION CYCLE SYNCHRONIZED'",
-          "Seluruh sirkuit beroperasi harmonis dengan putaran mesin kendaraan"
-        ],
-        "on_screen": [
-          "PELEPASAN ENERGI PLASMA: TUNTAS",
-          "SIKLUS TCI: BERULANG RIBUAN KALI/MENIT",
-          "TIMING PENGAPIAN: PRESISI TINGGI",
-          "STATUS: SYNCHRONIZED & POWERFUL"
-        ]
-      }
-    ],
-    "pillLabel": "11. Pengapian TCI 25kV"
-  }
-};
+      "steps": [
+        {
+          "start": 0.0,
+          "end": 3.0,
+          "name": "Kondisi Awal Siaga & Catu Daya Kunci Kontak",
+          "narration": "Kondisi awal siaga: Kunci kontak posisi ON menyuplai tegangan baterai 12V ke terminal positif kumparan primer koil pengapian. Transistor dalam kondisi mati cut-off dan celah busi padam.",
+          "visual": [
+            "Rel 12V merah siaga di terminal masukan primer koil pengapian",
+            "Transistor daya NPN memperlihatkan jalur kolektor-emitor terbuka",
+            "Celah elektroda busi 0.8 mm dalam kondisi padam gelap",
+            "Tegangan sekunder membaca 0 Volt"
+          ],
+          "on_screen": [
+            "STATUS: SIAGA (STANDBY)",
+            "KUNCI KONTAK: ON (12V)",
+            "TERMINAL (+) PRIMER: 12V SIAGA",
+            "TRANSISTOR NPN: CUT-OFF (OFF)",
+            "CELAH BUSI (0.8 mm): PADAM"
+          ]
+        },
+        {
+          "start": 3.0,
+          "end": 7.0,
+          "name": "Pulsa Pemicu Basis & Kejenuhan Arus Primer",
+          "narration": "Sensor poros engkol mengirimkan sinyal pemicu 5V ke basis transistor, mengaktifkan transistor pengapian ke kondisi jenuh. Arus primer 4.5 Ampere mengalir melintasi ratusan lilitan primer, membangun fluks medan elektromagnetik padat pada inti besi koil.",
+          "visual": [
+            "Sinyal pulsa kotak hijau 5V masuk ke terminal basis transistor",
+            "Jalur kolektor ke emitor transistor seketika terhubung ke massa sasis kendaraan",
+            "Lilitan kawat primer koil berpendar merah",
+            "Garis medan magnet biru pekat melingkar memenuhi inti besi laminar koil pengapian",
+            "Arus primer naik mencapai 4.5 A (Dwell Time)"
+          ],
+          "on_screen": [
+            "SINYAL BASIS: PULSA 5V AKTIF",
+            "TRANSISTOR NPN: SATURATION ON (JENUH)",
+            "DWELL TIME: ARUS PRIMER NAIK (4.5 A)",
+            "INTI BESI: FLUKS MAGNET TERBANGKITKAN"
+          ]
+        },
+        {
+          "start": 7.0,
+          "end": 11.5,
+          "name": "Pemutusan Kilat Transistor & Runtuhnya Fluks Magnet",
+          "narration": "Sinyal basis tiba-tiba dihentikan ke nol Volt. Transistor mati seketika, memutus arus primer dalam waktu kurang dari lima puluh mikrodetik. Garis gaya magnetik yang runtuh dengan kecepatan ultra-tinggi memotong puluhan ribu lilitan kawat tembaga halus kumparan sekunder.",
+          "visual": [
+            "Tegangan basis drop ke 0V",
+            "Transistor menghentikan aliran arus primer ke massa seketika",
+            "Garis arus primer padam mendadak",
+            "Medan fluks magnetik biru di inti besi menyusut dan lenyap secara kilat (< 50 µs)",
+            "Induksi elektromagnetik dahsyat terjadi pada lilitan sekunder"
+          ],
+          "on_screen": [
+            "SINYAL BASIS: DROP KE 0V",
+            "TRANSISTOR: CUT-OFF INSTAN (< 50 µs)",
+            "ARUS PRIMER: TERPUTUS KILAT (4.5A -> 0A)",
+            "MEDAN MAGNET: RUNTUH EKSTREM (COLLAPSE)"
+          ]
+        },
+        {
+          "start": 11.5,
+          "end": 15.5,
+          "name": "Induksi Tegangan Tinggi 25.000 Volt & Percikan Busi",
+          "narration": "Prinsip induksi bersama melipatgandakan tegangan hingga mencapai lonjakan 25.000 Volt pada terminal tegangan tinggi koil. Tegangan 25.000V menembus tahanan dielektrik celah udara busi 0.8 mm, memercikkan bunga api plasma biru keunguan bersuhu tinggi.",
+          "visual": [
+            "Kabel tegangan tinggi sekunder berpendar ungu menyala terang",
+            "Voltmeter sekunder melonjak tajam menampilkan angka 25.000 V",
+            "Celah antara elektroda tengah dan elektroda massa busi meledakkan percikan bunga api plasma biru ungu yang menyala terang",
+            "Udara pada celah busi mengalami ionisasi breakdown plasma"
+          ],
+          "on_screen": [
+            "MUTUAL INDUCTION: 25.000 VOLT AC!",
+            "KABEL TEGANGAN TINGGI: BERPENDAR UNGU",
+            "IONISASI CELAH UDARA (0.8 mm): TEMBUS",
+            "SPARK PLUG: BUNGA API PLASMA BIRU UNGU"
+          ]
+        },
+        {
+          "start": 15.5,
+          "end": 20.0,
+          "name": "Siklus Pengapian Berulang & Sinkronisasi Mesin",
+          "narration": "Energi induksi tersalurkan sempurna ke ruang bakar, tegangan sekunder kembali normal dan celah busi kembali terisolasi. Pengapian elektronik TCI terus mengulang siklus ini ribuan kali per menit dengan timing presisi tinggi untuk menjaga mesin bekerja bertenaga.",
+          "visual": [
+            "Percikan api plasma mereda",
+            "Saluran sekunder kembali siap menerima siklus induksi berikutnya",
+            "Banner status hijau menampilkan 'TCI IGNITION CYCLE SYNCHRONIZED'",
+            "Seluruh sirkuit beroperasi harmonis dengan putaran mesin kendaraan"
+          ],
+          "on_screen": [
+            "PELEPASAN ENERGI PLASMA: TUNTAS",
+            "SIKLUS TCI: BERULANG RIBUAN KALI/MENIT",
+            "TIMING PENGAPIAN: PRESISI TINGGI",
+            "STATUS: SYNCHRONIZED & POWERFUL"
+          ]
+        }
+      ],
+      "pillLabel": "11. Pengapian TCI 25kV"
+    }
+  };
 
   // Utility URL Resolver untuk Web, Windows Tauri, dan Android WebView
   function resolveVideoUrl(filename) {
@@ -1630,7 +1630,7 @@
 
           <!-- Video Display Screen (Single-Column Murni) -->
           <div class="sim-video-screen">
-            <video id="simVideoPlayerEl" class="sim-video-element" playsinline webkit-playsinline preload="auto" muted></video>
+            <video id="simVideoPlayerEl" class="sim-video-element" playsinline webkit-playsinline preload="auto"></video>
             <div id="simVideoOverlayBadge" class="sim-video-badge" style="display: none;"></div>
           </div>
 
@@ -1662,13 +1662,18 @@
 
             <!-- Timeline Scrubber -->
             <div class="sim-timeline-wrapper">
-              <div class="sim-timeline-track" id="simTimelineTrack">
+              <div class="sim-timeline-track" id="simTimelineTrack" style="position: relative;">
                 <div class="sim-timeline-progress" id="simTimelineProgress"></div>
+                <div id="simTimelineTicks" style="position: absolute; inset: 0; pointer-events: none;"></div>
               </div>
-              <div class="sim-time-display" id="simTimeDisplay">00:00 / 00:15</div>
+              <div class="sim-time-display" id="simTimeDisplay">00:00 / 00:20</div>
             </div>
 
-            <div class="sim-ctrl-right">
+            <div class="sim-ctrl-right" style="display: flex; align-items: center; gap: 6px;">
+              <button id="simBtnMute" class="sim-ctrl-btn" type="button" title="Suara SFX Nyala / Bisu" style="padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;">
+                <span id="simBtnMuteIcon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg></span>
+                <span id="simBtnMuteLabel">SFX</span>
+              </button>
               <div class="sim-speed-group">
                 <button class="sim-speed-btn active" data-speed="1">1x</button>
                 <button class="sim-speed-btn" data-speed="1.5">1.5x</button>
@@ -1688,6 +1693,11 @@
       this.btnStepNext = document.getElementById('simBtnStep');
       this.timelineBar = document.getElementById('simTimelineTrack');
       this.timelineProgress = document.getElementById('simTimelineProgress');
+      this.timelineTicks = document.getElementById('simTimelineTicks');
+      this.btnMute = document.getElementById('simBtnMute');
+      this.btnMuteIcon = document.getElementById('simBtnMuteIcon');
+      this.btnMuteLabel = document.getElementById('simBtnMuteLabel');
+      this.isMuted = false;
       this.timeDisplay = document.getElementById('simTimeDisplay');
       this.subtitleTitle = document.getElementById('simSubtitleTitle');
       this.subtitleText = document.getElementById('simSubtitleNarration');
@@ -1885,7 +1895,7 @@
           const rect = this.timelineBar.getBoundingClientRect();
           const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
           const video = SIMULATION_VIDEOS[this.currentVideoId];
-          const targetTime = pos * (video ? video.duration : 15.0);
+          const targetTime = pos * (video ? video.duration : 20.0);
           if (this.videoElement) {
             this.videoElement.currentTime = targetTime;
           }
@@ -1919,6 +1929,12 @@
         });
       }
 
+      if (this.btnMute) {
+        this.btnMute.addEventListener('click', () => {
+          this.toggleMute();
+        });
+      }
+
       if (this.speedButtons) {
         this.speedButtons.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -1931,6 +1947,42 @@
           });
         });
       }
+    }
+
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      if (this.videoElement) {
+        this.videoElement.muted = this.isMuted;
+      }
+      this.updateMuteBtnUi();
+    }
+
+    updateMuteBtnUi() {
+      if (!this.btnMuteIcon || !this.btnMuteLabel) return;
+      if (this.isMuted) {
+        this.btnMuteIcon.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+        this.btnMuteLabel.textContent = 'Bisu';
+        if (this.btnMute) this.btnMute.style.opacity = '0.68';
+      } else {
+        this.btnMuteIcon.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>';
+        this.btnMuteLabel.textContent = 'SFX';
+        if (this.btnMute) this.btnMute.style.opacity = '1';
+      }
+    }
+
+    renderTimelineTicks() {
+      if (!this.timelineTicks) return;
+      const video = SIMULATION_VIDEOS[this.currentVideoId];
+      if (!video || !video.steps) return;
+      const dur = video.duration || 20.0;
+      this.timelineTicks.innerHTML = '';
+      video.steps.forEach((st, idx) => {
+        if (idx === 0 || !st.start) return;
+        const pct = (st.start / dur) * 100;
+        const tick = document.createElement('span');
+        tick.style.cssText = `position:absolute;left:${pct.toFixed(2)}%;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,0.38);`;
+        this.timelineTicks.appendChild(tick);
+      });
     }
 
     loadVideo(videoId) {
@@ -1965,21 +2017,33 @@
 
       this.currentTime = 0.0;
       this.renderRakList();
+      this.renderTimelineTicks();
+      this.updateMuteBtnUi();
       this.handleTimeUpdate();
       this.updatePlayBtnUi(false);
     }
 
     play() {
       if (this.videoElement) {
-        this.videoElement.muted = true;
+        this.videoElement.muted = this.isMuted;
         const playPromise = this.videoElement.play();
         if (playPromise !== undefined) {
           playPromise.then(() => {
             this.isPlaying = true;
             this.updatePlayBtnUi(true);
           }).catch(err => {
-            console.warn('[Video Player Autoplay]', err.message);
-            try { this.videoElement.currentTime = 0.001; } catch (_) {}
+            if (!this.isMuted) {
+              this.isMuted = true;
+              this.videoElement.muted = true;
+              this.updateMuteBtnUi();
+              this.videoElement.play().then(() => {
+                this.isPlaying = true;
+                this.updatePlayBtnUi(true);
+              }).catch(() => {});
+            } else {
+              console.warn('[Video Player Autoplay]', err.message);
+              try { this.videoElement.currentTime = 0.001; } catch (_) {}
+            }
           });
         }
       }
@@ -2008,7 +2072,7 @@
       const video = SIMULATION_VIDEOS[this.currentVideoId];
       if (!video) return;
 
-      const dur = video.duration || 15.0;
+      const dur = video.duration || 20.0;
       const cur = Math.max(0, Math.min(dur, this.currentTime));
       const pct = (cur / dur) * 100;
 
