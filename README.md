@@ -169,5 +169,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 ## Hak Cipta & Lisensi
 
-Hak Cipta (c) 2026 **Proyek Rekayasa Mashimurelay**. Seluruh hak dilindungi undang-undang.  
+Hak Cipta (c) 2026 **Proyek Rekayasa Mashimurelay (Mash Maulana)**. Seluruh hak dilindungi undang-undang.  
 Diteliti, dirancang, dan direkayasa untuk kemajuan pendidikan vokasi ketenagalistrikan, standardisasi instalasi industri, dan teknologi simulator teknik.
+
+> **Keterangan Standar & Orisinalitas Aset:** Seluruh 117 simbol skematik kelistrikan mengacu pada standar internasional publik **IEC 60617 / DIN EN 60617** dan dibangun mandiri sebagai berkas vektor SVG *clean-room*. Mesin simulasi *equipotential graph*, proteksi hubung singkat/arus bocor per-jalur, serta sistem audio dan modul praktikum merupakan karya rekayasa mandiri Mashimurelay.

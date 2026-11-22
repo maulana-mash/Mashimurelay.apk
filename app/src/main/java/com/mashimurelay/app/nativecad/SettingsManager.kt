@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 
 object SettingsManager {
 
-    private const val PREFS_NAME = "simurelay_native_settings"
+    private const val PREFS_NAME = "mashimurelay_native_settings"
     private const val KEY_GRID_SNAP = "is_grid_snap_enabled"
     private const val KEY_GRID_SIZE = "grid_size_px"
     private const val KEY_AUTO_SAVE = "is_auto_save_enabled"

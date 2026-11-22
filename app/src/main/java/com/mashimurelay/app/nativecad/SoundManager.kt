@@ -75,7 +75,7 @@ class SoundManager(private val context: Context) {
                 soundMotor = loadAssetSound(sp, "sounds/motor.mp3")
                 soundBuzzer = loadAssetSound(sp, "sounds/buzzer.mp3")
                 soundBell = loadAssetSound(sp, "sounds/bell.mp3")
-                // Load Lamp Chime sound (autentik denting lampu SimuRelay)
+                // Load Lamp Chime sound (denting lampu indikator Mashimurelay)
                 soundLamp = loadAssetSound(sp, "sounds/lamp.mp3").takeIf { it != 0 }
                     ?: loadAssetSound(sp, "sounds/click.mp3")
                 isLoaded = true
@@ -95,7 +95,7 @@ class SoundManager(private val context: Context) {
     }
 
     /**
-     * Memainkan suara chime / denting khas lampu SimuRelay (one-shot).
+     * Memainkan suara chime / denting lampu indikator Mashimurelay (one-shot).
      * Dipanggil saat transisi naik (0 -> 1) dari lampu biasa maupun lampu kedip (lampBlink).
      */
     fun playLampChime() {

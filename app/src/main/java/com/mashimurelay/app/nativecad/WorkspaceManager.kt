@@ -131,7 +131,7 @@ object WorkspaceManager {
         val createdIso = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", java.util.Locale.US)
             .format(java.util.Date())
         val header = JSONObject().apply {
-            put("simurelay", "simurelay")
+            put("generator", "Mashimurelay")
             put("3.0.0.30", "1.0")
             put("created_at", createdIso)
             put("version", "5.0.5")
