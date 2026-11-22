@@ -63,7 +63,7 @@ object SvgComponentRenderer {
         }
 
         val raw = getRawSvgText(context, svgFileName) ?: return null
-        val processedSvg = applyFrameToSvgString(raw, frameIndex, variantIndex, lampColor)
+        val processedSvg = applyFrameToSvgString(svgFileName, raw, frameIndex, variantIndex, lampColor)
 
         try {
             val svg = SVG.getFromString(processedSvg)
@@ -79,7 +79,18 @@ object SvgComponentRenderer {
         return null
     }
 
-    private fun applyFrameToSvgString(rawSvg: String, frameIndex: Int, variantIndex: Int = 0, lampColor: String = "yellow"): String {
+    private fun applyFrameToSvgString(
+        svgFileName: String,
+        rawSvg: String,
+        frameIndex: Int,
+        variantIndex: Int = 0,
+        lampColor: String = "yellow"
+    ): String {
+        val compKey = svgFileName.substringAfterLast('/').removeSuffix(".svg")
+        val compDef = NativeComponentRegistry.get(compKey)
+        val compCategory = compDef?.category ?: ""
+        val compInfoType = compDef?.infoType ?: ""
+
         val allManagedIds = mutableSetOf<String>()
         val activeIds = mutableSetOf<String>()
         val lampHex = when (lampColor.lowercase()) {
@@ -90,7 +101,14 @@ object SvgComponentRenderer {
             else -> "#fbbf24"
         }
 
-        // 1. Kumpulkan seluruh ID pathFrame dari seluruh dokumen ke dalam allManagedIds
+        // 1. Kumpulkan seluruh ID path yang dikelola dari NativeComponentRegistry.variantFrames (Clean-Room SVG tanpa <metadata>)
+        val vfMap = compDef?.variantFrames ?: emptyMap()
+        for ((_, fMap) in vfMap) {
+            for ((_, pids) in fMap) {
+                allManagedIds.addAll(pids)
+            }
+        }
+        // Fallback legacy <pathFrame> jika ada berkas SVG kustom
         val pathRegex = Regex("""<pathFrame\s+id=["']([^"']+)["']""")
         for (m in pathRegex.findAll(rawSvg)) {
             allManagedIds.add(m.groupValues[1])
@@ -105,46 +123,56 @@ object SvgComponentRenderer {
         ))
 
         // Untuk motor dan power sources, textPath1/2/3/4 adalah label sah ("M3~", "L1", "N", dll.)
-        val isMotorOrSource = rawSvg.contains("category=\"motors\"") || rawSvg.contains("category=\"sources\"")
-        if (isMotorOrSource) {
+        val isMotor = compCategory == "motors" || compInfoType.startsWith("motor") || compKey.startsWith("motor") ||
+            rawSvg.contains("category=\"motors\"")
+        val isSource = compCategory == "sources" || compKey.startsWith("source") || compKey == "generator3ph" ||
+            rawSvg.contains("category=\"sources\"")
+        if (isMotor || isSource) {
             allManagedIds.remove("textPath1")
             allManagedIds.remove("textPath2")
             allManagedIds.remove("textPath3")
             allManagedIds.remove("textPath4")
         }
 
-        // 2. Ekstrak frame aktif dari blok <frames> yang sesuai dengan variantIndex
-        val framesBlocks = Regex("""<frames(?:\s+id=["'](\d+)["'])?\s*>(.*?)</frames>""", RegexOption.DOT_MATCHES_ALL)
-            .findAll(rawSvg).toList()
+        // 2. Ekstrak frame aktif dari NativeComponentRegistry.variantFrames (atau fallback <frames>)
+        if (vfMap.isNotEmpty()) {
+            val variantBlock = vfMap[variantIndex] ?: vfMap[0] ?: vfMap.values.firstOrNull()
+            val framePaths = variantBlock?.get(frameIndex) ?: variantBlock?.get(0) ?: variantBlock?.values?.firstOrNull()
+            if (framePaths != null) {
+                activeIds.addAll(framePaths)
+            }
+        } else {
+            val framesBlocks = Regex("""<frames(?:\s+id=["'](\d+)["'])?\s*>(.*?)</frames>""", RegexOption.DOT_MATCHES_ALL)
+                .findAll(rawSvg).toList()
 
-        if (framesBlocks.isNotEmpty()) {
-            var targetBody: String? = null
-            for (fb in framesBlocks) {
-                val bId = fb.groupValues[1]
-                if (bId == variantIndex.toString() || (bId.isEmpty() && variantIndex == 0)) {
-                    targetBody = fb.groupValues[2]
-                    break
+            if (framesBlocks.isNotEmpty()) {
+                var targetBody: String? = null
+                for (fb in framesBlocks) {
+                    val bId = fb.groupValues[1]
+                    if (bId == variantIndex.toString() || (bId.isEmpty() && variantIndex == 0)) {
+                        targetBody = fb.groupValues[2]
+                        break
+                    }
                 }
-            }
-            if (targetBody == null) {
-                targetBody = framesBlocks.first().groupValues[2]
-            }
+                if (targetBody == null) {
+                    targetBody = framesBlocks.first().groupValues[2]
+                }
 
-            val frameRegex = Regex("""<frame\s+id=["'](\d+)["']\s*>(.*?)</frame>""", RegexOption.DOT_MATCHES_ALL)
-            val frameList = frameRegex.findAll(targetBody).toList()
-            val targetFrame = frameList.find { it.groupValues[1] == frameIndex.toString() } ?: frameList.firstOrNull()
+                val frameRegex = Regex("""<frame\s+id=["'](\d+)["']\s*>(.*?)</frame>""", RegexOption.DOT_MATCHES_ALL)
+                val frameList = frameRegex.findAll(targetBody).toList()
+                val targetFrame = frameList.find { it.groupValues[1] == frameIndex.toString() } ?: frameList.firstOrNull()
 
-            if (targetFrame != null) {
-                for (pm in pathRegex.findAll(targetFrame.groupValues[2])) {
-                    activeIds.add(pm.groupValues[1])
+                if (targetFrame != null) {
+                    for (pm in pathRegex.findAll(targetFrame.groupValues[2])) {
+                        activeIds.add(pm.groupValues[1])
+                    }
                 }
             }
         }
 
         // 2b. Untuk komponen motor, jangan pernah menampilkan panah statis bawaan SVG
         // (strokePath1, strokePath4, pathFill3..4) karena panah putaran dirender secara dinamis 60fps oleh NativeCanvasView.
-        // Namun strokePath2 ("1") & strokePath3 ("2") pada motorDhalander / motorTwoSpeeds tetap mengikuti <frames>!
-        val isMotor = rawSvg.contains("category=\"motors\"") || rawSvg.contains("type=\"motor")
+        // Namun strokePath2 ("Y"/"1") & strokePath3 ("Δ"/"2") tetap mengikuti variantFrames!
         if (isMotor) {
             val motorStaticArrowIds = setOf("strokePath1", "strokePath4", "pathFill3", "pathFill4")
             allManagedIds.addAll(motorStaticArrowIds)
@@ -173,10 +201,10 @@ object SvgComponentRenderer {
             }
         }
 
-        // 4. Terapkan display:inline atau display:none ke setiap tag elemen SVG (mendukung tag multi-baris Inkscape)
-        val isCoil = rawSvg.contains("category=\"coils\"") || rawSvg.contains("category='coils'") ||
-                rawSvg.contains("tagType=\"timerCoils\"") || rawSvg.contains("flasher", ignoreCase = true) ||
-                rawSvg.contains("type=\"coil\"", ignoreCase = true)
+        // 4. Terapkan display:inline atau display:none ke setiap tag elemen SVG
+        val isCoil = compCategory == "coils" || compInfoType == "coil" ||
+            compKey.startsWith("coil") || compKey == "flasher" ||
+            rawSvg.contains("category=\"coils\"") || rawSvg.contains("type=\"coil\"", ignoreCase = true)
         val effectiveHex = when {
             isMotor && frameIndex == 5 -> "#ef4444"
             isCoil -> "#ef4444"

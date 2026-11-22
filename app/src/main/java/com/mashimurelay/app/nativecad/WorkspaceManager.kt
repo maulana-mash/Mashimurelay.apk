@@ -128,21 +128,43 @@ object WorkspaceManager {
 
     fun serializeCircuit(elements: List<NativeElement>, connectors: List<NativeConnector>): String {
         val root = JSONObject()
+        val createdIso = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", java.util.Locale.US)
+            .format(java.util.Date())
         val header = JSONObject().apply {
             put("simurelay", "simurelay")
+            put("3.0.0.30", "1.0")
+            put("created_at", createdIso)
             put("version", "5.0.5")
             put("timestamp", System.currentTimeMillis())
         }
         root.put("header", header)
 
+        val usedIds = mutableSetOf<Int>()
         val dataArr = JSONArray()
         for (el in elements) {
+            usedIds.add(el.id)
+            val colorType = when (el.lampColor.lowercase()) {
+                "red" -> 0
+                "green" -> 1
+                "yellow" -> 2
+                "blue" -> 3
+                "white" -> 4
+                else -> 2
+            }
             val obj = JSONObject().apply {
                 put("type", "ElectricalElement")
                 put("id", el.id)
                 put("svgData", el.svgData)
-                put("tag", el.tag)
-                put("comment", el.comment)
+                put("tag", el.tag.ifEmpty { JSONObject.NULL })
+                put("comment", el.comment.ifEmpty { JSONObject.NULL })
+                put("text", if (el.svgData == "text") el.comment else JSONObject.NULL)
+                put("value", JSONObject.NULL)
+                put("tagVisibility", true)
+                put("margins", JSONObject.NULL)
+                put("idNode1", JSONObject.NULL)
+                put("idNode2", JSONObject.NULL)
+                put("idElementNode1", JSONObject.NULL)
+                put("idElementNode2", JSONObject.NULL)
                 put("x", el.x.toDouble())
                 put("y", el.y.toDouble())
                 val posObj = JSONObject().apply {
@@ -157,7 +179,9 @@ object WorkspaceManager {
                 put("presetTimeOff", el.presetTimeOff.toDouble())
                 put("valueTimeOff", el.presetTimeOff.toDouble())
                 put("lampColor", el.lampColor)
+                put("colorType", colorType)
                 put("fontSize", el.fontSize.toDouble())
+                put("indexFontSize", if (el.svgData == "text") el.fontSize.toInt() else 5)
                 put("textColor", el.textColor)
                 put("locked", el.locked)
                 put("teacherLocked", el.teacherLocked)
@@ -168,14 +192,40 @@ object WorkspaceManager {
             dataArr.put(obj)
         }
 
+        val usedConnIds = mutableSetOf<Int>()
         for (c in connectors) {
+            var safeConnId = c.id
+            if (safeConnId <= 0 || !usedConnIds.add(safeConnId) || !usedIds.add(safeConnId)) {
+                var candidate = (usedIds.maxOrNull() ?: 0) + 1
+                while (!usedIds.add(candidate)) candidate++
+                usedConnIds.add(candidate)
+                safeConnId = candidate
+            }
             val obj = JSONObject().apply {
                 put("type", "Connector")
-                put("id", c.id)
+                put("svgData", "text")
+                put("id", safeConnId)
+                put("position", JSONObject.NULL)
+                put("rotation", JSONObject.NULL)
+                put("text", JSONObject.NULL)
+                put("tag", JSONObject.NULL)
+                put("comment", JSONObject.NULL)
+                put("value", JSONObject.NULL)
+                put("tagVisibility", true)
                 put("elem1Id", c.elem1Id)
                 put("node1Idx", c.node1Idx)
                 put("elem2Id", c.elem2Id)
                 put("node2Idx", c.node2Idx)
+                put("idElementNode1", c.elem1Id)
+                put("idNode1", c.node1Idx)
+                put("idElementNode2", c.elem2Id)
+                put("idNode2", c.node2Idx)
+                put("valueTimeOn", 0.0)
+                put("valueTimeOff", 0.0)
+                put("colorType", 0)
+                put("indexFontSize", 5)
+                put("terminalTags", JSONArray())
+                put("frameIndex", 0)
                 put("routeOrientation", c.routeOrientation.name)
                 val marginsObj = JSONObject().apply {
                     put("start", c.mStart.toDouble())
@@ -225,6 +275,7 @@ object WorkspaceManager {
         }
 
         val dataArr = root.optJSONArray("data") ?: return Pair(elements, connectors)
+        val usedConnIds = mutableSetOf<Int>()
 
         for (i in 0 until dataArr.length()) {
             val obj = dataArr.getJSONObject(i)
@@ -320,7 +371,12 @@ object WorkspaceManager {
                     )
                 )
             } else if (isConn) {
-                val id = obj.optInt("id", i + 1)
+                var id = obj.optInt("id", i + 1)
+                if (id <= 0 || !usedConnIds.add(id)) {
+                    var candidate = (usedConnIds.maxOrNull() ?: 0) + 1
+                    while (!usedConnIds.add(candidate)) candidate++
+                    id = candidate
+                }
                 val elem1Id = obj.optInt("elem1Id", obj.optInt("idElementNode1", 0))
                 val node1Idx = obj.optInt("node1Idx", obj.optInt("idNode1", 0))
                 val elem2Id = obj.optInt("elem2Id", obj.optInt("idElementNode2", 0))
@@ -423,12 +479,16 @@ object WorkspaceManager {
         put("coilkm", "coil")
     }
 
-    fun exportToLegacyTxt(elements: List<NativeElement>, connectors: List<NativeConnector>, asBase64: Boolean = false): String {
+    fun exportToLegacyTxt(elements: List<NativeElement>, connectors: List<NativeConnector>, asBase64: Boolean = true): String {
         val totalItems = elements.size + connectors.size
         val maxId = (elements.map { it.id } + connectors.map { it.id }).maxOrNull() ?: 0
 
         val lines = mutableListOf<String>()
         lines.add("-1@$totalItems@${maxId + 1}@0.5@0.0@200.0@0.0@0.5@200.0@0.0@0.0@1.0")
+
+        fun fmtTime(v: Float): String {
+            return if (v == v.toInt().toFloat()) v.toInt().toString() else v.toString()
+        }
 
         for (el in elements) {
             val legacyType = REVERSE_LEGACY_MAP[el.svgData] ?: el.svgData.replaceFirstChar { it.uppercase() }
@@ -438,8 +498,8 @@ object WorkspaceManager {
             val y = Math.round(el.y)
             val comment = el.comment
             val rot = el.canonicalRotation
-            val vTimeOn = el.presetTime
-            val vTimeOff = el.presetTimeOff
+            val vTimeOn = fmtTime(el.presetTime)
+            val vTimeOff = fmtTime(el.presetTimeOff)
             val fontIdx = if (el.svgData == "text") 24 else 0
 
             lines.add("$legacyType@${el.id}@$tagPrefix@$tagNum@$x@$y@$comment@0@2@$vTimeOn@$vTimeOff@$rot@$fontIdx@1@0")
@@ -586,7 +646,7 @@ object WorkspaceManager {
         val outFile = File(targetDir, "$cleanName.$ext")
 
         if (asLegacyTxt) {
-            val txtContent = exportToLegacyTxt(circuit.first, circuit.second, asBase64 = false)
+            val txtContent = exportToLegacyTxt(circuit.first, circuit.second, asBase64 = true)
             outFile.writeText(txtContent)
         } else {
             val jsonContent = serializeCircuit(circuit.first, circuit.second)

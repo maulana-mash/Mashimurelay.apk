@@ -48,7 +48,15 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "fillPath1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "arrowSource": {
     "svg": "arrowSource",
@@ -99,7 +107,15 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "fillPath1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "battery": {
     "svg": "battery",
@@ -151,7 +167,14 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ]
+      }
+    }
   },
   "breaker": {
     "svg": "breaker",
@@ -260,7 +283,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "breaker1p": {
     "svg": "breaker1p",
@@ -327,7 +360,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "breaker2p": {
     "svg": "breaker2p",
@@ -418,7 +461,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "breaker3p": {
     "svg": "breaker3p",
@@ -532,7 +585,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "breaker4p": {
     "svg": "breaker4p",
@@ -669,7 +732,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "buttonCON": {
     "svg": "buttonCON",
@@ -752,7 +825,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "buttonCrossover": {
     "svg": "buttonCrossover",
@@ -857,7 +940,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "buttonNC": {
     "svg": "buttonNC",
@@ -925,7 +1018,17 @@
         "type": "nc",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "buttonNO": {
     "svg": "buttonNO",
@@ -993,7 +1096,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "buttonNONC": {
     "svg": "buttonNONC",
@@ -1084,7 +1197,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "buzzer": {
     "svg": "buzzer",
@@ -1229,7 +1352,38 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "2": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "3": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "4": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "5": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "6": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coil": {
     "svg": "coil",
@@ -1238,7 +1392,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "indexAuxFrame": "0",
       "category": "coils",
       "tagType": "coils",
       "type": "coil",
@@ -1292,7 +1445,18 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coilDelayOff": {
     "svg": "coilDelayOff",
@@ -1301,8 +1465,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "indexAuxFrame": "2",
-      "isPaid": "true",
       "category": "coils",
       "tagType": "timerCoils",
       "timerType": "delayOff",
@@ -1369,7 +1531,20 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainFill2",
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainFill2",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coilDelayOn": {
     "svg": "coilDelayOn",
@@ -1378,8 +1553,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "indexAuxFrame": "1",
-      "isPaid": "true",
       "category": "coils",
       "tagType": "timerCoils",
       "timerType": "delayOn",
@@ -1436,7 +1609,18 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coilDelayOnOff": {
     "svg": "coilDelayOnOff",
@@ -1445,8 +1629,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "indexAuxFrame": "3",
-      "isPaid": "true",
       "category": "coils",
       "tagType": "timerCoils",
       "timerType": "delayOnOff",
@@ -1513,7 +1695,20 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainFill2",
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainFill2",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coilFlasher": {
     "svg": "coilFlasher",
@@ -1522,7 +1717,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "category": "coils",
       "tagType": "timerCoils",
       "timerType": "flash",
@@ -1579,7 +1773,18 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coilLatch": {
     "svg": "coilLatch",
@@ -1644,7 +1849,18 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "coilSolenoid": {
     "svg": "coilSolenoid",
@@ -1653,7 +1869,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "indexAuxFrame": "0",
       "category": "coils",
       "tagType": "coilsSolenoid",
       "type": "coil",
@@ -1709,7 +1924,18 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "contactCON": {
     "svg": "contactCON",
@@ -1872,7 +2098,49 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3"
+        ],
+        "1": [
+          "mainPath2_3"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      }
+    }
   },
   "contactCONDelayOff": {
     "svg": "contactCONDelayOff",
@@ -1881,7 +2149,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "category": "auxiliaries",
       "duplicateTag": "false",
@@ -1958,7 +2225,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactCONDelayOn": {
     "svg": "contactCONDelayOn",
@@ -1967,7 +2244,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "category": "auxiliaries",
       "duplicateTag": "false",
@@ -2044,7 +2320,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactNC": {
     "svg": "contactNC",
@@ -2190,7 +2476,49 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3"
+        ],
+        "1": [
+          "mainPath2_3"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      }
+    }
   },
   "contactNCDelayOff": {
     "svg": "contactNCDelayOff",
@@ -2199,7 +2527,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "category": "auxiliaries",
       "duplicateTag": "false",
@@ -2259,7 +2586,17 @@
         "type": "nc",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactNCDelayOn": {
     "svg": "contactNCDelayOn",
@@ -2268,7 +2605,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "category": "auxiliaries",
       "duplicateTag": "false",
@@ -2328,7 +2664,17 @@
         "type": "nc",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactNO": {
     "svg": "contactNO",
@@ -2476,7 +2822,49 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3"
+        ],
+        "1": [
+          "mainPath2_3"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      }
+    }
   },
   "contactNODelayOff": {
     "svg": "contactNODelayOff",
@@ -2485,7 +2873,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "duplicateTag": "false",
       "category": "auxiliaries",
@@ -2547,7 +2934,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactNODelayOn": {
     "svg": "contactNODelayOn",
@@ -2556,7 +2953,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "duplicateTag": "false",
       "category": "auxiliaries",
@@ -2618,7 +3014,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactNONC": {
     "svg": "contactNONC",
@@ -2789,7 +3195,49 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3"
+        ],
+        "1": [
+          "mainPath2_3"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      }
+    }
   },
   "contactNONCDelayOff": {
     "svg": "contactNONCDelayOff",
@@ -2798,7 +3246,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "category": "auxiliaries",
       "duplicateTag": "false",
@@ -2883,7 +3330,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactNONCDelayOn": {
     "svg": "contactNONCDelayOn",
@@ -2892,7 +3349,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "tagIndex": "2",
       "category": "auxiliaries",
       "duplicateTag": "false",
@@ -2977,7 +3433,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactor1p": {
     "svg": "contactor1p",
@@ -3046,7 +3512,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactor2p": {
     "svg": "contactor2p",
@@ -3138,7 +3614,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactor3p": {
     "svg": "contactor3p",
@@ -3253,7 +3739,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactor4p": {
     "svg": "contactor4p",
@@ -3391,7 +3887,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactorNC1p": {
     "svg": "contactorNC1p",
@@ -3460,7 +3966,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactorNC2p": {
     "svg": "contactorNC2p",
@@ -3552,7 +4068,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactorNC3p": {
     "svg": "contactorNC3p",
@@ -3667,7 +4193,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "contactorNC4p": {
     "svg": "contactorNC4p",
@@ -3805,7 +4341,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "diode": {
     "svg": "diode",
@@ -3856,7 +4402,14 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ]
+      }
+    }
   },
   "emergencyCON": {
     "svg": "emergencyCON",
@@ -3939,7 +4492,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "emergencyNC": {
     "svg": "emergencyNC",
@@ -4007,7 +4570,17 @@
         "type": "nc",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "emergencyNO": {
     "svg": "emergencyNO",
@@ -4075,7 +4648,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "emergencyNONC": {
     "svg": "emergencyNONC",
@@ -4166,7 +4749,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuse1p": {
     "svg": "fuse1p",
@@ -4234,7 +4827,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuse2p": {
     "svg": "fuse2p",
@@ -4326,7 +4929,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuse3p": {
     "svg": "fuse3p",
@@ -4441,7 +5054,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuse4p": {
     "svg": "fuse4p",
@@ -4579,7 +5202,17 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuseSwitch1p": {
     "svg": "fuseSwitch1p",
@@ -4646,7 +5279,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuseSwitch1pn": {
     "svg": "fuseSwitch1pn",
@@ -4737,7 +5380,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuseSwitch2p": {
     "svg": "fuseSwitch2p",
@@ -4828,7 +5481,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuseSwitch3p": {
     "svg": "fuseSwitch3p",
@@ -4942,7 +5605,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuseSwitch3pn": {
     "svg": "fuseSwitch3pn",
@@ -5079,7 +5752,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "fuseSwitch4p": {
     "svg": "fuseSwitch4p",
@@ -5216,7 +5899,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "generator3ph": {
     "svg": "generator3ph",
@@ -5330,199 +6023,20 @@
         ]
       }
     ],
-    "contacts": []
-  },
-  "icon%201024": {
-    "svg": "icon%201024",
-    "file": "icon%201024.svg",
-    "width": 1024,
-    "height": 1024,
-    "viewBox": "0 0 1024 1024",
-    "info": {
-      "type": "delayOn",
-      "width": "120",
-      "height": "120",
-      "tagType": "2",
-      "tagIndex": "1",
-      "name": "coil",
-      "description": "Coil",
-      "marginH": "0",
-      "marginV": "-20"
-    },
-    "nodes": [
-      {
-        "id": "0",
-        "tag": "A1",
-        "direction": "0",
-        "type": "load",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "A2",
-        "direction": "2",
-        "type": "load",
-        "dx": "0.0",
-        "dy": "60.0"
-      }
-    ],
-    "frames": [
-      {
-        "id": "0",
-        "paths": [
-          {
-            "id": "mainPath1",
-            "type": "main",
-            "style": "stroke"
-          }
-        ]
-      },
-      {
-        "id": "1",
-        "paths": [
-          {
-            "id": "mainFill1",
-            "type": "simulation",
-            "style": "fill"
-          },
-          {
-            "id": "mainPath1",
-            "type": "main",
-            "style": "stroke"
-          }
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "mainPath1",
+          "textPath1"
         ]
       }
-    ],
-    "contacts": []
-  },
-  "icon": {
-    "svg": "icon",
-    "file": "icon.svg",
-    "width": 220,
-    "height": 220,
-    "viewBox": "0 0 220 220",
-    "info": {
-      "type": "delayOn",
-      "width": "120",
-      "height": "120",
-      "tagType": "2",
-      "tagIndex": "1",
-      "name": "coil",
-      "description": "Coil",
-      "marginH": "0",
-      "marginV": "-20"
-    },
-    "nodes": [
-      {
-        "id": "0",
-        "tag": "A1",
-        "direction": "0",
-        "type": "load",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "A2",
-        "direction": "2",
-        "type": "load",
-        "dx": "0.0",
-        "dy": "60.0"
-      }
-    ],
-    "frames": [
-      {
-        "id": "0",
-        "paths": [
-          {
-            "id": "mainPath1",
-            "type": "main",
-            "style": "stroke"
-          }
-        ]
-      },
-      {
-        "id": "1",
-        "paths": [
-          {
-            "id": "mainFill1",
-            "type": "simulation",
-            "style": "fill"
-          },
-          {
-            "id": "mainPath1",
-            "type": "main",
-            "style": "stroke"
-          }
-        ]
-      }
-    ],
-    "contacts": []
-  },
-  "icon_1024": {
-    "svg": "icon_1024",
-    "file": "icon_1024.svg",
-    "width": 1024,
-    "height": 1024,
-    "viewBox": "0 0 1024 1024",
-    "info": {
-      "type": "delayOn",
-      "width": "120",
-      "height": "120",
-      "tagType": "2",
-      "tagIndex": "1",
-      "name": "coil",
-      "description": "Coil",
-      "marginH": "0",
-      "marginV": "-20"
-    },
-    "nodes": [
-      {
-        "id": "0",
-        "tag": "A1",
-        "direction": "0",
-        "type": "load",
-        "dx": "0.0",
-        "dy": "-60.0"
-      },
-      {
-        "id": "1",
-        "tag": "A2",
-        "direction": "2",
-        "type": "load",
-        "dx": "0.0",
-        "dy": "60.0"
-      }
-    ],
-    "frames": [
-      {
-        "id": "0",
-        "paths": [
-          {
-            "id": "mainPath1",
-            "type": "main",
-            "style": "stroke"
-          }
-        ]
-      },
-      {
-        "id": "1",
-        "paths": [
-          {
-            "id": "mainFill1",
-            "type": "simulation",
-            "style": "fill"
-          },
-          {
-            "id": "mainPath1",
-            "type": "main",
-            "style": "stroke"
-          }
-        ]
-      }
-    ],
-    "contacts": []
+    }
   },
   "isolator1p": {
     "svg": "isolator1p",
@@ -5590,7 +6104,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "isolator2p": {
     "svg": "isolator2p",
@@ -5681,7 +6205,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "isolator3p": {
     "svg": "isolator3p",
@@ -5795,7 +6329,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "isolator4p": {
     "svg": "isolator4p",
@@ -5932,7 +6476,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "junction2p": {
     "svg": "junction2p",
@@ -5983,7 +6537,14 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ]
+      }
+    }
   },
   "junction2p90": {
     "svg": "junction2p90",
@@ -6038,7 +6599,15 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "mainFill1"
+        ]
+      }
+    }
   },
   "junction3p": {
     "svg": "junction3p",
@@ -6101,7 +6670,15 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "mainFill1"
+        ]
+      }
+    }
   },
   "junction4p": {
     "svg": "junction4p",
@@ -6172,7 +6749,15 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "mainFill1"
+        ]
+      }
+    }
   },
   "junctionPE": {
     "svg": "junctionPE",
@@ -6221,7 +6806,15 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "mainFill1"
+        ]
+      }
+    }
   },
   "lamp": {
     "svg": "lamp",
@@ -6367,7 +6960,38 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "2": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "3": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "4": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "5": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "6": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "lampBlink": {
     "svg": "lampBlink",
@@ -6514,287 +7138,38 @@
         ]
       }
     ],
-    "contacts": []
-  },
-  "motor": {
-    "svg": "motor",
-    "file": "motor.svg",
-    "width": 240,
-    "height": 240,
-    "viewBox": "0 0 240 240",
-    "info": {
-      "width": "240",
-      "height": "240",
-      "tagType": "2",
-      "tagIndex": "1",
-      "tapOnSimulation": "switch",
-      "name": "coil",
-      "description": "Coil",
-      "marginH": "0",
-      "marginV": "-20"
-    },
-    "nodes": [
-      {
-        "id": "0",
-        "tag": "U1",
-        "direction": "0",
-        "type": "motor",
-        "dx": "-60.0",
-        "dy": "-120.0"
-      },
-      {
-        "id": "1",
-        "tag": "V1",
-        "direction": "0",
-        "type": "motor",
-        "dx": "0",
-        "dy": "-120.0"
-      },
-      {
-        "id": "2",
-        "tag": "W1",
-        "direction": "0",
-        "type": "motor",
-        "dx": "60.0",
-        "dy": "-120.0"
-      },
-      {
-        "id": "3",
-        "tag": "U2",
-        "direction": "2",
-        "type": "motor",
-        "dx": "-60.0",
-        "dy": "120.0"
-      },
-      {
-        "id": "4",
-        "tag": "V2",
-        "direction": "2",
-        "type": "motor",
-        "dx": "0",
-        "dy": "120.0"
-      },
-      {
-        "id": "5",
-        "tag": "W2",
-        "direction": "2",
-        "type": "motor",
-        "dx": "60.0",
-        "dy": "120.0"
-      }
-    ],
-    "frames": [
-      {
-        "id": "0",
-        "paths": [
-          {
-            "id": "mainPath",
-            "type": "main",
-            "style": "stroke"
-          },
-          {
-            "id": "textPath1",
-            "type": "main",
-            "style": "fill",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          }
-        ]
-      },
-      {
-        "id": "1",
-        "paths": [
-          {
-            "id": "fillPath1",
-            "type": "simulation",
-            "style": "fill",
-            "color": "1",
-            "strokeWidth": "15.0"
-          },
-          {
-            "id": "mainPath",
-            "type": "main",
-            "style": "stroke"
-          },
-          {
-            "id": "textPath1",
-            "type": "main",
-            "style": "fill",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath4",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath1",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          }
-        ]
-      },
-      {
-        "id": "2",
-        "paths": [
-          {
-            "id": "fillPath1",
-            "type": "simulation",
-            "style": "fill",
-            "color": "1",
-            "strokeWidth": "0.0"
-          },
-          {
-            "id": "mainPath",
-            "type": "main",
-            "style": "stroke"
-          },
-          {
-            "id": "textPath1",
-            "type": "main",
-            "style": "fill",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath3",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath1",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          }
-        ]
-      },
-      {
-        "id": "3",
-        "paths": [
-          {
-            "id": "fillPath1",
-            "type": "simulation",
-            "style": "fill",
-            "color": "1",
-            "strokeWidth": "0.0"
-          },
-          {
-            "id": "mainPath",
-            "type": "main",
-            "style": "stroke"
-          },
-          {
-            "id": "textPath1",
-            "type": "main",
-            "style": "fill",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath4",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath2",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          }
-        ]
-      },
-      {
-        "id": "4",
-        "paths": [
-          {
-            "id": "fillPath1",
-            "type": "simulation",
-            "style": "fill",
-            "color": "1",
-            "strokeWidth": "0.0"
-          },
-          {
-            "id": "mainPath",
-            "type": "main",
-            "style": "stroke"
-          },
-          {
-            "id": "textPath1",
-            "type": "main",
-            "style": "fill",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath3",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          },
-          {
-            "id": "strokePath2",
-            "type": "simulation",
-            "style": "stroke",
-            "strokeWidth": "7.0",
-            "color": "1",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          }
-        ]
-      },
-      {
-        "id": "5",
-        "paths": [
-          {
-            "id": "fillPath1",
-            "type": "simulation",
-            "style": "fill",
-            "color": "3",
-            "strokeWidth": "0.0"
-          },
-          {
-            "id": "mainPath",
-            "type": "main",
-            "style": "stroke"
-          },
-          {
-            "id": "textPath1",
-            "type": "main",
-            "style": "fill",
-            "fixedRotation": "true",
-            "isCentered": "true"
-          }
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "2": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "3": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "4": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "5": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "6": [
+          "mainFill1",
+          "mainPath1"
         ]
       }
-    ],
-    "contacts": []
+    }
   },
   "motor1ph": {
     "svg": "motor1ph",
@@ -6899,7 +7274,25 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "mainPath",
+          "textPath1"
+        ],
+        "2": [
+          "fillPath1",
+          "mainPath",
+          "textPath1"
+        ]
+      }
+    }
   },
   "motor3ph": {
     "svg": "motor3ph",
@@ -7056,7 +7449,31 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill3",
+          "strokePath1"
+        ],
+        "2": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill4",
+          "strokePath1"
+        ]
+      }
+    }
   },
   "motorBreaker1p": {
     "svg": "motorBreaker1p",
@@ -7121,7 +7538,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "motorBreaker2p": {
     "svg": "motorBreaker2p",
@@ -7209,7 +7636,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "motorBreaker3p": {
     "svg": "motorBreaker3p",
@@ -7320,7 +7757,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "motorBreaker4p": {
     "svg": "motorBreaker4p",
@@ -7454,7 +7901,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "motorDC": {
     "svg": "motorDC",
@@ -7605,7 +8062,32 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1",
+          "pathFill2"
+        ],
+        "1": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill3",
+          "strokePath1"
+        ],
+        "2": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill4",
+          "strokePath1"
+        ]
+      }
+    }
   },
   "motorDhalander": {
     "svg": "motorDhalander",
@@ -7923,7 +8405,54 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill3",
+          "strokePath1",
+          "strokePath2"
+        ],
+        "2": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill4",
+          "strokePath1",
+          "strokePath2"
+        ],
+        "3": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill3",
+          "strokePath1",
+          "strokePath3"
+        ],
+        "4": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill4",
+          "strokePath1",
+          "strokePath3"
+        ],
+        "5": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "motorStarDelta": {
     "svg": "motorStarDelta",
@@ -8241,7 +8770,54 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill3",
+          "strokePath1",
+          "strokePath2"
+        ],
+        "2": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill4",
+          "strokePath1",
+          "strokePath2"
+        ],
+        "3": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill3",
+          "strokePath1",
+          "strokePath3"
+        ],
+        "4": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill4",
+          "strokePath1",
+          "strokePath3"
+        ],
+        "5": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "motorTwoSpeeds": {
     "svg": "motorTwoSpeeds",
@@ -8559,7 +9135,54 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill3",
+          "strokePath1",
+          "strokePath2"
+        ],
+        "2": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill2",
+          "pathFill4",
+          "strokePath1",
+          "strokePath2"
+        ],
+        "3": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill3",
+          "strokePath1",
+          "strokePath3"
+        ],
+        "4": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1",
+          "pathFill4",
+          "strokePath1",
+          "strokePath3"
+        ],
+        "5": [
+          "fillPath1",
+          "textPath1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "overload1p": {
     "svg": "overload1p",
@@ -8568,7 +9191,6 @@
     "height": 120,
     "viewBox": "0 0 60 120",
     "info": {
-      "indexAuxFrame": "4",
       "category": "protections",
       "type": "switch",
       "tagType": "fuses",
@@ -8633,7 +9255,18 @@
         "nodeId2": "1",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "overload2p": {
     "svg": "overload2p",
@@ -8642,7 +9275,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "indexAuxFrame": "4",
       "category": "protections",
       "type": "switch",
       "tagType": "fuses",
@@ -8729,7 +9361,18 @@
         "nodeId2": "3",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "overload3p": {
     "svg": "overload3p",
@@ -8738,7 +9381,6 @@
     "height": 120,
     "viewBox": "0 0 180 120",
     "info": {
-      "indexAuxFrame": "4",
       "category": "protections",
       "type": "switch",
       "tagType": "fuses",
@@ -8847,7 +9489,18 @@
         "nodeId2": "5",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "phaseFailure": {
     "svg": "phaseFailure",
@@ -8937,7 +9590,22 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "fillPath1",
+          "mainPath1"
+        ],
+        "2": [
+          "fillPath1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "powerSupply": {
     "svg": "powerSupply",
@@ -9034,7 +9702,14 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ]
+      }
+    }
   },
   "powerSupply2": {
     "svg": "powerSupply2",
@@ -9099,7 +9774,14 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ]
+      }
+    }
   },
   "rcboBreaker2p": {
     "svg": "rcboBreaker2p",
@@ -9187,7 +9869,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "rcboBreaker4p": {
     "svg": "rcboBreaker4p",
@@ -9321,7 +10013,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "rccbBreaker2p": {
     "svg": "rccbBreaker2p",
@@ -9412,7 +10114,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "rccbBreaker4p": {
     "svg": "rccbBreaker4p",
@@ -9549,7 +10261,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "ring": {
     "svg": "ring",
@@ -9694,7 +10416,38 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "2": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "3": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "4": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "5": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "6": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "rollerCON": {
     "svg": "rollerCON",
@@ -9892,7 +10645,59 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3",
+          "textPath1"
+        ],
+        "1": [
+          "mainPath2_3",
+          "textPath2"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      },
+      "5": {
+        "0": [
+          "mainPath1_6"
+        ],
+        "1": [
+          "mainPath2_6"
+        ]
+      }
+    }
   },
   "rollerNC": {
     "svg": "rollerNC",
@@ -10075,7 +10880,59 @@
         "type": "no",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3",
+          "textPath1"
+        ],
+        "1": [
+          "mainPath2_3",
+          "textPath2"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      },
+      "5": {
+        "0": [
+          "mainPath1_6"
+        ],
+        "1": [
+          "mainPath2_6"
+        ]
+      }
+    }
   },
   "rollerNO": {
     "svg": "rollerNO",
@@ -10258,7 +11115,59 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3",
+          "textPath1"
+        ],
+        "1": [
+          "mainPath2_3",
+          "textPath2"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      },
+      "5": {
+        "0": [
+          "mainPath1_6"
+        ],
+        "1": [
+          "mainPath2_6"
+        ]
+      }
+    }
   },
   "rollerNONC": {
     "svg": "rollerNONC",
@@ -10464,7 +11373,59 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      },
+      "1": {
+        "0": [
+          "mainPath1_2"
+        ],
+        "1": [
+          "mainPath2_2"
+        ]
+      },
+      "2": {
+        "0": [
+          "mainPath1_3",
+          "textPath1"
+        ],
+        "1": [
+          "mainPath2_3",
+          "textPath2"
+        ]
+      },
+      "3": {
+        "0": [
+          "mainPath1_4"
+        ],
+        "1": [
+          "mainPath2_4"
+        ]
+      },
+      "4": {
+        "0": [
+          "mainPath1_5"
+        ],
+        "1": [
+          "mainPath2_5"
+        ]
+      },
+      "5": {
+        "0": [
+          "mainPath1_6"
+        ],
+        "1": [
+          "mainPath2_6"
+        ]
+      }
+    }
   },
   "siren": {
     "svg": "siren",
@@ -10609,7 +11570,38 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "2": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "3": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "4": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "5": [
+          "mainFill1",
+          "mainPath1"
+        ],
+        "6": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   },
   "sourceGnd": {
     "svg": "sourceGnd",
@@ -10677,7 +11669,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourceL1": {
     "svg": "sourceL1",
@@ -10745,7 +11749,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourceL1L2L3": {
     "svg": "sourceL1L2L3",
@@ -10829,7 +11845,17 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1",
+          "textPath2",
+          "textPath3"
+        ]
+      }
+    }
   },
   "sourceL1L2L3N": {
     "svg": "sourceL1L2L3N",
@@ -10929,7 +11955,18 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1",
+          "textPath1",
+          "textPath2",
+          "textPath3",
+          "textPath4"
+        ]
+      }
+    }
   },
   "sourceL2": {
     "svg": "sourceL2",
@@ -10997,7 +12034,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourceL3": {
     "svg": "sourceL3",
@@ -11065,7 +12114,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourceN": {
     "svg": "sourceN",
@@ -11133,7 +12194,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourceNegative": {
     "svg": "sourceNegative",
@@ -11201,7 +12274,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourcePE": {
     "svg": "sourcePE",
@@ -11269,7 +12354,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "sourcePlus": {
     "svg": "sourcePlus",
@@ -11337,7 +12434,19 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath",
+          "textPath1"
+        ],
+        "1": [
+          "pathFill0",
+          "pathMain0"
+        ]
+      }
+    }
   },
   "switch3p": {
     "svg": "switch3p",
@@ -11446,7 +12555,20 @@
         "type": "no",
         "enableFrames": "0,0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ],
+        "2": [
+          "mainPath3"
+        ]
+      }
+    }
   },
   "switch3p0": {
     "svg": "switch3p0",
@@ -11547,7 +12669,20 @@
         "type": "no",
         "enableFrames": "0,0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ],
+        "2": [
+          "mainPath3"
+        ]
+      }
+    }
   },
   "switchCON": {
     "svg": "switchCON",
@@ -11630,7 +12765,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "switchCrossover": {
     "svg": "switchCrossover",
@@ -11735,7 +12880,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "switchNC": {
     "svg": "switchNC",
@@ -11803,7 +12958,17 @@
         "type": "nc",
         "enableFrames": "1,0"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "switchNO": {
     "svg": "switchNO",
@@ -11871,7 +13036,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "switchNONC": {
     "svg": "switchNONC",
@@ -11962,7 +13137,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "text": {
     "svg": "text",
@@ -11994,7 +13179,14 @@
         ]
       }
     ],
-    "contacts": []
+    "contacts": [],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ]
+      }
+    }
   },
   "tmBreaker1p": {
     "svg": "tmBreaker1p",
@@ -12061,7 +13253,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "tmBreaker2p": {
     "svg": "tmBreaker2p",
@@ -12152,7 +13354,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "tmBreaker3p": {
     "svg": "tmBreaker3p",
@@ -12266,7 +13478,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "tmBreaker4p": {
     "svg": "tmBreaker4p",
@@ -12403,7 +13625,17 @@
         "type": "no",
         "enableFrames": "0,1"
       }
-    ]
+    ],
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainPath2"
+        ]
+      }
+    }
   },
   "flasher": {
     "svg": "flasher",
@@ -12412,7 +13644,6 @@
     "height": 120,
     "viewBox": "0 0 120 120",
     "info": {
-      "isPaid": "true",
       "category": "coils",
       "tagType": "timerCoils",
       "timerType": "flash",
@@ -12471,7 +13702,6 @@
     ],
     "contacts": [],
     "timerType": "flash",
-    "isPaid": true,
     "category": "coils",
     "tagType": "timerCoils",
     "type": "coil",
@@ -12479,6 +13709,16 @@
     "description": "Flasher Otomotif & Mandiri (Series Inline Flasher)",
     "marginH": 0,
     "marginV": 0,
-    "graphics": "<rect id=\"mainFill1\" display=\"none\" style=\"display:none;fill:#aa0000;stroke:none\" x=\"15\" y=\"38\" width=\"70\" height=\"44\" />\n   <path id=\"mainPath1\" style=\"fill:none;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round\" d=\"M 60,0 V 52 H 74 V 68 H 60 V 120 M 15,38 H 85 V 82 H 15 Z M 45,38 V 82 M 30,38 V 53 M 23,53 H 37 V 67 H 23 Z M 30,67 V 82\" inkscape:label=\"mainPath1\" />"
+    "variantFrames": {
+      "0": {
+        "0": [
+          "mainPath1"
+        ],
+        "1": [
+          "mainFill1",
+          "mainPath1"
+        ]
+      }
+    }
   }
 }

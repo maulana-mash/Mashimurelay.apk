@@ -32,7 +32,8 @@ data class ComponentDef(
     val defaultTag: String,
     val defaultComment: String = "",
     val infoType: String = "",
-    val contacts: List<ContactDef> = emptyList()
+    val contacts: List<ContactDef> = emptyList(),
+    val variantFrames: Map<Int, Map<Int, List<String>>> = emptyMap()
 )
 
 object NativeComponentRegistry {
@@ -139,6 +140,33 @@ object NativeComponentRegistry {
                     }
                 }
 
+                val variantFramesMap = mutableMapOf<Int, Map<Int, List<String>>>()
+                val vfObj = obj.optJSONObject("variantFrames")
+                if (vfObj != null) {
+                    val vKeys = vfObj.keys()
+                    while (vKeys.hasNext()) {
+                        val vKeyStr = vKeys.next()
+                        val vIdx = vKeyStr.toIntOrNull() ?: continue
+                        val fObj = vfObj.optJSONObject(vKeyStr) ?: continue
+                        val fMap = mutableMapOf<Int, List<String>>()
+                        val fKeys = fObj.keys()
+                        while (fKeys.hasNext()) {
+                            val fKeyStr = fKeys.next()
+                            val fIdx = fKeyStr.toIntOrNull() ?: continue
+                            val arr = fObj.optJSONArray(fKeyStr) ?: continue
+                            val pids = mutableListOf<String>()
+                            for (j in 0 until arr.length()) {
+                                val pid = arr.optString(j, "")
+                                if (pid.isNotEmpty()) pids.add(pid)
+                            }
+                            fMap[fIdx] = pids
+                        }
+                        if (fMap.isNotEmpty()) {
+                            variantFramesMap[vIdx] = fMap
+                        }
+                    }
+                }
+
                 registry[key] = ComponentDef(
                     type = key,
                     file = file,
@@ -149,7 +177,8 @@ object NativeComponentRegistry {
                     nodes = nodesList,
                     defaultTag = defaultTag,
                     infoType = infoType,
-                    contacts = contactsList
+                    contacts = contactsList,
+                    variantFrames = variantFramesMap
                 )
             }
             isLoaded = true

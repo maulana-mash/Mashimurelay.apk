@@ -3701,26 +3701,52 @@ class MainActivity : Activity() {
         try {
             val bitmap = canvasView.captureBitmap()
             val timeStamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(java.util.Date())
-            val fileName = "Simurelay_Capture_$timeStamp.png"
+            val fileName = "Mashimurelay_Capture_$timeStamp.png"
 
-            val picturesDir = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES) ?: cacheDir
-            val file = java.io.File(picturesDir, fileName)
-            val fos = java.io.FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-            fos.flush()
-            fos.close()
-
-            val downloadsDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
-            if (downloadsDir != null && downloadsDir.exists() && downloadsDir.canWrite()) {
-                val dlFile = java.io.File(downloadsDir, fileName)
-                val dlFos = java.io.FileOutputStream(dlFile)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, dlFos)
-                dlFos.flush()
-                dlFos.close()
-                Toast.makeText(this, "Gambar tersimpan di:\nDownload/$fileName", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(this, "Gambar tersimpan:\n${file.name}", Toast.LENGTH_LONG).show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = android.content.ContentValues().apply {
+                    put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
+                    put(
+                        android.provider.MediaStore.Images.Media.RELATIVE_PATH,
+                        "${android.os.Environment.DIRECTORY_PICTURES}/Mashimurelay"
+                    )
+                    put(android.provider.MediaStore.Images.Media.IS_PENDING, 1)
+                }
+                val resolver = contentResolver
+                val uri = resolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                if (uri != null) {
+                    resolver.openOutputStream(uri)?.use { outStream ->
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+                        outStream.flush()
+                    }
+                    values.clear()
+                    values.put(android.provider.MediaStore.Images.Media.IS_PENDING, 0)
+                    resolver.update(uri, values, null, null)
+                    Toast.makeText(this, "Gambar tersimpan ke Galeri:\nPictures/Mashimurelay/$fileName", Toast.LENGTH_LONG).show()
+                    return
+                }
             }
+
+            // Fallback untuk Android 7–9 (API 24–28) atau jika MediaStore tidak mengembalikan URI
+            val publicPictures = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PICTURES)
+            val targetDir = if (publicPictures != null && (publicPictures.exists() || publicPictures.mkdirs()) && publicPictures.canWrite()) {
+                java.io.File(publicPictures, "Mashimurelay").apply { if (!exists()) mkdirs() }
+            } else {
+                getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES) ?: cacheDir
+            }
+            val file = java.io.File(targetDir, fileName)
+            java.io.FileOutputStream(file).use { fos ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                fos.flush()
+            }
+            android.media.MediaScannerConnection.scanFile(
+                this,
+                arrayOf(file.absolutePath),
+                arrayOf("image/png"),
+                null
+            )
+            Toast.makeText(this, "Gambar tersimpan ke Galeri:\n${file.name}", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Toast.makeText(this, "Gagal mengambil gambar: ${e.message}", Toast.LENGTH_SHORT).show()
         }

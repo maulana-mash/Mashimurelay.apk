@@ -676,7 +676,8 @@ class NativeCanvasView @JvmOverloads constructor(
                             }
                             if (!exists) {
                                 pushUndoState()
-                                connectors.add(NativeConnector(connectors.size + 1, startElem, startNode, elemId, nodeIdx))
+                                val nextConnId = (connectors.maxOfOrNull { it.id } ?: 0) + 1
+                                connectors.add(NativeConnector(nextConnId, startElem, startNode, elemId, nodeIdx))
                                 interactionListener?.onCircuitModified()
                             }
                         }
