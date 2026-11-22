@@ -2458,8 +2458,9 @@ class MainActivity : Activity() {
 
 
     private fun showThemedDialog(dialog: Dialog) {
-        AppThemeHelper.applyThemeToDialog(dialog.window?.decorView, SettingsManager.isLightTheme(this))
         dialog.show()
+        val root = dialog.findViewById<View>(android.R.id.content) ?: dialog.window?.decorView
+        AppThemeHelper.applyThemeToDialog(root, SettingsManager.isLightTheme(this))
     }
 
     private fun toggleAppTheme() {
@@ -2694,7 +2695,7 @@ class MainActivity : Activity() {
             webView?.loadUrl("about:blank")
         }
 
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun showAboutDialog() {
@@ -3199,16 +3200,19 @@ class MainActivity : Activity() {
 
             // Torch (Flashlight) Control
             var isTorchOn = false
+            val isLightQr = SettingsManager.isLightTheme(this)
             btnToggleTorch?.setOnClickListener {
                 isTorchOn = !isTorchOn
                 if (isTorchOn) {
                     barcodeScannerView?.setTorchOn()
-                    ivTorchIcon?.setColorFilter(Color.parseColor("#38bdf8"))
-                    tvTorchText?.setTextColor(Color.parseColor("#38bdf8"))
+                    val onCol = Color.parseColor(if (isLightQr) "#2563eb" else "#38bdf8")
+                    ivTorchIcon?.setColorFilter(onCol)
+                    tvTorchText?.setTextColor(onCol)
                 } else {
                     barcodeScannerView?.setTorchOff()
-                    ivTorchIcon?.setColorFilter(Color.parseColor("#f4f4f5"))
-                    tvTorchText?.setTextColor(Color.parseColor("#f4f4f5"))
+                    val offCol = Color.parseColor(if (isLightQr) "#1e293b" else "#f4f4f5")
+                    ivTorchIcon?.setColorFilter(offCol)
+                    tvTorchText?.setTextColor(offCol)
                 }
             }
 
@@ -3238,7 +3242,7 @@ class MainActivity : Activity() {
                 barcodeScannerView?.pause()
             }
 
-            dialog.show()
+            showThemedDialog(dialog)
             barcodeScannerView?.resume()
         } catch (e: Exception) {
             Toast.makeText(this, "Gagal membuka pemindai: ${e.message}", Toast.LENGTH_SHORT).show()

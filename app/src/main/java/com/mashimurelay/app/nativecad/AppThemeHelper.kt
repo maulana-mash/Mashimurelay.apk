@@ -217,12 +217,13 @@ object AppThemeHelper {
 
     /**
      * Recursively adapts any dark-authored Mashimurelay dialog XML tree into crisp Light Paper
-     * without breaking semantic accent CTA buttons (emerald/blue/red/violet) or custom tags.
+     * without breaking semantic accent CTA buttons (emerald/blue/red/violet) or camera viewfinders.
      */
     fun applyThemeToDialog(root: View?, isLight: Boolean) {
         if (root == null || !isLight) return
         val density = root.resources.displayMetrics.density
-        applyLightRecursively(root, isRootCard = true, density = density)
+        val foundRootCard = booleanArrayOf(false)
+        applyLightRecursively(root, foundRootCard, density)
     }
 
     private fun isDarkNeutralColor(color: Int): Boolean {
@@ -245,9 +246,20 @@ object AppThemeHelper {
         return sat >= 55 && maxOf(r, g, b) >= 110
     }
 
-    private fun applyLightRecursively(view: View, isRootCard: Boolean, density: Float) {
-        // Skip segmented custom controls styled explicitly by caller
-        if (view.id == R.id.groupThemeMode || view.id == R.id.groupGridStyle ||
+    private fun createLightRoundedCard(fillHex: String, strokeHex: String, radiusDp: Float, density: Float): GradientDrawable {
+        return GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = radiusDp * density
+            setColor(Color.parseColor(fillHex))
+            setStroke((1f * density).toInt().coerceAtLeast(1), Color.parseColor(strokeHex))
+        }
+    }
+
+    private fun applyLightRecursively(view: View, foundRootCard: BooleanArray, density: Float) {
+        // Keep camera preview viewfinder dark, and skip custom segmented controls & primary blue gallery button
+        if (view.id == R.id.cardQrCameraPreview ||
+            view.id == R.id.btnPickFromGallery ||
+            view.id == R.id.groupThemeMode || view.id == R.id.groupGridStyle ||
             view.id == R.id.btnThemeDark || view.id == R.id.btnThemeLight ||
             view.id == R.id.btnGridBoth || view.id == R.id.btnGridDots ||
             view.id == R.id.btnGridLines || view.id == R.id.btnGridNone
@@ -255,14 +267,34 @@ object AppThemeHelper {
             return
         }
 
+        // Special light styling for QR Scanner custom drawable containers
+        if (view.id == R.id.cardQrStatusRow) {
+            view.background = createLightRoundedCard("#f8fafc", "#e2e8f0", 10f, density)
+        } else if (view.id == R.id.boxQrStatusIcon) {
+            view.background = createLightRoundedCard("#dbeafe", "#bfdbfe", 8f, density)
+        } else if (view.id == R.id.ivQrStatusWifi && view is ImageView) {
+            view.setColorFilter(Color.parseColor("#2563eb"))
+        } else if (view.id == R.id.btnToggleTorch) {
+            view.background = createLightRoundedCard("#f1f5f9", "#cbd5e1", 10f, density)
+        } else if (view.id == R.id.ivTorchIcon && view is ImageView) {
+            view.setColorFilter(Color.parseColor("#1e293b"))
+        } else if (view.id == R.id.tvTorchText && view is TextView) {
+            view.setTextColor(Color.parseColor("#0f172a"))
+        } else if (view.id == R.id.cardExamWarningNotice && view is MaterialCardView) {
+            view.setCardBackgroundColor(Color.parseColor("#fef2f2"))
+            view.strokeColor = Color.parseColor("#fca5a5")
+        }
+
         if (view is MaterialCardView) {
             val cardBg = view.cardBackgroundColor.defaultColor
             if (isDarkNeutralColor(cardBg)) {
-                val targetBg = if (isRootCard) Color.WHITE else Color.parseColor("#f8fafc")
+                val isFirst = !foundRootCard[0]
+                if (isFirst) foundRootCard[0] = true
+                val targetBg = if (isFirst) Color.WHITE else Color.parseColor("#f8fafc")
                 view.setCardBackgroundColor(targetBg)
                 val stroke = view.strokeColor
                 if (stroke != 0 && isDarkNeutralColor(stroke)) {
-                    view.strokeColor = if (isRootCard) Color.parseColor("#cbd5e1") else Color.parseColor("#e2e8f0")
+                    view.strokeColor = if (isFirst) Color.parseColor("#cbd5e1") else Color.parseColor("#e2e8f0")
                 }
             }
         } else if (view is EditText) {
@@ -303,10 +335,13 @@ object AppThemeHelper {
                 view.id == R.id.tvRadioPdf
             if (!isBadge) {
                 val bgColor = (view.background as? ColorDrawable)?.color ?: Color.TRANSPARENT
-                if (!isAccentFilledColor(bgColor)) {
+                if (isDarkNeutralColor(bgColor)) {
+                    view.background = createLightRoundedCard("#eff6ff", "#bfdbfe", 6f, density)
+                    view.setTextColor(Color.parseColor("#1d4ed8"))
+                } else if (!isAccentFilledColor(bgColor)) {
                     val col = view.currentTextColor
                     when (col) {
-                        Color.WHITE, Color.parseColor("#f8fafc"), Color.parseColor("#f1f5f9") ->
+                        Color.WHITE, Color.parseColor("#f8fafc"), Color.parseColor("#f1f5f9"), Color.parseColor("#f4f4f5") ->
                             view.setTextColor(Color.parseColor("#0f172a"))
                         Color.parseColor("#cbd5e1"), Color.parseColor("#e2e8f0") ->
                             view.setTextColor(Color.parseColor("#334155"))
@@ -316,10 +351,18 @@ object AppThemeHelper {
                             view.setTextColor(Color.parseColor("#1d4ed8"))
                         Color.parseColor("#fbbf24") ->
                             view.setTextColor(Color.parseColor("#b45309"))
+                        Color.parseColor("#fca5a5") ->
+                            view.setTextColor(Color.parseColor("#991b1b"))
                         Color.parseColor("#a78bfa") ->
                             view.setTextColor(Color.parseColor("#6d28d9"))
                     }
                 }
+            }
+        } else if (view is ImageView) {
+            if (view.id == R.id.btnCloseQrScanner || view.id == R.id.btnCloseConfirmSendTeacher ||
+                view.id == R.id.btnCloseSaveAs || view.id == R.id.btnCloseProp || view.id == R.id.btnCloseAbout
+            ) {
+                view.setColorFilter(Color.parseColor("#475569"))
             }
         } else {
             val bg = view.background
@@ -329,8 +372,8 @@ object AppThemeHelper {
                     val isDivider = (view.layoutParams?.height in 1..4) || (view.layoutParams?.width in 1..4)
                     if (isDivider) {
                         view.setBackgroundColor(Color.parseColor("#e2e8f0"))
-                    } else if (c == Color.parseColor("#11131f") || c == Color.parseColor("#0d0e17")) {
-                        view.setBackgroundColor(Color.parseColor("#f1f5f9"))
+                    } else if (c == Color.parseColor("#11131f") || c == Color.parseColor("#0d0e17") || c == Color.parseColor("#111114")) {
+                        view.setBackgroundColor(Color.parseColor("#f8fafc"))
                     } else {
                         view.setBackgroundColor(Color.parseColor("#f8fafc"))
                     }
@@ -340,7 +383,7 @@ object AppThemeHelper {
 
         if (view is ViewGroup) {
             for (i in 0 until view.childCount) {
-                applyLightRecursively(view.getChildAt(i), isRootCard = false, density = density)
+                applyLightRecursively(view.getChildAt(i), foundRootCard, density)
             }
         }
     }

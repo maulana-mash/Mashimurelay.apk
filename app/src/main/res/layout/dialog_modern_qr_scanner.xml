@@ -129,6 +129,7 @@
 
             <!-- Clean Camera Preview Window Inside -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardQrCameraPreview"
                 android:layout_width="240dp"
                 android:layout_height="210dp"
                 android:layout_gravity="center"
@@ -162,6 +163,7 @@
 
         <!-- Status Card Telemetri (Wi-Fi Icon, Device Model, IP) -->
         <LinearLayout
+            android:id="@+id/cardQrStatusRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -173,11 +175,13 @@
             android:padding="10dp">
 
             <FrameLayout
+                android:id="@+id/boxQrStatusIcon"
                 android:layout_width="34dp"
                 android:layout_height="34dp"
                 android:background="@drawable/bg_scan_icon_container">
 
                 <ImageView
+                    android:id="@+id/ivQrStatusWifi"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_gravity="center"
