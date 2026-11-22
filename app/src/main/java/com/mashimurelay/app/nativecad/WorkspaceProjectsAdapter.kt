@@ -1,5 +1,6 @@
 package com.mashimurelay.app.nativecad
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,16 @@ class WorkspaceProjectsAdapter(
     private val onItemClick: (ProjectItem) -> Unit,
     private val onOptionsClick: (View, ProjectItem) -> Unit
 ) : RecyclerView.Adapter<WorkspaceProjectsAdapter.ProjectViewHolder>() {
+
+    var isLightTheme: Boolean = false
+        private set
+
+    fun setLightTheme(light: Boolean) {
+        if (isLightTheme != light) {
+            isLightTheme = light
+            notifyDataSetChanged()
+        }
+    }
 
     fun updateItems(newItems: List<ProjectItem>) {
         items = newItems
@@ -31,6 +42,18 @@ class WorkspaceProjectsAdapter(
             "Contoh Rangkaian • Standar IEC"
         } else {
             "${item.elementCount} komponen"
+        }
+
+        if (isLightTheme) {
+            holder.tvTitle.setTextColor(Color.parseColor("#0f172a"))
+            holder.tvMeta.setTextColor(Color.parseColor("#64748b"))
+            holder.ivIcon.setColorFilter(Color.parseColor("#2563eb"))
+            holder.btnOptions.setColorFilter(Color.parseColor("#475569"))
+        } else {
+            holder.tvTitle.setTextColor(Color.WHITE)
+            holder.tvMeta.setTextColor(Color.parseColor("#64748b"))
+            holder.ivIcon.clearColorFilter()
+            holder.btnOptions.clearColorFilter()
         }
 
         holder.itemView.setOnClickListener {

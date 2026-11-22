@@ -31,12 +31,13 @@ object CompactMenuHelper {
     ) {
         val density = context.resources.displayMetrics.density
         val popupWidthPx = (widthDp * density).toInt()
+        val isLight = SettingsManager.isLightTheme(context)
 
         val card = MaterialCardView(context).apply {
             radius = 10f * density
             strokeWidth = (1f * density).toInt()
-            setStrokeColor(Color.parseColor("#323246"))
-            setCardBackgroundColor(Color.parseColor("#181822"))
+            setStrokeColor(Color.parseColor(if (isLight) "#cbd5e1" else "#323246"))
+            setCardBackgroundColor(Color.parseColor(if (isLight) "#ffffff" else "#181822"))
             cardElevation = 14f * density
             useCompatPadding = false
         }
@@ -84,7 +85,11 @@ object CompactMenuHelper {
                         setImageResource(item.iconResId)
                         val iconSize = (16f * density).toInt()
                         layoutParams = LinearLayout.LayoutParams(iconSize, iconSize)
-                        val tintColor = if (item.isDanger) Color.parseColor("#f87171") else Color.parseColor("#94a3b8")
+                        val tintColor = if (item.isDanger) {
+                            Color.parseColor(if (isLight) "#dc2626" else "#f87171")
+                        } else {
+                            Color.parseColor(if (isLight) "#475569" else "#94a3b8")
+                        }
                         setColorFilter(tintColor)
                     }
                     addView(ivIcon)
@@ -94,7 +99,10 @@ object CompactMenuHelper {
                 val tvLabel = TextView(context).apply {
                     text = item.label
                     textSize = 12.5f
-                    setTextColor(if (item.isDanger) Color.parseColor("#f87171") else Color.parseColor("#f1f5f9"))
+                    setTextColor(
+                        if (item.isDanger) Color.parseColor(if (isLight) "#dc2626" else "#f87171")
+                        else Color.parseColor(if (isLight) "#0f172a" else "#f1f5f9")
+                    )
                     layoutParams = LinearLayout.LayoutParams(
                         0,
                         ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -124,7 +132,7 @@ object CompactMenuHelper {
                         val mX = (10f * density).toInt()
                         setMargins(mX, (2f * density).toInt(), mX, (2f * density).toInt())
                     }
-                    setBackgroundColor(Color.parseColor("#2a2a3c"))
+                    setBackgroundColor(Color.parseColor(if (isLight) "#e2e8f0" else "#2a2a3c"))
                 }
                 container.addView(divider, container.childCount - 1)
             }

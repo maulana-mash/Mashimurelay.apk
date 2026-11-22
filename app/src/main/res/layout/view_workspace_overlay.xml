@@ -13,6 +13,7 @@
 
     <!-- Top Toolbar (Gambar 2: ← Workspace   📁+  ⋮) -->
     <LinearLayout
+        android:id="@+id/workspaceTopBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="#16161c"
@@ -79,6 +80,17 @@
             android:contentDescription="Scan QR Circuit Tugas Guru" />
 
         <ImageView
+            android:id="@+id/btnWorkspaceThemeToggle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="9dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_theme_sun"
+            android:contentDescription="Ganti Tema" />
+
+        <ImageView
             android:id="@+id/btnWorkspaceMore"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -91,6 +103,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/workspaceTopDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#1e1e28" />
@@ -106,8 +119,15 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp" />
 
+    <View
+        android:id="@+id/workspaceBottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1e1e28" />
+
     <!-- Bottom Navigation Bar (Gambar 2: Workspace | Examples) -->
     <LinearLayout
+        android:id="@+id/workspaceBottomBar"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="#16161c"

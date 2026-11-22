@@ -76,6 +76,16 @@ object SettingsManager {
     }
 
     private const val KEY_LAST_PROJECT = "last_opened_project_name"
+    private const val KEY_APP_THEME = "app_theme_mode"
+    private const val KEY_GRID_STYLE = "canvas_grid_style"
+
+    const val THEME_DARK = "dark"
+    const val THEME_LIGHT = "light"
+
+    const val GRID_BOTH = "both"
+    const val GRID_DOTS = "dots"
+    const val GRID_LINES = "lines"
+    const val GRID_NONE = "none"
 
     fun getLastProjectName(context: Context): String? {
         return prefs(context).getString(KEY_LAST_PROJECT, null)
@@ -83,5 +93,36 @@ object SettingsManager {
 
     fun setLastProjectName(context: Context, name: String) {
         prefs(context).edit().putString(KEY_LAST_PROJECT, name).apply()
+    }
+
+    fun getThemeMode(context: Context): String {
+        val v = prefs(context).getString(KEY_APP_THEME, THEME_DARK)
+        return if (v == THEME_LIGHT) THEME_LIGHT else THEME_DARK
+    }
+
+    fun setThemeMode(context: Context, mode: String) {
+        val clean = if (mode == THEME_LIGHT) THEME_LIGHT else THEME_DARK
+        prefs(context).edit().putString(KEY_APP_THEME, clean).apply()
+    }
+
+    fun isLightTheme(context: Context): Boolean {
+        return getThemeMode(context) == THEME_LIGHT
+    }
+
+    fun getGridStyle(context: Context): String {
+        return when (prefs(context).getString(KEY_GRID_STYLE, GRID_BOTH)) {
+            GRID_DOTS -> GRID_DOTS
+            GRID_LINES -> GRID_LINES
+            GRID_NONE -> GRID_NONE
+            else -> GRID_BOTH
+        }
+    }
+
+    fun setGridStyle(context: Context, style: String) {
+        val clean = when (style) {
+            GRID_DOTS, GRID_LINES, GRID_NONE -> style
+            else -> GRID_BOTH
+        }
+        prefs(context).edit().putString(KEY_GRID_STYLE, clean).apply()
     }
 }

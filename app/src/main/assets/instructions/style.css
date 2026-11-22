@@ -1411,3 +1411,154 @@ body {
   color: #fbbf24;
   font-weight: 700;
 }
+
+/* =========================================================================
+   LIGHT PAPER THEME OVERRIDES (Synchronized with Mashimurelay Light Mode)
+   ========================================================================= */
+html[data-theme="light"] {
+  --bg-body: #f8fafc;
+  --bg-modal: #ffffff;
+  --bg-surface: #f8fafc;
+  --bg-surface-elevated: #f1f5f9;
+  --border-color: #e2e8f0;
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent-blue: #2563eb;
+  --accent-cyan: #1d4ed8;
+  --accent-green: #15803d;
+  --accent-amber: #b45309;
+  --accent-red: #dc2626;
+  --accent-purple: #7c3aed;
+}
+
+html[data-theme="light"] body {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .modal-header {
+  background: #f8fafc;
+  border-bottom-color: #e2e8f0;
+}
+
+html[data-theme="light"] .modal-title {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .instructions-tabs-wrapper {
+  background: #f8fafc;
+  border-bottom-color: #e2e8f0;
+}
+
+html[data-theme="light"] .inst-tab {
+  color: #475569;
+}
+
+html[data-theme="light"] .inst-tab.active {
+  color: #1d4ed8;
+  border-bottom-color: #2563eb;
+  background: rgba(37, 99, 235, 0.07);
+}
+
+html[data-theme="light"] .encyclo-search-input {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .encyclo-filter-btn {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+html[data-theme="light"] .encyclo-filter-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+html[data-theme="light"] .encyclo-card,
+html[data-theme="light"] .guide-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #1e293b;
+}
+
+html[data-theme="light"] .encyclo-card-title,
+html[data-theme="light"] .guide-card h4,
+html[data-theme="light"] .guide-card strong {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .encyclo-icon-wrap,
+html[data-theme="light"] .encyclo-icon-box,
+html[data-theme="light"] .encyclo-svg-box {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+html[data-theme="light"] .sim-controls-bar,
+html[data-theme="light"] .sim-ctrl-btn,
+html[data-theme="light"] .sim-speed-group {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+html[data-theme="light"] .sim-timeline-track {
+  background: #e2e8f0;
+}
+
+html[data-theme="light"] .sim-time-display {
+  color: #475569;
+}
+
+html[data-theme="light"] .sim-subtitle-narration {
+  color: #0f172a;
+}
+
+html[data-theme="light"] .encyclo-card svg [stroke="#ffffff" i],
+html[data-theme="light"] .encyclo-card svg [stroke="#f9f9f9" i],
+html[data-theme="light"] .encyclo-card svg [stroke="#fff" i],
+html[data-theme="light"] .encyclo-card svg [stroke="white" i],
+html[data-theme="light"] .encyclo-card svg [style*="stroke:#ffffff" i],
+html[data-theme="light"] .encyclo-card svg [style*="stroke: #ffffff" i],
+html[data-theme="light"] .encyclo-card svg [style*="stroke:#f9f9f9" i],
+html[data-theme="light"] .encyclo-card svg [style*="stroke: #f9f9f9" i],
+html[data-theme="light"] .encyclo-card svg [style*="stroke:#fff" i],
+html[data-theme="light"] .encyclo-card svg [style*="stroke:white" i] {
+  stroke: #0f172a !important;
+}
+
+html[data-theme="light"] .encyclo-card svg [fill="#ffffff" i],
+html[data-theme="light"] .encyclo-card svg [fill="#f9f9f9" i],
+html[data-theme="light"] .encyclo-card svg [fill="#fff" i],
+html[data-theme="light"] .encyclo-card svg [fill="white" i],
+html[data-theme="light"] .encyclo-card svg [style*="fill:#ffffff" i],
+html[data-theme="light"] .encyclo-card svg [style*="fill:#f9f9f9" i],
+html[data-theme="light"] .encyclo-card svg [style*="fill:white" i] {
+  fill: #0f172a !important;
+}
+
+html[data-theme="light"] .encyclo-card svg [style*="stroke:#00ffff" i],
+html[data-theme="light"] .encyclo-card svg [stroke="#00ffff" i] {
+  stroke: #0284c7 !important;
+}
+
+html[data-theme="light"] .simvid-card,
+html[data-theme="light"] .simvid-stage,
+html[data-theme="light"] .simvid-controls,
+html[data-theme="light"] .simvid-tab {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+html[data-theme="light"] .simvid-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}

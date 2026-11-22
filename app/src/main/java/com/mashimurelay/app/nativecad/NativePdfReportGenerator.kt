@@ -146,7 +146,9 @@ object NativePdfReportGenerator {
         // Bersihkan warna stroke putih/terang agar menjadi hitam CAD (#0f172a)
         val inverted = raw
             .replace("#ffffff", "#0f172a", ignoreCase = true)
+            .replace("#f9f9f9", "#0f172a", ignoreCase = true)
             .replace("#f8fafc", "#0f172a", ignoreCase = true)
+            .replace("#00ffff", "#0284c7", ignoreCase = true)
             .replace("#cbd5e1", "#0f172a", ignoreCase = true)
             .replace("#94a3b8", "#334155", ignoreCase = true)
             .replace("stroke:white", "stroke:#0f172a", ignoreCase = true)

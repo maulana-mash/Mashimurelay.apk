@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.provider.OpenableColumns
 import java.io.File
+import com.mashimurelay.app.nativecad.AppThemeHelper
 import com.mashimurelay.app.nativecad.SettingsManager
 import com.mashimurelay.app.nativecad.NativePdfReportGenerator
 import com.mashimurelay.app.nativecad.StudentPdfInfo
@@ -89,9 +90,12 @@ class MainActivity : Activity() {
     private lateinit var menuDrawerAbout: View
     private lateinit var menuDrawerSettings: View
 
-    // Undo & Redo (Gambar 1 & Gambar 5)
+    // Undo, Redo & Theme Toggle
     private lateinit var btnUndo: View
     private lateinit var btnRedo: View
+    private var btnToggleTheme: View? = null
+    private var ivToolbarThemeIcon: ImageView? = null
+    private var btnWorkspaceThemeToggle: ImageView? = null
 
     // Workspace Fullscreen Overlay (Gambar 2)
     private lateinit var layoutWorkspaceOverlay: LinearLayout
@@ -204,6 +208,7 @@ class MainActivity : Activity() {
         setupListeners()
         setupVisualLibrary()
         setupWorkspaceOverlay()
+        applyAppTheme(SettingsManager.isLightTheme(this))
         restoreLastProjectOrTemplate()
         setupLoadingScreen()
         openWorkspaceOverlay()
@@ -285,9 +290,12 @@ class MainActivity : Activity() {
         studentPresensi = classroomPrefs.getString("student_presensi", null)
         isClassroomExamMode = classroomPrefs.getBoolean("is_exam_mode", false)
 
-        // Undo & Redo (Gambar 1 & Gambar 5)
+        // Undo, Redo & Theme Toggle
         btnUndo = findViewById(R.id.btnUndo)
         btnRedo = findViewById(R.id.btnRedo)
+        btnToggleTheme = findViewById(R.id.btnToggleTheme)
+        ivToolbarThemeIcon = findViewById(R.id.ivToolbarThemeIcon)
+        btnWorkspaceThemeToggle = findViewById(R.id.btnWorkspaceThemeToggle)
         updateUndoRedoButtons(false, false)
 
         canvasView = findViewById(R.id.canvasView)
@@ -435,6 +443,15 @@ class MainActivity : Activity() {
 
         btnRedo.setOnClickListener {
             canvasView.redo()
+        }
+
+        // 1-Tap Theme Toggle (Dark CAD <-> Light Paper)
+        btnToggleTheme?.setOnClickListener {
+            toggleAppTheme()
+        }
+
+        btnWorkspaceThemeToggle?.setOnClickListener {
+            toggleAppTheme()
         }
 
         // Toggle Visual Component Library
@@ -680,7 +697,28 @@ class MainActivity : Activity() {
             "Terminal & Jalur (Others)"
         )
 
-        val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        val spinnerAdapter = object : ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getView(position, convertView, parent)
+                if (v is TextView) {
+                    val isLight = SettingsManager.isLightTheme(this@MainActivity)
+                    v.setTextColor(if (isLight) Color.parseColor("#0f172a") else Color.WHITE)
+                    v.textSize = 13f
+                }
+                return v
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getDropDownView(position, convertView, parent)
+                if (v is TextView) {
+                    val isLight = SettingsManager.isLightTheme(this@MainActivity)
+                    v.setTextColor(if (isLight) Color.parseColor("#0f172a") else Color.parseColor("#f1f5f9"))
+                    v.setBackgroundColor(if (isLight) Color.WHITE else Color.parseColor("#1c1c28"))
+                    v.textSize = 13f
+                }
+                return v
+            }
+        }
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = spinnerAdapter
 
@@ -736,7 +774,10 @@ class MainActivity : Activity() {
         rvComponentLibrary.scrollToPosition(0)
         tvToolbarLibraryLabel.text = "CLOSE"
         ivToolbarLibraryIcon.setImageResource(R.drawable.ic_close)
-        btnToggleLibrary.setBackgroundColor(Color.parseColor("#1e3a8a"))
+        val isLight = SettingsManager.isLightTheme(this)
+        btnToggleLibrary.setBackgroundColor(Color.parseColor(if (isLight) "#2563eb" else "#1e3a8a"))
+        tvToolbarLibraryLabel.setTextColor(Color.WHITE)
+        ivToolbarLibraryIcon.setColorFilter(Color.WHITE)
         fabAdd.setImageResource(R.drawable.ic_fab_minus)
         fabAdd.contentDescription = "Tutup Library"
     }
@@ -747,6 +788,10 @@ class MainActivity : Activity() {
         tvToolbarLibraryLabel.text = "LIBRARY"
         ivToolbarLibraryIcon.setImageResource(R.drawable.ic_toolbar_library)
         btnToggleLibrary.background = null
+        val isLight = SettingsManager.isLightTheme(this)
+        val fgColor = if (isLight) Color.parseColor("#1e293b") else Color.WHITE
+        tvToolbarLibraryLabel.setTextColor(fgColor)
+        ivToolbarLibraryIcon.setColorFilter(fgColor)
         fabAdd.setImageResource(R.drawable.ic_fab_plus)
         fabAdd.contentDescription = "Buka Library"
     }
@@ -1160,6 +1205,11 @@ class MainActivity : Activity() {
         }
 
         // Font Size handling
+        val isLightProp = SettingsManager.isLightTheme(this)
+        val propInactiveBg = Color.parseColor(if (isLightProp) "#f1f5f9" else "#262a40")
+        val propChipInactiveBg = Color.parseColor(if (isLightProp) "#f1f5f9" else "#1f2338")
+        val propInactiveText = Color.parseColor(if (isLightProp) "#475569" else "#94a3b8")
+
         var selectedFontSize = if (el.fontSize > 0) el.fontSize else 24f
         if (isTextComp) {
             layoutFontSize?.visibility = View.VISIBLE
@@ -1172,8 +1222,8 @@ class MainActivity : Activity() {
             fun updateFsSelection() {
                 for ((size, btn) in fsButtons) {
                     val active = (selectedFontSize == size)
-                    btn?.backgroundTintList = ColorStateList.valueOf(if (active) Color.parseColor("#7c3aed") else Color.parseColor("#262a40"))
-                    btn?.setTextColor(if (active) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btn?.backgroundTintList = ColorStateList.valueOf(if (active) Color.parseColor("#7c3aed") else propInactiveBg)
+                    btn?.setTextColor(if (active) Color.WHITE else propInactiveText)
                 }
             }
             updateFsSelection()
@@ -1316,7 +1366,7 @@ class MainActivity : Activity() {
 
         val onActiveBg = Color.parseColor("#10b981")
         val offActiveBg = Color.parseColor("#ef4444")
-        val inactiveBg = Color.parseColor("#262a40")
+        val inactiveBg = propInactiveBg
         val selectorActiveBg = Color.parseColor("#0284c7")
 
         fun updatePropSwitchVisuals() {
@@ -1335,9 +1385,9 @@ class MainActivity : Activity() {
                     btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (p0) offActiveBg else inactiveBg)
                     btnPropPos2?.backgroundTintList = ColorStateList.valueOf(if (p2) selectorActiveBg else inactiveBg)
 
-                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else Color.parseColor("#94a3b8"))
-                    btnPropPos0?.setTextColor(if (p0) Color.WHITE else Color.parseColor("#94a3b8"))
-                    btnPropPos2?.setTextColor(if (p2) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else propInactiveText)
+                    btnPropPos0?.setTextColor(if (p0) Color.WHITE else propInactiveText)
+                    btnPropPos2?.setTextColor(if (p2) Color.WHITE else propInactiveText)
                 }
                 isSwitch3p -> {
                     btnPropPos1?.text = "Pos 1"
@@ -1353,9 +1403,9 @@ class MainActivity : Activity() {
                     btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (p2) selectorActiveBg else inactiveBg)
                     btnPropPos2?.backgroundTintList = ColorStateList.valueOf(if (p3) selectorActiveBg else inactiveBg)
 
-                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else Color.parseColor("#94a3b8"))
-                    btnPropPos0?.setTextColor(if (p2) Color.WHITE else Color.parseColor("#94a3b8"))
-                    btnPropPos2?.setTextColor(if (p3) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else propInactiveText)
+                    btnPropPos0?.setTextColor(if (p2) Color.WHITE else propInactiveText)
+                    btnPropPos2?.setTextColor(if (p3) Color.WHITE else propInactiveText)
                 }
                 isCON -> {
                     btnPropPos1?.text = "Pos 1"
@@ -1366,8 +1416,8 @@ class MainActivity : Activity() {
                     btnPropPos1?.backgroundTintList = ColorStateList.valueOf(if (p1) selectorActiveBg else inactiveBg)
                     btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (!p1) selectorActiveBg else inactiveBg)
 
-                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else Color.parseColor("#94a3b8"))
-                    btnPropPos0?.setTextColor(if (!p1) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos1?.setTextColor(if (p1) Color.WHITE else propInactiveText)
+                    btnPropPos0?.setTextColor(if (!p1) Color.WHITE else propInactiveText)
                 }
                 else -> {
                     btnPropPos0?.text = if (isOverload) "NORMAL" else "OFF / Buka"
@@ -1378,8 +1428,8 @@ class MainActivity : Activity() {
                     btnPropPos0?.backgroundTintList = ColorStateList.valueOf(if (isOff) offActiveBg else inactiveBg)
                     btnPropPos1?.backgroundTintList = ColorStateList.valueOf(if (!isOff) onActiveBg else inactiveBg)
 
-                    btnPropPos0?.setTextColor(if (isOff) Color.WHITE else Color.parseColor("#94a3b8"))
-                    btnPropPos1?.setTextColor(if (!isOff) Color.WHITE else Color.parseColor("#94a3b8"))
+                    btnPropPos0?.setTextColor(if (isOff) Color.WHITE else propInactiveText)
+                    btnPropPos1?.setTextColor(if (!isOff) Color.WHITE else propInactiveText)
                 }
             }
         }
@@ -1544,7 +1594,7 @@ class MainActivity : Activity() {
         cardPropRoot?.layoutParams?.height = targetHeightMode
         layoutPropContainer?.layoutParams?.height = targetHeightMode
 
-        dialog.show()
+        showThemedDialog(dialog)
         val finalHeight = if (forceFullHeight) maxAvailableHeight else ViewGroup.LayoutParams.WRAP_CONTENT
         dialog.window?.setLayout(dialogWidth, finalHeight)
     }
@@ -1627,7 +1677,7 @@ class MainActivity : Activity() {
             dialog.dismiss()
         }
 
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun loadEmptyCanvasTemplate() {
@@ -1822,27 +1872,30 @@ class MainActivity : Activity() {
 
     private fun switchWorkspaceTab(showExamples: Boolean) {
         isViewingExamples = showExamples
+        val isLight = SettingsManager.isLightTheme(this)
+        val activeLabelColor = if (isLight) Color.parseColor("#1d4ed8") else Color.WHITE
+        val inactiveColor = Color.parseColor("#64748b")
         if (showExamples) {
             pillTabWorkspace.setBackgroundResource(R.drawable.bg_nav_pill_inactive)
-            ivTabWorkspaceIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#64748b"))
-            tvTabWorkspaceLabel.setTextColor(Color.parseColor("#64748b"))
+            ivTabWorkspaceIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
+            tvTabWorkspaceLabel.setTextColor(inactiveColor)
             tvTabWorkspaceLabel.setTypeface(null, android.graphics.Typeface.NORMAL)
 
             pillTabExamples.setBackgroundResource(R.drawable.bg_nav_pill_active)
             ivTabExamplesIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
-            tvTabExamplesLabel.setTextColor(Color.WHITE)
+            tvTabExamplesLabel.setTextColor(activeLabelColor)
             tvTabExamplesLabel.setTypeface(null, android.graphics.Typeface.BOLD)
 
             workspaceAdapter.updateItems(WorkspaceManager.listExamples())
         } else {
             pillTabWorkspace.setBackgroundResource(R.drawable.bg_nav_pill_active)
             ivTabWorkspaceIcon.imageTintList = ColorStateList.valueOf(Color.WHITE)
-            tvTabWorkspaceLabel.setTextColor(Color.WHITE)
+            tvTabWorkspaceLabel.setTextColor(activeLabelColor)
             tvTabWorkspaceLabel.setTypeface(null, android.graphics.Typeface.BOLD)
 
             pillTabExamples.setBackgroundResource(R.drawable.bg_nav_pill_inactive)
-            ivTabExamplesIcon.imageTintList = ColorStateList.valueOf(Color.parseColor("#64748b"))
-            tvTabExamplesLabel.setTextColor(Color.parseColor("#64748b"))
+            ivTabExamplesIcon.imageTintList = ColorStateList.valueOf(inactiveColor)
+            tvTabExamplesLabel.setTextColor(inactiveColor)
             tvTabExamplesLabel.setTypeface(null, android.graphics.Typeface.NORMAL)
 
             workspaceAdapter.updateItems(WorkspaceManager.listProjects(this))
@@ -1943,7 +1996,7 @@ class MainActivity : Activity() {
                         dialog.dismiss()
                     }
                 }
-                dialog.show()
+                showThemedDialog(dialog)
             }
         )
 
@@ -1994,7 +2047,7 @@ class MainActivity : Activity() {
                 dialog.dismiss()
             }
         }
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun showWorkspaceMoreMenu(anchorView: View) {
@@ -2050,7 +2103,7 @@ class MainActivity : Activity() {
             Toast.makeText(this, "Proyek '$name' dibuat", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun showSaveAsDialog() {
@@ -2087,16 +2140,22 @@ class MainActivity : Activity() {
         // 0: SMRL, 1: TXT, 2: PDF
         var selectedFormat = 0
 
+        val isLight = SettingsManager.isLightTheme(this)
+        val selBgEmerald = Color.parseColor(if (isLight) "#ecfdf5" else "#1a2238")
+        val selBgBlue = Color.parseColor(if (isLight) "#eff6ff" else "#162238")
+        val idleBg = Color.parseColor(if (isLight) "#f8fafc" else "#181a28")
+        val idleStroke = Color.parseColor(if (isLight) "#e2e8f0" else "#2d3148")
+
         fun updateFormatSelection() {
             // SMRL
             if (selectedFormat == 0) {
                 cardSmrl?.strokeColor = Color.parseColor("#059669")
-                cardSmrl?.setCardBackgroundColor(Color.parseColor("#1a2238"))
+                cardSmrl?.setCardBackgroundColor(selBgEmerald)
                 tvRadioSmrl?.setBackgroundResource(R.drawable.bg_status_badge_on)
                 tvRadioSmrl?.text = "✓"
             } else {
-                cardSmrl?.strokeColor = Color.parseColor("#2d3148")
-                cardSmrl?.setCardBackgroundColor(Color.parseColor("#181a28"))
+                cardSmrl?.strokeColor = idleStroke
+                cardSmrl?.setCardBackgroundColor(idleBg)
                 tvRadioSmrl?.setBackgroundResource(R.drawable.bg_status_badge_off)
                 tvRadioSmrl?.text = ""
             }
@@ -2104,12 +2163,12 @@ class MainActivity : Activity() {
             // TXT
             if (selectedFormat == 1) {
                 cardTxt?.strokeColor = Color.parseColor("#059669")
-                cardTxt?.setCardBackgroundColor(Color.parseColor("#1a2238"))
+                cardTxt?.setCardBackgroundColor(selBgEmerald)
                 tvRadioTxt?.setBackgroundResource(R.drawable.bg_status_badge_on)
                 tvRadioTxt?.text = "✓"
             } else {
-                cardTxt?.strokeColor = Color.parseColor("#2d3148")
-                cardTxt?.setCardBackgroundColor(Color.parseColor("#181a28"))
+                cardTxt?.strokeColor = idleStroke
+                cardTxt?.setCardBackgroundColor(idleBg)
                 tvRadioTxt?.setBackgroundResource(R.drawable.bg_status_badge_off)
                 tvRadioTxt?.text = ""
             }
@@ -2117,12 +2176,12 @@ class MainActivity : Activity() {
             // PDF
             if (selectedFormat == 2) {
                 cardPdf?.strokeColor = Color.parseColor("#0284c7")
-                cardPdf?.setCardBackgroundColor(Color.parseColor("#162238"))
+                cardPdf?.setCardBackgroundColor(selBgBlue)
                 tvRadioPdf?.setBackgroundResource(R.drawable.bg_status_badge_on)
                 tvRadioPdf?.text = "✓"
             } else {
-                cardPdf?.strokeColor = Color.parseColor("#2d3148")
-                cardPdf?.setCardBackgroundColor(Color.parseColor("#181a28"))
+                cardPdf?.strokeColor = idleStroke
+                cardPdf?.setCardBackgroundColor(idleBg)
                 tvRadioPdf?.setBackgroundResource(R.drawable.bg_status_badge_off)
                 tvRadioPdf?.text = ""
             }
@@ -2192,7 +2251,8 @@ class MainActivity : Activity() {
                 scrollView?.layoutParams = lp
             }
         }
-        dialog.show()
+        showThemedDialog(dialog)
+        updateFormatSelection()
         val finalHeight = if (useMaxHeight) maxAvailableHeight else ViewGroup.LayoutParams.WRAP_CONTENT
         dialog.window?.setLayout(dialogWidth, finalHeight)
     }
@@ -2289,7 +2349,7 @@ class MainActivity : Activity() {
             }
         }
 
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun openPdfFile(file: File) {
@@ -2397,6 +2457,188 @@ class MainActivity : Activity() {
 
 
 
+    private fun showThemedDialog(dialog: Dialog) {
+        AppThemeHelper.applyThemeToDialog(dialog.window?.decorView, SettingsManager.isLightTheme(this))
+        dialog.show()
+    }
+
+    private fun toggleAppTheme() {
+        val nextLight = !SettingsManager.isLightTheme(this)
+        SettingsManager.setThemeMode(this, if (nextLight) SettingsManager.THEME_LIGHT else SettingsManager.THEME_DARK)
+        applyAppTheme(nextLight)
+        val label = if (nextLight) "Tema: Light Paper" else "Tema: Dark CAD"
+        Toast.makeText(this, label, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun applyAppTheme(isLight: Boolean) {
+        // 1. System bars icon contrast
+        try {
+            val controller = WindowInsetsControllerCompat(window, window.decorView)
+            controller.isAppearanceLightStatusBars = isLight
+            controller.isAppearanceLightNavigationBars = isLight
+        } catch (_: Exception) {}
+
+        // 2. Root containers & Canvas
+        val canvasBg = Color.parseColor(if (isLight) "#f8fafc" else "#121216")
+        drawerLayout.setBackgroundColor(canvasBg)
+        findViewById<View>(R.id.mainCoordinator)?.setBackgroundColor(canvasBg)
+        canvasView.applyTheme(isLight)
+
+        // 3. Top Toolbar (AppBar)
+        val toolbarBg = Color.parseColor(if (isLight) "#ffffff" else "#14141a")
+        val toolbarFg = Color.parseColor(if (isLight) "#1e293b" else "#ffffff")
+        val dividerCol = Color.parseColor(if (isLight) "#cbd5e1" else "#272734")
+        appBarLayout.setBackgroundColor(toolbarBg)
+        findViewById<View>(R.id.toolbarBottomDivider)?.setBackgroundColor(Color.parseColor(if (isLight) "#e2e8f0" else "#222230"))
+        findViewById<View>(R.id.toolbarDivider1)?.setBackgroundColor(dividerCol)
+        findViewById<View>(R.id.toolbarDivider2)?.setBackgroundColor(dividerCol)
+
+        fun tintToolbarButton(container: View?, tintIcon: Boolean = true) {
+            if (container !is ViewGroup) return
+            for (i in 0 until container.childCount) {
+                when (val child = container.getChildAt(i)) {
+                    is ImageView -> if (tintIcon) child.setColorFilter(toolbarFg) else child.clearColorFilter()
+                    is TextView -> child.setTextColor(toolbarFg)
+                }
+            }
+        }
+        tintToolbarButton(btnOpenMenu, tintIcon = true)
+        if (isLibraryOpen) {
+            btnToggleLibrary.setBackgroundColor(Color.parseColor(if (isLight) "#2563eb" else "#1e3a8a"))
+            tvToolbarLibraryLabel.setTextColor(Color.WHITE)
+            ivToolbarLibraryIcon.setColorFilter(Color.WHITE)
+        } else {
+            btnToggleLibrary.background = null
+            tintToolbarButton(btnToggleLibrary, tintIcon = true)
+        }
+        tintToolbarButton(btnRun, tintIcon = false)
+        tintToolbarButton(btnStop, tintIcon = false)
+        tintToolbarButton(btnUndo, tintIcon = true)
+        tintToolbarButton(btnRedo, tintIcon = true)
+        ivToolbarThemeIcon?.setImageResource(if (isLight) R.drawable.ic_theme_moon else R.drawable.ic_theme_sun)
+        tintToolbarButton(btnToggleTheme, tintIcon = true)
+        tintToolbarButton(btnToolbarMore, tintIcon = true)
+
+        // 4. Slide-in Left Drawer + Wide Seamless Gradient Header
+        val leftDrawer = findViewById<View>(R.id.leftDrawer)
+        leftDrawer?.setBackgroundColor(Color.parseColor(if (isLight) "#ffffff" else "#141418"))
+        findViewById<View>(R.id.leftDrawerHeader)?.background = AppThemeHelper.createDrawerHeaderDrawable(isLight)
+        findViewById<View>(R.id.drawerMenuDivider)?.setBackgroundColor(Color.parseColor(if (isLight) "#e2e8f0" else "#282834"))
+
+        val drawerIconColor = Color.parseColor(if (isLight) "#334155" else "#ffffff")
+        val drawerTextColor = Color.parseColor(if (isLight) "#0f172a" else "#ffffff")
+        val drawerRows = listOf(
+            menuDrawerWorkspace, menuDrawerSave, menuDrawerSaveAs,
+            menuDrawerInstructions, menuDrawerAbout, menuDrawerSettings
+        )
+        for (row in drawerRows) {
+            if (row is ViewGroup) {
+                for (i in 0 until row.childCount) {
+                    when (val child = row.getChildAt(i)) {
+                        is ImageView -> child.setColorFilter(drawerIconColor)
+                        is TextView -> child.setTextColor(drawerTextColor)
+                    }
+                }
+            }
+        }
+
+        // 5. Visual Component Library Panel
+        if (isLight) {
+            panelLibrary.setCardBackgroundColor(Color.WHITE)
+            panelLibrary.strokeColor = Color.parseColor("#cbd5e1")
+            findViewById<View>(R.id.panelLibraryHeader)?.setBackgroundColor(Color.parseColor("#f1f5f9"))
+            btnCloseLibrary.setTextColor(Color.parseColor("#475569"))
+            spinnerCategory.setPopupBackgroundDrawable(ColorDrawable(Color.WHITE))
+            spinnerCategory.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#2563eb"))
+        } else {
+            panelLibrary.setCardBackgroundColor(Color.parseColor("#13131c"))
+            panelLibrary.strokeColor = Color.parseColor("#262638")
+            findViewById<View>(R.id.panelLibraryHeader)?.setBackgroundColor(Color.parseColor("#1c1c28"))
+            btnCloseLibrary.setTextColor(Color.parseColor("#94a3b8"))
+            spinnerCategory.setPopupBackgroundDrawable(ColorDrawable(Color.parseColor("#1c1c28")))
+            spinnerCategory.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#38bdf8"))
+        }
+        (spinnerCategory.selectedView as? TextView)?.setTextColor(if (isLight) Color.parseColor("#0f172a") else Color.WHITE)
+        if (::visualAdapter.isInitialized) {
+            visualAdapter.setLightTheme(isLight)
+        }
+
+        // 6. Floating Action Pill, Zoom Controls & Exit Fullscreen
+        if (isLight) {
+            floatingPill.setCardBackgroundColor(Color.parseColor("#f7ffffff"))
+            floatingPill.strokeColor = Color.parseColor("#cbd5e1")
+            pillLabel.setTextColor(Color.parseColor("#1d4ed8"))
+            val pillBtnBg = ColorStateList.valueOf(Color.parseColor("#f1f5f9"))
+            val pillBtnFg = Color.parseColor("#0f172a")
+            listOf(btnRotate, btnTag).forEach { b ->
+                b.backgroundTintList = pillBtnBg
+                b.setTextColor(pillBtnFg)
+                if (b is com.google.android.material.button.MaterialButton) {
+                    b.iconTint = ColorStateList.valueOf(pillBtnFg)
+                }
+            }
+            btnDelete.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#fee2e2"))
+            btnDelete.setTextColor(Color.parseColor("#dc2626"))
+            (btnDelete as? com.google.android.material.button.MaterialButton)?.iconTint = ColorStateList.valueOf(Color.parseColor("#dc2626"))
+            cardZoomWidget.setCardBackgroundColor(Color.parseColor("#f5ffffff"))
+            cardZoomWidget.strokeColor = Color.parseColor("#cbd5e1")
+            btnZoomIn.setTextColor(Color.parseColor("#0f172a"))
+            btnZoomOut.setTextColor(Color.parseColor("#0f172a"))
+            findViewById<View>(R.id.zoomDivider)?.setBackgroundColor(Color.parseColor("#e2e8f0"))
+            (btnExitFullscreen as? MaterialCardView)?.apply {
+                setCardBackgroundColor(Color.parseColor("#f2ffffff"))
+                strokeColor = Color.parseColor("#cbd5e1")
+            }
+            findViewById<ImageView>(R.id.ivExitFullscreenIcon)?.setColorFilter(Color.parseColor("#0f172a"))
+        } else {
+            floatingPill.setCardBackgroundColor(Color.parseColor("#f213131e"))
+            floatingPill.strokeColor = Color.parseColor("#334155")
+            pillLabel.setTextColor(Color.parseColor("#38bdf8"))
+            val pillBtnBg = ColorStateList.valueOf(Color.parseColor("#262638"))
+            listOf(btnRotate, btnTag).forEach { b ->
+                b.backgroundTintList = pillBtnBg
+                b.setTextColor(Color.WHITE)
+                if (b is com.google.android.material.button.MaterialButton) {
+                    b.iconTint = ColorStateList.valueOf(Color.WHITE)
+                }
+            }
+            btnDelete.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#7f1d1d"))
+            btnDelete.setTextColor(Color.parseColor("#fca5a5"))
+            (btnDelete as? com.google.android.material.button.MaterialButton)?.iconTint = ColorStateList.valueOf(Color.parseColor("#fca5a5"))
+            cardZoomWidget.setCardBackgroundColor(Color.parseColor("#d9161622"))
+            cardZoomWidget.strokeColor = Color.parseColor("#2d2d42")
+            btnZoomIn.setTextColor(Color.WHITE)
+            btnZoomOut.setTextColor(Color.WHITE)
+            findViewById<View>(R.id.zoomDivider)?.setBackgroundColor(Color.parseColor("#2d2d42"))
+            (btnExitFullscreen as? MaterialCardView)?.apply {
+                setCardBackgroundColor(Color.parseColor("#d916161c"))
+                strokeColor = Color.parseColor("#40ffffff")
+            }
+            findViewById<ImageView>(R.id.ivExitFullscreenIcon)?.clearColorFilter()
+        }
+
+        // 7. Workspace Overlay
+        layoutWorkspaceOverlay.setBackgroundColor(Color.parseColor(if (isLight) "#f8fafc" else "#111114"))
+        findViewById<View>(R.id.workspaceTopBar)?.setBackgroundColor(Color.parseColor(if (isLight) "#ffffff" else "#16161c"))
+        findViewById<View>(R.id.workspaceBottomBar)?.setBackgroundColor(Color.parseColor(if (isLight) "#ffffff" else "#16161c"))
+        val wsDivider = Color.parseColor(if (isLight) "#e2e8f0" else "#1e1e28")
+        findViewById<View>(R.id.workspaceTopDivider)?.setBackgroundColor(wsDivider)
+        findViewById<View>(R.id.workspaceBottomDivider)?.setBackgroundColor(wsDivider)
+        tvWorkspaceHeaderTitle.setTextColor(Color.parseColor(if (isLight) "#0f172a" else "#ffffff"))
+        val wsIconColor = Color.parseColor(if (isLight) "#334155" else "#ffffff")
+        btnWorkspaceBack.setColorFilter(wsIconColor)
+        btnNewProject.setColorFilter(wsIconColor)
+        btnWorkspaceImport.setColorFilter(wsIconColor)
+        btnWorkspaceScanQr?.setColorFilter(Color.parseColor(if (isLight) "#2563eb" else "#38bdf8"))
+        btnWorkspaceThemeToggle?.setImageResource(if (isLight) R.drawable.ic_theme_moon else R.drawable.ic_theme_sun)
+        btnWorkspaceThemeToggle?.setColorFilter(wsIconColor)
+        btnWorkspaceMore.setColorFilter(wsIconColor)
+        if (::workspaceAdapter.isInitialized) {
+            workspaceAdapter.setLightTheme(isLight)
+            switchWorkspaceTab(isViewingExamples)
+        }
+    }
+
     private fun showInstructionsDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -2412,6 +2654,7 @@ class MainActivity : Activity() {
         }
         dialog.window?.setLayout(dialogWidth, dialogHeight)
 
+        val isLight = SettingsManager.isLightTheme(this)
         val webView = dialog.findViewById<WebView>(R.id.webViewInstructions)
         webView?.apply {
             settings.javaScriptEnabled = true
@@ -2433,11 +2676,14 @@ class MainActivity : Activity() {
                     runOnUiThread { dialog.dismiss() }
                 }
             }, "AndroidBridge")
-            loadUrl("file:///android_asset/instructions/index.html")
+            val themeQuery = if (isLight) "?theme=light" else "?theme=dark"
+            loadUrl("file:///android_asset/instructions/index.html$themeQuery")
             scrollTo(0, 0)
             webViewClient = object : android.webkit.WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                    val themeAttr = if (isLight) "light" else "dark"
+                    view?.evaluateJavascript("document.documentElement.setAttribute('data-theme', '$themeAttr');", null)
                     view?.scrollTo(0, 0)
                 }
             }
@@ -2464,7 +2710,7 @@ class MainActivity : Activity() {
             dialog.dismiss()
         }
 
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun updateSwitchVisuals(
@@ -2472,19 +2718,98 @@ class MainActivity : Activity() {
         statusText: TextView,
         isChecked: Boolean
     ) {
+        val isLight = SettingsManager.isLightTheme(this)
         if (isChecked) {
             statusText.text = "ON"
-            statusText.setTextColor(Color.parseColor("#10b981"))
+            statusText.setTextColor(Color.parseColor(if (isLight) "#059669" else "#10b981"))
             statusText.setBackgroundResource(R.drawable.bg_status_badge_on)
-            switch.trackTintList = ColorStateList.valueOf(Color.parseColor("#10b981"))
+            switch.trackTintList = ColorStateList.valueOf(Color.parseColor("#2563eb"))
             switch.thumbTintList = ColorStateList.valueOf(Color.parseColor("#ffffff"))
         } else {
             statusText.text = "OFF"
-            statusText.setTextColor(Color.parseColor("#94a3b8"))
+            statusText.setTextColor(Color.parseColor(if (isLight) "#64748b" else "#94a3b8"))
             statusText.setBackgroundResource(R.drawable.bg_status_badge_off)
-            switch.trackTintList = ColorStateList.valueOf(Color.parseColor("#334155"))
-            switch.thumbTintList = ColorStateList.valueOf(Color.parseColor("#64748b"))
+            switch.trackTintList = ColorStateList.valueOf(Color.parseColor(if (isLight) "#cbd5e1" else "#334155"))
+            switch.thumbTintList = ColorStateList.valueOf(Color.parseColor(if (isLight) "#ffffff" else "#64748b"))
         }
+    }
+
+    private fun applySettingsDialogTheme(dialog: Dialog, isLight: Boolean) {
+        val density = resources.displayMetrics.density
+        val rootCard = dialog.findViewById<MaterialCardView>(R.id.cardSettingsRoot) ?: return
+        val headerTitle = dialog.findViewById<TextView>(R.id.tvSettingsHeaderTitle)
+        val headerIcon = dialog.findViewById<ImageView>(R.id.ivSettingsHeaderIcon)
+        val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseSettings)
+        val headerDivider = dialog.findViewById<View>(R.id.settingsHeaderDivider)
+        val listContainer = dialog.findViewById<ViewGroup>(R.id.layoutSettingsList)
+        val spinnerGrid = dialog.findViewById<Spinner>(R.id.spinnerGridSnap)
+        val btnClear = dialog.findViewById<Button>(R.id.btnClearCanvas)
+
+        rootCard.setCardBackgroundColor(Color.parseColor(if (isLight) "#ffffff" else "#181824"))
+        rootCard.strokeColor = Color.parseColor(if (isLight) "#cbd5e1" else "#2d2d42")
+        headerTitle?.setTextColor(Color.parseColor(if (isLight) "#0f172a" else "#ffffff"))
+        headerIcon?.setColorFilter(Color.parseColor(if (isLight) "#475569" else "#94a3b8"))
+        btnClose?.setColorFilter(Color.parseColor(if (isLight) "#475569" else "#94a3b8"))
+        headerDivider?.setBackgroundColor(Color.parseColor(if (isLight) "#e2e8f0" else "#242436"))
+
+        val cardBg = Color.parseColor(if (isLight) "#f8fafc" else "#1e1e2d")
+        val cardStroke = Color.parseColor(if (isLight) "#e2e8f0" else "#2c2c40")
+        val titleCol = Color.parseColor(if (isLight) "#0f172a" else "#ffffff")
+        val subCol = Color.parseColor(if (isLight) "#64748b" else "#94a3b8")
+
+        if (listContainer != null) {
+            for (i in 0 until listContainer.childCount) {
+                val child = listContainer.getChildAt(i)
+                if (child is MaterialCardView) {
+                    child.setCardBackgroundColor(cardBg)
+                    child.strokeColor = cardStroke
+                    fun recolorText(v: View) {
+                        if (v.id == R.id.groupThemeMode || v.id == R.id.groupGridStyle ||
+                            v.id == R.id.tvStatusAutoSave || v.id == R.id.tvStatusGlowWires ||
+                            v.id == R.id.tvStatusPinLabels || v.id == R.id.tvStatusSoundEffects ||
+                            v.id == R.id.tvStatusComponentNames
+                        ) return
+                        if (v is TextView && v !is Button) {
+                            val isBold = v.typeface?.isBold == true
+                            v.setTextColor(if (isBold) titleCol else subCol)
+                        } else if (v is ViewGroup) {
+                            for (k in 0 until v.childCount) recolorText(v.getChildAt(k))
+                        }
+                    }
+                    recolorText(child)
+                }
+            }
+        }
+
+        spinnerGrid?.background = AppThemeHelper.createSpinnerDrawable(isLight, density)
+        spinnerGrid?.setPopupBackgroundDrawable(ColorDrawable(Color.parseColor(if (isLight) "#ffffff" else "#161622")))
+        (spinnerGrid?.selectedView as? TextView)?.apply {
+            setTextColor(Color.parseColor(if (isLight) "#0f172a" else "#f1f5f9"))
+            setBackgroundColor(Color.TRANSPARENT)
+        }
+        if (btnClear != null) {
+            AppThemeHelper.createClearCanvasDangerStyle(btnClear, isLight)
+        }
+
+        // Refresh Segmented Groups
+        val groupTheme = dialog.findViewById<View>(R.id.groupThemeMode)
+        val btnThemeDark = dialog.findViewById<TextView>(R.id.btnThemeDark)
+        val btnThemeLight = dialog.findViewById<TextView>(R.id.btnThemeLight)
+        groupTheme?.background = AppThemeHelper.createSegmentedTrackDrawable(isLight, density)
+        if (btnThemeDark != null) AppThemeHelper.styleSegmentedOption(btnThemeDark, !isLight, isLight, density)
+        if (btnThemeLight != null) AppThemeHelper.styleSegmentedOption(btnThemeLight, isLight, isLight, density)
+
+        val currentGridStyle = canvasView.gridStyle
+        val groupGrid = dialog.findViewById<View>(R.id.groupGridStyle)
+        val btnGridBoth = dialog.findViewById<TextView>(R.id.btnGridBoth)
+        val btnGridDots = dialog.findViewById<TextView>(R.id.btnGridDots)
+        val btnGridLines = dialog.findViewById<TextView>(R.id.btnGridLines)
+        val btnGridNone = dialog.findViewById<TextView>(R.id.btnGridNone)
+        groupGrid?.background = AppThemeHelper.createSegmentedTrackDrawable(isLight, density)
+        if (btnGridBoth != null) AppThemeHelper.styleSegmentedOption(btnGridBoth, currentGridStyle == SettingsManager.GRID_BOTH, isLight, density)
+        if (btnGridDots != null) AppThemeHelper.styleSegmentedOption(btnGridDots, currentGridStyle == SettingsManager.GRID_DOTS, isLight, density)
+        if (btnGridLines != null) AppThemeHelper.styleSegmentedOption(btnGridLines, currentGridStyle == SettingsManager.GRID_LINES, isLight, density)
+        if (btnGridNone != null) AppThemeHelper.styleSegmentedOption(btnGridNone, currentGridStyle == SettingsManager.GRID_NONE, isLight, density)
     }
 
     private fun showSettingsDialog() {
@@ -2496,6 +2821,12 @@ class MainActivity : Activity() {
         dialog.window?.setLayout(dialogWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         val btnClose = dialog.findViewById<ImageView>(R.id.btnCloseSettings)
+        val btnThemeDark = dialog.findViewById<TextView>(R.id.btnThemeDark)
+        val btnThemeLight = dialog.findViewById<TextView>(R.id.btnThemeLight)
+        val btnGridBoth = dialog.findViewById<TextView>(R.id.btnGridBoth)
+        val btnGridDots = dialog.findViewById<TextView>(R.id.btnGridDots)
+        val btnGridLines = dialog.findViewById<TextView>(R.id.btnGridLines)
+        val btnGridNone = dialog.findViewById<TextView>(R.id.btnGridNone)
         val switchAutoSave = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchAutoSave)
         val tvStatusAutoSave = dialog.findViewById<TextView>(R.id.tvStatusAutoSave)
         val spinnerGrid = dialog.findViewById<Spinner>(R.id.spinnerGridSnap)
@@ -2503,9 +2834,49 @@ class MainActivity : Activity() {
         val tvStatusGlowWires = dialog.findViewById<TextView>(R.id.tvStatusGlowWires)
         val switchPin = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchPinLabels)
         val tvStatusPinLabels = dialog.findViewById<TextView>(R.id.tvStatusPinLabels)
+        val switchSound = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchSoundEffects)
+        val tvStatusSound = dialog.findViewById<TextView>(R.id.tvStatusSoundEffects)
+        val switchComponentNames = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchComponentNames)
+        val tvStatusComponentNames = dialog.findViewById<TextView>(R.id.tvStatusComponentNames)
         val btnClear = dialog.findViewById<Button>(R.id.btnClearCanvas)
 
         btnClose?.setOnClickListener { dialog.dismiss() }
+
+        fun refreshAllSettingsSwitches() {
+            if (switchAutoSave != null && tvStatusAutoSave != null) updateSwitchVisuals(switchAutoSave, tvStatusAutoSave, switchAutoSave.isChecked)
+            if (switchGlow != null && tvStatusGlowWires != null) updateSwitchVisuals(switchGlow, tvStatusGlowWires, switchGlow.isChecked)
+            if (switchPin != null && tvStatusPinLabels != null) updateSwitchVisuals(switchPin, tvStatusPinLabels, switchPin.isChecked)
+            if (switchSound != null && tvStatusSound != null) updateSwitchVisuals(switchSound, tvStatusSound, switchSound.isChecked)
+            if (switchComponentNames != null && tvStatusComponentNames != null) updateSwitchVisuals(switchComponentNames, tvStatusComponentNames, switchComponentNames.isChecked)
+        }
+
+        // 0. Tema Tampilan (Dark CAD / Light Paper)
+        fun selectThemeFromSettings(isLight: Boolean) {
+            val mode = if (isLight) SettingsManager.THEME_LIGHT else SettingsManager.THEME_DARK
+            if (SettingsManager.getThemeMode(this) == mode) return
+            SettingsManager.setThemeMode(this, mode)
+            applyAppTheme(isLight)
+            applySettingsDialogTheme(dialog, isLight)
+            refreshAllSettingsSwitches()
+            val label = if (isLight) "Tema: Light Paper" else "Tema: Dark CAD"
+            Toast.makeText(this, label, Toast.LENGTH_SHORT).show()
+        }
+        btnThemeDark?.setOnClickListener { selectThemeFromSettings(false) }
+        btnThemeLight?.setOnClickListener { selectThemeFromSettings(true) }
+
+        // 2b. Gaya Grid Kanvas (Kombinasi / Titik / Garis / Polos)
+        fun selectGridStyleFromSettings(style: String, label: String) {
+            if (canvasView.gridStyle == style) return
+            canvasView.gridStyle = style
+            SettingsManager.setGridStyle(this, style)
+            canvasView.invalidate()
+            applySettingsDialogTheme(dialog, SettingsManager.isLightTheme(this))
+            Toast.makeText(this, "Grid Kanvas: $label", Toast.LENGTH_SHORT).show()
+        }
+        btnGridBoth?.setOnClickListener { selectGridStyleFromSettings(SettingsManager.GRID_BOTH, "Kombinasi") }
+        btnGridDots?.setOnClickListener { selectGridStyleFromSettings(SettingsManager.GRID_DOTS, "Titik") }
+        btnGridLines?.setOnClickListener { selectGridStyleFromSettings(SettingsManager.GRID_LINES, "Garis") }
+        btnGridNone?.setOnClickListener { selectGridStyleFromSettings(SettingsManager.GRID_NONE, "Polos") }
 
         // 1. Auto-Save
         val currentAutoSave = SettingsManager.isAutoSaveEnabled(this)
@@ -2521,15 +2892,34 @@ class MainActivity : Activity() {
             if (isChecked) {
                 triggerAutoSaveIfEnabled(showFeedback = true)
             } else {
-                Toast.makeText(this, "ℹ Simpan Otomatis Dinonaktifkan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Simpan Otomatis Dinonaktifkan", Toast.LENGTH_SHORT).show()
             }
         }
 
         // 2. Grid Snapping
         val gridOptions = listOf("20px (Kecil)", "30px (Standar)", "40px (Besar)", "Nonaktif")
-        val gridAdapter = ArrayAdapter(this, R.layout.item_spinner_grid, gridOptions).apply {
-            setDropDownViewResource(R.layout.item_spinner_grid)
+        val gridAdapter = object : ArrayAdapter<String>(this, R.layout.item_spinner_grid, gridOptions) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getView(position, convertView, parent)
+                if (v is TextView) {
+                    val isLight = SettingsManager.isLightTheme(this@MainActivity)
+                    v.setTextColor(Color.parseColor(if (isLight) "#0f172a" else "#f1f5f9"))
+                    v.setBackgroundColor(Color.TRANSPARENT)
+                }
+                return v
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val v = super.getDropDownView(position, convertView, parent)
+                if (v is TextView) {
+                    val isLight = SettingsManager.isLightTheme(this@MainActivity)
+                    v.setTextColor(Color.parseColor(if (isLight) "#0f172a" else "#f1f5f9"))
+                    v.setBackgroundColor(Color.parseColor(if (isLight) "#ffffff" else "#161622"))
+                }
+                return v
+            }
         }
+        gridAdapter.setDropDownViewResource(R.layout.item_spinner_grid)
         spinnerGrid?.adapter = gridAdapter
 
         val currentSnap = canvasView.isGridSnapEnabled
@@ -2606,8 +2996,6 @@ class MainActivity : Activity() {
         }
 
         // 5. Sound Effects (Efek Suara Industri)
-        val switchSound = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchSoundEffects)
-        val tvStatusSound = dialog.findViewById<TextView>(R.id.tvStatusSoundEffects)
         val currentSound = SettingsManager.isSoundEnabled(this)
         switchSound?.isChecked = currentSound
         if (switchSound != null && tvStatusSound != null) {
@@ -2625,8 +3013,6 @@ class MainActivity : Activity() {
         }
 
         // 6. Tampilkan Nama Komponen (Component Names Visibility)
-        val switchComponentNames = dialog.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchComponentNames)
-        val tvStatusComponentNames = dialog.findViewById<TextView>(R.id.tvStatusComponentNames)
         val currentNames = canvasView.showComponentNames
         switchComponentNames?.isChecked = currentNames
         if (switchComponentNames != null && tvStatusComponentNames != null) {
@@ -2647,6 +3033,7 @@ class MainActivity : Activity() {
             confirmClearCanvas()
         }
 
+        applySettingsDialogTheme(dialog, SettingsManager.isLightTheme(this))
         dialog.show()
     }
 
@@ -2680,7 +3067,7 @@ class MainActivity : Activity() {
                 dialog.dismiss()
             }
         }
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun enterFullscreenMode() {
@@ -3234,7 +3621,7 @@ class MainActivity : Activity() {
                 }
             }
 
-            dialog.show()
+            showThemedDialog(dialog)
         } catch (e: Exception) {
             Toast.makeText(this, "Error memproses data sirkuit: ${e.message}", Toast.LENGTH_LONG).show()
         }
@@ -3410,7 +3797,7 @@ class MainActivity : Activity() {
                 }
             }
 
-            dialog.show()
+            showThemedDialog(dialog)
 
         } catch (e: Exception) {
             Toast.makeText(this, "Error memproses tugas QR: ${e.message}", Toast.LENGTH_LONG).show()
@@ -3434,7 +3821,7 @@ class MainActivity : Activity() {
                 btnOk?.setOnClickListener { dialog.dismiss() }
                 btnClose?.setOnClickListener { dialog.dismiss() }
 
-                dialog.show()
+                showThemedDialog(dialog)
             } catch (_: Exception) {
                 Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
             }
@@ -3527,7 +3914,7 @@ class MainActivity : Activity() {
             performSendTaskToTeacher(serverUrl, currentName, name, presensi)
         }
 
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun performSendTaskToTeacher(serverUrl: String, currentName: String, name: String, presensi: String) {
@@ -3960,7 +4347,7 @@ class MainActivity : Activity() {
             openWorkspaceOverlay()
         }
 
-        dialog.show()
+        showThemedDialog(dialog)
     }
 
     private fun reloadCurrentProjectFromDisk() {

@@ -147,9 +147,19 @@ class NativeCanvasView @JvmOverloads constructor(
 
     // Professional CAD Settings
     var isGridSnapEnabled = true
+    var gridStyle: String = SettingsManager.GRID_BOTH
+    var isLightTheme: Boolean = false
     var showCurrentFlowAnimation = true
     var showPinLabels = true
     var showComponentNames = true
+
+    private var canvasBgColor: Int = Color.parseColor("#121216")
+    private var gridLines = FloatArray(4096)
+    private val gridLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#1e2436")
+        style = Paint.Style.STROKE
+        strokeWidth = 1f
+    }
 
     private var flowAnimPhase = 0f
     private val wireFlowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -433,9 +443,61 @@ class NativeCanvasView @JvmOverloads constructor(
         NativeComponentRegistry.loadFromAssets(context)
         isGridSnapEnabled = SettingsManager.isGridSnapEnabled(context)
         GRID_SIZE = SettingsManager.getGridSize(context)
+        gridStyle = SettingsManager.getGridStyle(context)
         showCurrentFlowAnimation = SettingsManager.isCurrentFlowAnimEnabled(context)
         showPinLabels = SettingsManager.isPinLabelsEnabled(context)
         showComponentNames = SettingsManager.isComponentNamesEnabled(context)
+        applyTheme(SettingsManager.isLightTheme(context))
+    }
+
+    fun applyTheme(light: Boolean) {
+        isLightTheme = light
+        if (light) {
+            canvasBgColor = Color.parseColor("#f8fafc")
+            dotPaint.color = Color.parseColor("#94a3b8")
+            dotPaint.strokeWidth = 2.6f
+            gridLinePaint.color = Color.parseColor("#e2e8f0")
+            gridLinePaint.strokeWidth = 1f
+            wireSelectedGlowPaint.color = Color.parseColor("#402563eb")
+            wireHandleFill.color = Color.parseColor("#2563eb")
+            wireHandleStroke.color = Color.WHITE
+            selBoxFillPaint.color = Color.parseColor("#142563eb")
+            selBoxBorderPaint.color = Color.parseColor("#992563eb")
+            selTagTextPaint.color = Color.WHITE
+            elementPaint.color = Color.parseColor("#0f172a")
+            textPaint.color = Color.parseColor("#1d4ed8")
+            tagBgPaint.color = Color.parseColor("#f2ffffff")
+            tagBorderPaint.color = Color.parseColor("#93c5fd")
+            terminalLabelPaint.color = Color.parseColor("#334155")
+            pinBadgeBgPaint.color = Color.parseColor("#ebf8fafc")
+            terminalPaint.color = Color.parseColor("#0f172a")
+            snapPaint.color = Color.parseColor("#2563eb")
+            elementCommentPaint.color = Color.parseColor("#475569")
+            timerBadgePaint.color = Color.parseColor("#b45309")
+        } else {
+            canvasBgColor = Color.parseColor("#121216")
+            dotPaint.color = Color.parseColor("#2a324b")
+            dotPaint.strokeWidth = 2.4f
+            gridLinePaint.color = Color.parseColor("#1e2436")
+            gridLinePaint.strokeWidth = 1f
+            wireSelectedGlowPaint.color = Color.parseColor("#4000e5ff")
+            wireHandleFill.color = Color.parseColor("#00e5ff")
+            wireHandleStroke.color = Color.parseColor("#0f172a")
+            selBoxFillPaint.color = Color.parseColor("#1838bdf8")
+            selBoxBorderPaint.color = Color.parseColor("#9938bdf8")
+            selTagTextPaint.color = Color.parseColor("#0f172a")
+            elementPaint.color = Color.WHITE
+            textPaint.color = Color.parseColor("#38bdf8")
+            tagBgPaint.color = Color.parseColor("#e613131c")
+            tagBorderPaint.color = Color.parseColor("#0284c7")
+            terminalLabelPaint.color = Color.parseColor("#cbd5e1")
+            pinBadgeBgPaint.color = Color.parseColor("#e60f111a")
+            terminalPaint.color = Color.WHITE
+            snapPaint.color = Color.parseColor("#00e5ff")
+            elementCommentPaint.color = Color.parseColor("#94a3b8")
+            timerBadgePaint.color = Color.parseColor("#fbbf24")
+        }
+        invalidate()
     }
 
     fun startSimulation() {
@@ -986,7 +1048,7 @@ class NativeCanvasView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(Color.parseColor("#121216"))
+        canvas.drawColor(canvasBgColor)
 
         canvas.save()
         canvas.translate(panX, panY)
@@ -1012,7 +1074,7 @@ class NativeCanvasView @JvmOverloads constructor(
     }
 
     private fun drawGrid(canvas: Canvas) {
-        if (!isGridSnapEnabled) return
+        if (gridStyle == SettingsManager.GRID_NONE) return
         val left = (-panX / zoom) - GRID_SIZE
         val top = (-panY / zoom) - GRID_SIZE
         val right = ((width - panX) / zoom) + GRID_SIZE
@@ -1023,25 +1085,58 @@ class NativeCanvasView @JvmOverloads constructor(
 
         val reqX = (((right - startX) / GRID_SIZE).toInt() + 2).coerceAtLeast(0)
         val reqY = (((bottom - startY) / GRID_SIZE).toInt() + 2).coerceAtLeast(0)
-        val totalFloats = reqX * reqY * 2
-        if (gridPoints.size < totalFloats) {
-            gridPoints = FloatArray(totalFloats + 2048)
-        }
 
-        var idx = 0
-        var x = startX
-        while (x <= right) {
-            var y = startY
-            while (y <= bottom) {
-                gridPoints[idx++] = x
-                gridPoints[idx++] = y
-                y += GRID_SIZE
+        // 1. Garis Grid (Mode Garis & Kombinasi)
+        if (gridStyle == SettingsManager.GRID_LINES || gridStyle == SettingsManager.GRID_BOTH) {
+            val totalLineFloats = (reqX + reqY) * 4
+            if (gridLines.size < totalLineFloats) {
+                gridLines = FloatArray(totalLineFloats + 1024)
             }
-            x += GRID_SIZE
+            var lIdx = 0
+            var gx = startX
+            while (gx <= right) {
+                gridLines[lIdx++] = gx
+                gridLines[lIdx++] = top
+                gridLines[lIdx++] = gx
+                gridLines[lIdx++] = bottom
+                gx += GRID_SIZE
+            }
+            var gy = startY
+            while (gy <= bottom) {
+                gridLines[lIdx++] = left
+                gridLines[lIdx++] = gy
+                gridLines[lIdx++] = right
+                gridLines[lIdx++] = gy
+                gy += GRID_SIZE
+            }
+            if (lIdx > 0) {
+                gridLinePaint.strokeWidth = (1f / zoom).coerceIn(0.6f, 1.5f)
+                canvas.drawLines(gridLines, 0, lIdx, gridLinePaint)
+            }
         }
 
-        if (idx > 0) {
-            canvas.drawPoints(gridPoints, 0, idx, dotPaint)
+        // 2. Titik Grid (Mode Titik & Kombinasi)
+        if (gridStyle == SettingsManager.GRID_DOTS || gridStyle == SettingsManager.GRID_BOTH) {
+            val totalFloats = reqX * reqY * 2
+            if (gridPoints.size < totalFloats) {
+                gridPoints = FloatArray(totalFloats + 2048)
+            }
+
+            var idx = 0
+            var x = startX
+            while (x <= right) {
+                var y = startY
+                while (y <= bottom) {
+                    gridPoints[idx++] = x
+                    gridPoints[idx++] = y
+                    y += GRID_SIZE
+                }
+                x += GRID_SIZE
+            }
+
+            if (idx > 0) {
+                canvas.drawPoints(gridPoints, 0, idx, dotPaint)
+            }
         }
     }
 
@@ -1106,9 +1201,9 @@ class NativeCanvasView @JvmOverloads constructor(
 
             wirePaint.color = when {
                 isThermalPulsingWire -> pulseCoreColor
-                isWireEnergized -> pot.color
-                isSimulating -> Color.parseColor("#475569")
-                else -> Color.parseColor("#94a3b8")
+                isWireEnergized -> AppThemeHelper.getPotentialColor(pot, isLightTheme)
+                isSimulating -> if (isLightTheme) Color.parseColor("#64748b") else Color.parseColor("#475569")
+                else -> if (isLightTheme) Color.parseColor("#334155") else Color.parseColor("#94a3b8")
             }
             wirePaint.strokeWidth = when {
                 isThermalPulsingWire -> 3.8f + 2.2f * pulseFactor
@@ -1169,7 +1264,7 @@ class NativeCanvasView @JvmOverloads constructor(
             val def = el?.let { NativeComponentRegistry.get(it.svgData) }
             if (el != null && def != null) {
                 val p1 = el.getWorldNodePos(nodeIdx, def.nodes)
-                wirePaint.color = Color.parseColor("#38bdf8")
+                wirePaint.color = if (isLightTheme) Color.parseColor("#2563eb") else Color.parseColor("#38bdf8")
                 wirePaint.strokeWidth = 2.5f
                 wireScratchPath.reset()
                 wireScratchPath.moveTo(p1.x, p1.y)
@@ -1209,7 +1304,11 @@ class NativeCanvasView @JvmOverloads constructor(
             if (el.id == selectedElementId) {
                 selBoxRect.set(-halfW, -halfH, halfW, halfH)
 
-                val accentColor = if (isSimulating) Color.parseColor("#10b981") else Color.parseColor("#00e5ff")
+                val accentColor = if (isSimulating) {
+                    if (isLightTheme) Color.parseColor("#059669") else Color.parseColor("#10b981")
+                } else {
+                    if (isLightTheme) Color.parseColor("#2563eb") else Color.parseColor("#00e5ff")
+                }
                 selCornerPaint.color = accentColor
                 selTagBadgePaint.color = accentColor
 
@@ -1280,7 +1379,7 @@ class NativeCanvasView @JvmOverloads constructor(
             if (isTextComp) {
                 drawTextComponent(canvas, el)
             } else {
-                // Render Official SVG Vector using SvgComponentRenderer with frame, variant & lampColor support
+                // Render Official SVG Vector using SvgComponentRenderer with frame, variant, lampColor & theme support
                 val rendered = SvgComponentRenderer.render(
                     context,
                     canvas,
@@ -1291,7 +1390,8 @@ class NativeCanvasView @JvmOverloads constructor(
                     def.height,
                     currentFrame,
                     variant,
-                    el.lampColor
+                    el.lampColor,
+                    isLightTheme
                 )
 
                 if (!rendered) {
@@ -1492,7 +1592,7 @@ class NativeCanvasView @JvmOverloads constructor(
 
     private fun drawFallbackIecSymbol(canvas: Canvas, el: NativeElement, def: ComponentDef) {
         val frame = simResult?.elementFrames?.get(el.id) ?: el.frameIndex
-        elementPaint.color = Color.WHITE
+        elementPaint.color = if (isLightTheme) Color.parseColor("#0f172a") else Color.WHITE
 
         when (def.category) {
             "sources" -> {
@@ -1566,19 +1666,7 @@ class NativeCanvasView @JvmOverloads constructor(
         textCompPaint.textSize = fs
 
         val rawColor = el.textColor.ifEmpty { "#93c5fd" }
-        val colorInt = try {
-            Color.parseColor(rawColor)
-        } catch (_: Exception) {
-            when (rawColor.lowercase()) {
-                "white" -> Color.parseColor("#f8fafc")
-                "yellow" -> Color.parseColor("#fbbf24")
-                "red" -> Color.parseColor("#ef4444")
-                "green" -> Color.parseColor("#22c55e")
-                "gray" -> Color.parseColor("#94a3b8")
-                else -> Color.parseColor("#93c5fd")
-            }
-        }
-        textCompPaint.color = colorInt
+        textCompPaint.color = AppThemeHelper.adaptTextColorForTheme(rawColor, isLightTheme)
 
         val textY = -(textCompPaint.descent() + textCompPaint.ascent()) * 0.5f
         canvas.save()

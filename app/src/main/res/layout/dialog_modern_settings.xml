@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardSettingsRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -26,12 +27,14 @@
             android:paddingEnd="12dp">
 
             <ImageView
+                android:id="@+id/ivSettingsHeaderIcon"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:src="@drawable/ic_toolbar_menu"
+                android:src="@drawable/ic_menu_settings"
                 app:tint="#94a3b8" />
 
             <TextView
+                android:id="@+id/tvSettingsHeaderTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -55,6 +58,7 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/settingsHeaderDivider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#242436" />
@@ -63,12 +67,83 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            android:padding="16dp">
+            android:padding="14dp">
 
             <LinearLayout
+                android:id="@+id/layoutSettingsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <!-- 0. Tema Tampilan (Dark CAD / Light Paper) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardSettingTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tema Tampilan"
+                            android:textColor="#ffffff"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Pilih mode gelap CAD atau kertas teknik terang."
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <LinearLayout
+                            android:id="@+id/groupThemeMode"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:layout_marginTop="9dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp">
+
+                            <TextView
+                                android:id="@+id/btnThemeDark"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="Dark CAD"
+                                android:textColor="#ffffff"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/btnThemeLight"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="Light Paper"
+                                android:textColor="#94a3b8"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- 1. Simpan Otomatis (Auto-Save) -->
                 <com.google.android.material.card.MaterialCardView
@@ -190,6 +265,100 @@
                             android:layout_marginStart="8dp"
                             android:background="@drawable/bg_spinner_rounded"
                             android:gravity="center_vertical|end" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 2b. Gaya Grid Kanvas (Kombinasi / Titik / Garis / Polos) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardSettingGridStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:cardBackgroundColor="#1e1e2d"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#2c2c40"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gaya Grid Kanvas"
+                            android:textColor="#ffffff"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Atur tampilan pola grid kanvas. Snap posisi tetap aktif pada mode Polos."
+                            android:textColor="#94a3b8"
+                            android:textSize="11sp" />
+
+                        <LinearLayout
+                            android:id="@+id/groupGridStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:layout_marginTop="9dp"
+                            android:orientation="horizontal"
+                            android:padding="3dp">
+
+                            <TextView
+                                android:id="@+id/btnGridBoth"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1.25"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="Kombinasi"
+                                android:textColor="#ffffff"
+                                android:textSize="11.5sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/btnGridDots"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.9"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="Titik"
+                                android:textColor="#94a3b8"
+                                android:textSize="11.5sp" />
+
+                            <TextView
+                                android:id="@+id/btnGridLines"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.9"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="Garis"
+                                android:textColor="#94a3b8"
+                                android:textSize="11.5sp" />
+
+                            <TextView
+                                android:id="@+id/btnGridNone"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.95"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:gravity="center"
+                                android:text="Polos"
+                                android:textColor="#94a3b8"
+                                android:textSize="11.5sp" />
+                        </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 

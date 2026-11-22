@@ -56,14 +56,22 @@ object SvgComponentRenderer {
         return null
     }
 
-    fun getSvg(context: Context, svgFileName: String, frameIndex: Int = 0, variantIndex: Int = 0, lampColor: String = "yellow"): SVG? {
-        val cacheKey = "${svgFileName}_f${frameIndex}_v${variantIndex}_c${lampColor.lowercase()}"
+    fun getSvg(
+        context: Context,
+        svgFileName: String,
+        frameIndex: Int = 0,
+        variantIndex: Int = 0,
+        lampColor: String = "yellow",
+        isLightTheme: Boolean = false
+    ): SVG? {
+        val themeKey = if (isLightTheme) "L" else "D"
+        val cacheKey = "${svgFileName}_f${frameIndex}_v${variantIndex}_c${lampColor.lowercase()}_t$themeKey"
         if (frameSvgCache.containsKey(cacheKey)) {
             return frameSvgCache[cacheKey]
         }
 
         val raw = getRawSvgText(context, svgFileName) ?: return null
-        val processedSvg = applyFrameToSvgString(svgFileName, raw, frameIndex, variantIndex, lampColor)
+        val processedSvg = applyFrameToSvgString(svgFileName, raw, frameIndex, variantIndex, lampColor, isLightTheme)
 
         try {
             val svg = SVG.getFromString(processedSvg)
@@ -84,7 +92,8 @@ object SvgComponentRenderer {
         rawSvg: String,
         frameIndex: Int,
         variantIndex: Int = 0,
-        lampColor: String = "yellow"
+        lampColor: String = "yellow",
+        isLightTheme: Boolean = false
     ): String {
         val compKey = svgFileName.substringAfterLast('/').removeSuffix(".svg")
         val compDef = NativeComponentRegistry.get(compKey)
@@ -94,7 +103,7 @@ object SvgComponentRenderer {
         val allManagedIds = mutableSetOf<String>()
         val activeIds = mutableSetOf<String>()
         val lampHex = when (lampColor.lowercase()) {
-            "white" -> "#f8fafc"
+            "white" -> if (isLightTheme) "#cbd5e1" else "#f8fafc"
             "red" -> "#ef4444"
             "green" -> "#22c55e"
             "blue" -> "#3b82f6"
@@ -214,7 +223,7 @@ object SvgComponentRenderer {
         val tagRegex = Regex("""<(path|rect|circle|g|ellipse|polygon|polyline|line)\b[^>]*>""", RegexOption.DOT_MATCHES_ALL)
         val idExtractRegex = Regex("""\bid=["']([^"']+)["']""")
 
-        return tagRegex.replace(rawSvg) { match ->
+        val result = tagRegex.replace(rawSvg) { match ->
             val tagText = match.value
             val idMatch = idExtractRegex.find(tagText)
             val matchedId = idMatch?.groupValues?.get(1)
@@ -225,6 +234,16 @@ object SvgComponentRenderer {
                 tagText
             }
         }
+
+        if (!isLightTheme) return result
+
+        // Light Paper Ink Conversion: invert white/near-white (#ffffff, #f9f9f9, #fff, white)
+        // and neon cyan (#00ffff) to crisp technical CAD ink (#0f172a / #0284c7)
+        return result
+            .replace(Regex("""(stroke|fill)\s*:\s*(#ffffff|#f9f9f9|#f8fafc|#fff\b|white\b)""", RegexOption.IGNORE_CASE), "$1:#0f172a")
+            .replace(Regex("""(stroke|fill)\s*=\s*(["'])(#ffffff|#f9f9f9|#f8fafc|#fff|white)\2""", RegexOption.IGNORE_CASE), "$1=$2#0f172a$2")
+            .replace(Regex("""(stroke|fill)\s*:\s*(#00ffff|#0ff\b|cyan\b)""", RegexOption.IGNORE_CASE), "$1:#0284c7")
+            .replace(Regex("""(stroke|fill)\s*=\s*(["'])(#00ffff|#0ff|cyan)\2""", RegexOption.IGNORE_CASE), "$1=$2#0284c7$2")
     }
 
     private fun adjustElementVisibility(
@@ -279,14 +298,16 @@ object SvgComponentRenderer {
         heightPx: Int,
         frameIndex: Int = 0,
         variantIndex: Int = 0,
-        lampColor: String = "yellow"
+        lampColor: String = "yellow",
+        isLightTheme: Boolean = false
     ): android.graphics.Picture? {
-        val cacheKey = "${svgFileName}_f${frameIndex}_v${variantIndex}_c${lampColor.lowercase()}_${widthPx}x${heightPx}"
+        val themeKey = if (isLightTheme) "L" else "D"
+        val cacheKey = "${svgFileName}_f${frameIndex}_v${variantIndex}_c${lampColor.lowercase()}_t${themeKey}_${widthPx}x${heightPx}"
         if (framePictureCache.containsKey(cacheKey)) {
             return framePictureCache[cacheKey]
         }
 
-        val svg = getSvg(context, svgFileName, frameIndex, variantIndex, lampColor) ?: return null
+        val svg = getSvg(context, svgFileName, frameIndex, variantIndex, lampColor, isLightTheme) ?: return null
         return try {
             val w = widthPx.coerceAtLeast(1)
             val h = heightPx.coerceAtLeast(1)
@@ -308,11 +329,12 @@ object SvgComponentRenderer {
         height: Float,
         frameIndex: Int = 0,
         variantIndex: Int = 0,
-        lampColor: String = "yellow"
+        lampColor: String = "yellow",
+        isLightTheme: Boolean = false
     ): Boolean {
         val w = width.toInt()
         val h = height.toInt()
-        val pic = getPicture(context, svgFileName, w, h, frameIndex, variantIndex, lampColor)
+        val pic = getPicture(context, svgFileName, w, h, frameIndex, variantIndex, lampColor, isLightTheme)
         if (pic != null) {
             canvas.save()
             canvas.translate(left, top)
@@ -321,18 +343,19 @@ object SvgComponentRenderer {
             return true
         }
 
-        val svg = getSvg(context, svgFileName, frameIndex, variantIndex, lampColor) ?: return false
+        val svg = getSvg(context, svgFileName, frameIndex, variantIndex, lampColor, isLightTheme) ?: return false
         val rect = RectF(left, top, left + width, top + height)
         svg.renderToCanvas(canvas, rect)
         return true
     }
 
-    fun getThumbnailBitmap(context: Context, svgFileName: String, sizePx: Int = 160): Bitmap? {
-        if (bitmapCache.containsKey(svgFileName)) {
-            val cached = bitmapCache[svgFileName]
+    fun getThumbnailBitmap(context: Context, svgFileName: String, sizePx: Int = 160, isLightTheme: Boolean = false): Bitmap? {
+        val cacheKey = "${svgFileName}_t${if (isLightTheme) "L" else "D"}"
+        if (bitmapCache.containsKey(cacheKey)) {
+            val cached = bitmapCache[cacheKey]
             if (cached != null && !cached.isRecycled) return cached
         }
-        val svg = getSvg(context, svgFileName, frameIndex = 0, variantIndex = 0) ?: return null
+        val svg = getSvg(context, svgFileName, frameIndex = 0, variantIndex = 0, isLightTheme = isLightTheme) ?: return null
 
         val finalBitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
         val finalCanvas = Canvas(finalBitmap)
@@ -381,7 +404,7 @@ object SvgComponentRenderer {
             svg.renderToCanvas(finalCanvas, fallbackRect)
         }
 
-        bitmapCache[svgFileName] = finalBitmap
+        bitmapCache[cacheKey] = finalBitmap
         return finalBitmap
     }
 

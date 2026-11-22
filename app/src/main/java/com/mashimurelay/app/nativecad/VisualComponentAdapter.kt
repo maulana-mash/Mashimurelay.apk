@@ -56,6 +56,15 @@ class VisualComponentAdapter(
     private val displayItems = mutableListOf<LibraryRowItem>()
     private var activeFilterCategory: String? = null // null means all
     private var allowedComponentKeys: Set<String>? = null // null means all components allowed
+    var isLightTheme: Boolean = false
+        private set
+
+    fun setLightTheme(light: Boolean) {
+        if (isLightTheme != light) {
+            isLightTheme = light
+            notifyDataSetChanged()
+        }
+    }
 
     init {
         rebuildDisplayList()
@@ -181,6 +190,20 @@ class VisualComponentAdapter(
                 h.tvCount.text = item.count.toString()
                 h.tvChevron.text = if (item.isExpanded) "▾" else "▸"
 
+                if (isLightTheme) {
+                    h.layoutHeader.setBackgroundColor(Color.parseColor("#f1f5f9"))
+                    h.tvTitle.setTextColor(Color.parseColor("#1d4ed8"))
+                    h.tvCount.setBackgroundColor(Color.parseColor("#e2e8f0"))
+                    h.tvCount.setTextColor(Color.parseColor("#334155"))
+                    h.tvChevron.setTextColor(Color.parseColor("#64748b"))
+                } else {
+                    h.layoutHeader.setBackgroundColor(Color.parseColor("#1c1c2b"))
+                    h.tvTitle.setTextColor(Color.parseColor("#38bdf8"))
+                    h.tvCount.setBackgroundColor(Color.parseColor("#27273a"))
+                    h.tvCount.setTextColor(Color.parseColor("#94a3b8"))
+                    h.tvChevron.setTextColor(Color.parseColor("#64748b"))
+                }
+
                 h.itemView.setOnClickListener {
                     if (collapsedGroups.contains(item.categoryKey)) {
                         collapsedGroups.remove(item.categoryKey)
@@ -195,8 +218,17 @@ class VisualComponentAdapter(
                 val def = item.def
                 val context = t.itemView.context
 
+                // 0. Card Surface Theme
+                if (isLightTheme) {
+                    t.cardTile.setCardBackgroundColor(Color.WHITE)
+                    t.cardTile.strokeColor = Color.parseColor("#e2e8f0")
+                } else {
+                    t.cardTile.setCardBackgroundColor(Color.parseColor("#161622"))
+                    t.cardTile.strokeColor = Color.parseColor("#2a2a3e")
+                }
+
                 // 1. Render Centered SVG Thumbnail
-                val bmp = SvgComponentRenderer.getThumbnailBitmap(context, def.file)
+                val bmp = SvgComponentRenderer.getThumbnailBitmap(context, def.file, isLightTheme = isLightTheme)
                 if (bmp != null) {
                     t.ivThumbnail.setImageBitmap(bmp)
                 } else {
@@ -285,6 +317,7 @@ class VisualComponentAdapter(
     }
 
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val layoutHeader: View = view.findViewById(R.id.layoutHeader)
         val tvTitle: TextView = view.findViewById(R.id.tvHeaderTitle)
         val tvCount: TextView = view.findViewById(R.id.tvHeaderCount)
         val tvChevron: TextView = view.findViewById(R.id.tvChevron)
