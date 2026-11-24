@@ -308,10 +308,32 @@ object AppThemeHelper {
             val tint = view.backgroundTintList?.defaultColor ?: Color.TRANSPARENT
             if (view.id == R.id.btnClearCanvas) {
                 createClearCanvasDangerStyle(view, true)
+            } else if (view.id == R.id.btnDontSaveUnsaved) {
+                view.elevation = 0f
+                view.stateListAnimator = null
+                view.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#fef2f2"))
+                view.setTextColor(Color.parseColor("#dc2626"))
+                if (view is MaterialButton) {
+                    view.iconTint = ColorStateList.valueOf(Color.parseColor("#dc2626"))
+                    view.strokeWidth = (1f * density).toInt().coerceAtLeast(1)
+                    view.strokeColor = ColorStateList.valueOf(Color.parseColor("#fca5a5"))
+                }
+            } else if (view is MaterialButton && Color.alpha(tint) < 40) {
+                // Outlined / transparent dismiss buttons (e.g. Cancel) — strip shadow & adapt stroke/text for Light Paper
+                view.elevation = 0f
+                view.stateListAnimator = null
+                view.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#f8fafc"))
+                view.strokeWidth = (1f * density).toInt().coerceAtLeast(1)
+                view.strokeColor = ColorStateList.valueOf(Color.parseColor("#cbd5e1"))
+                view.setTextColor(Color.parseColor("#475569"))
             } else if (isDarkNeutralColor(tint)) {
+                view.elevation = 0f
+                view.stateListAnimator = null
                 view.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#f1f5f9"))
                 val txtCol = view.currentTextColor
-                if (txtCol == Color.WHITE || Color.red(txtCol) > 170) {
+                if (txtCol == Color.parseColor("#f87171") || txtCol == Color.parseColor("#ef4444")) {
+                    view.setTextColor(Color.parseColor("#dc2626"))
+                } else if (txtCol == Color.WHITE || Color.red(txtCol) > 170) {
                     view.setTextColor(Color.parseColor("#1e293b"))
                 } else if (txtCol == Color.parseColor("#38bdf8")) {
                     view.setTextColor(Color.parseColor("#1d4ed8"))
@@ -359,10 +381,15 @@ object AppThemeHelper {
                 }
             }
         } else if (view is ImageView) {
+            val desc = view.contentDescription?.toString() ?: ""
             if (view.id == R.id.btnCloseQrScanner || view.id == R.id.btnCloseConfirmSendTeacher ||
-                view.id == R.id.btnCloseSaveAs || view.id == R.id.btnCloseProp || view.id == R.id.btnCloseAbout
+                view.id == R.id.btnCloseSaveAs || view.id == R.id.btnCloseProp ||
+                view.id == R.id.btnCloseAbout || view.id == R.id.btnCloseUnsaved ||
+                desc.equals("Close", ignoreCase = true) || desc.equals("Tutup", ignoreCase = true)
             ) {
                 view.setColorFilter(Color.parseColor("#475569"))
+            } else if (view.id == R.id.ivUnsavedHeaderIcon) {
+                view.setColorFilter(Color.parseColor("#2563eb"))
             }
         } else {
             val bg = view.background

@@ -507,23 +507,7 @@ class MainActivity : Activity() {
 
         // Stop Simulation
         btnStop.setOnClickListener {
-            btnStop.visibility = View.GONE
-            btnRun.visibility = View.VISIBLE
-            cardShortCircuit.visibility = View.GONE
-
-            val prevSelectedId = canvasView.selectedElementId
-            canvasView.stopSimulation()
-
-            // Otomatis Pop Up Panel Properti saat Running Stopped (CAD Edit Mode)
-            val targetElement = resolveTargetElementForEdit(prevSelectedId)
-            if (targetElement != null) {
-                canvasView.selectedElementId = targetElement.id
-                canvasView.invalidate()
-                updatePill(targetElement)
-            } else {
-                floatingPill.visibility = View.GONE
-                updateFabPosition(false)
-            }
+            stopSimulationIfRunning(restoreEditPill = true)
         }
 
         // More Options Menu (Gambar 5 Toolbar)
@@ -1883,7 +1867,37 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun stopSimulationIfRunning(restoreEditPill: Boolean = false) {
+        val wasSimulating = canvasView.isSimulating || btnStop.visibility == View.VISIBLE
+        if (!wasSimulating) return
+
+        btnStop.visibility = View.GONE
+        btnRun.visibility = View.VISIBLE
+        cardShortCircuit.visibility = View.GONE
+
+        val prevSelectedId = canvasView.selectedElementId
+        canvasView.stopSimulation()
+
+        if (restoreEditPill) {
+            val targetElement = resolveTargetElementForEdit(prevSelectedId)
+            if (targetElement != null) {
+                canvasView.selectedElementId = targetElement.id
+                canvasView.invalidate()
+                updatePill(targetElement)
+            } else {
+                floatingPill.visibility = View.GONE
+                updateFabPosition(false)
+            }
+        } else {
+            canvasView.selectedElementId = null
+            canvasView.selectedConnectorId = null
+            floatingPill.visibility = View.GONE
+            updateFabPosition(false)
+        }
+    }
+
     private fun openWorkspaceOverlay() {
+        stopSimulationIfRunning(restoreEditPill = false)
         switchWorkspaceTab(false)
         layoutWorkspaceOverlay.visibility = View.VISIBLE
         rvWorkspaceProjects.scrollToPosition(0)
@@ -1935,6 +1949,7 @@ class MainActivity : Activity() {
     }
 
     private fun loadProjectItem(item: ProjectItem) {
+        stopSimulationIfRunning(restoreEditPill = false)
         if (item.isExample) {
             when (item.name) {
                 "Rangkaian Sederhana Demo" -> loadStarterDemoTemplate()
@@ -2111,6 +2126,7 @@ class MainActivity : Activity() {
         btnConfirm?.text = "Buat Proyek"
         btnConfirm?.setOnClickListener {
             val name = input?.text?.toString()?.trim()?.ifEmpty { "Project ${(1..99).random()}" } ?: "Project ${(1..99).random()}"
+            stopSimulationIfRunning(restoreEditPill = false)
             canvasView.pushUndoState()
             canvasView.elements.clear()
             canvasView.connectors.clear()
@@ -4366,6 +4382,7 @@ class MainActivity : Activity() {
     }
 
     private fun handleExitCanvasToWorkspace() {
+        stopSimulationIfRunning(restoreEditPill = false)
         if (SettingsManager.isAutoSaveEnabled(this)) {
             triggerAutoSaveIfEnabled(showFeedback = false)
             openWorkspaceOverlay()
@@ -5029,6 +5046,7 @@ class MainActivity : Activity() {
             btnActionExample?.setOnClickListener {
                 val exJson = mod.exampleCircuitJson ?: return@setOnClickListener
                 try {
+                    stopSimulationIfRunning(restoreEditPill = false)
                     val circuit = WorkspaceManager.deserializeCircuit(exJson)
                     canvasView.elements.clear()
                     canvasView.elements.addAll(circuit.first)
@@ -5053,6 +5071,7 @@ class MainActivity : Activity() {
             val kitCount = mod.allowedComponents.size
             btnActionPractice?.text = if (kitCount > 0) "Latihan (+ Kit $kitCount)" else "Mulai Latihan"
             btnActionPractice?.setOnClickListener {
+                stopSimulationIfRunning(restoreEditPill = false)
                 canvasView.elements.clear()
                 canvasView.connectors.clear()
                 canvasView.clearUndoHistory()
