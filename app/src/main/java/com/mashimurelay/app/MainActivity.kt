@@ -5058,6 +5058,8 @@ class MainActivity : Activity() {
                         visualAdapter.setAllowedComponentFilter(null)
                     }
                     setCurrentProject("Contoh: ${mod.title}")
+                    canvasView.showPinLabels = true
+                    SettingsManager.setPinLabelsEnabled(this, true)
                     canvasView.invalidate()
                     closeWorkspaceOverlay()
                     dialog.dismiss()
