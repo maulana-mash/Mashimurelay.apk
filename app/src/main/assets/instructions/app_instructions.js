@@ -19,9 +19,21 @@
       window.simVideoPlayer.init(mount);
     }
 
-    // Default: jika tab aktif adalah tabVideoSim, render frame dan mainkan
+    // Cek deep-link ?video=<videoId> dari Modul Praktikum Android
+    let requestedVideoId = null;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      requestedVideoId = params.get('video');
+    } catch (_) {}
+
     if (window.simVideoPlayer) {
-      window.simVideoPlayer.renderFrame();
+      if (requestedVideoId && typeof window.simVideoPlayer.loadVideo === 'function') {
+        const videoTab = document.querySelector('.inst-tab[data-tab="tabVideoSim"]');
+        if (videoTab) videoTab.click();
+        window.simVideoPlayer.loadVideo(requestedVideoId);
+      } else {
+        window.simVideoPlayer.renderFrame();
+      }
       window.simVideoPlayer.play();
     }
   });

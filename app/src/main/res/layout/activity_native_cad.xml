@@ -816,6 +816,49 @@
                         android:textSize="15sp" />
                 </LinearLayout>
 
+                <!-- 1b. Modul Praktikum -->
+                <LinearLayout
+                    android:id="@+id/menuDrawerModules"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="Modul Praktikum"
+                        android:src="@drawable/ic_menu_modules" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:text="Modul Praktikum"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tvDrawerModulesBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_status_badge_on"
+                        android:paddingStart="7dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="7dp"
+                        android:paddingBottom="2dp"
+                        android:text="10"
+                        android:textColor="#10b981"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
                 <!-- 2. Save -->
                 <LinearLayout
                     android:id="@+id/menuDrawerSave"

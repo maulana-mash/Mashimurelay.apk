@@ -602,6 +602,11 @@ object WorkspaceManager {
 
     fun importCircuitContent(context: Context, originalFileName: String, rawText: String): String? {
         val trimmed = rawText.trim()
+        if (trimmed.startsWith("{")) {
+            try {
+                PracticalModulesManager.extractAndSaveFromCircuitJson(context, trimmed)
+            } catch (_: Exception) {}
+        }
         val circuit = if (trimmed.startsWith("{")) {
             deserializeCircuit(trimmed)
         } else {

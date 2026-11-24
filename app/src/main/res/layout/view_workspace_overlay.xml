@@ -175,7 +175,47 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Tab 2: Examples -->
+        <!-- Tab 2: Modul Praktikum -->
+        <LinearLayout
+            android:id="@+id/tabModules"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/pillTabModules"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_nav_pill_inactive"
+                android:gravity="center"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <ImageView
+                    android:id="@+id/ivTabModulesIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_menu_modules"
+                    app:tint="#64748b"
+                    android:contentDescription="Modul Praktikum Icon" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTabModulesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="Modul"
+                android:textColor="#64748b"
+                android:textSize="11sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <!-- Tab 3: Examples -->
         <LinearLayout
             android:id="@+id/tabExamples"
             android:layout_width="0dp"
