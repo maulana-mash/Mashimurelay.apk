@@ -167,7 +167,7 @@ data class NativeConnector(
             else -> PointF(0f, -1f)
         }
 
-        fun snap(v: Float): Float = kotlin.math.round(v / gridSize) * gridSize
+        fun snap(v: Float): Float = kotlin.math.floor((v / gridSize) + 0.5f) * gridSize
 
         val p0 = PointF(snap(pA.x), snap(pA.y))
         val p5 = PointF(snap(pB.x), snap(pB.y))

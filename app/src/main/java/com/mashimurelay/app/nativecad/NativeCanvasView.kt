@@ -1492,8 +1492,8 @@ class NativeCanvasView @JvmOverloads constructor(
                 canvas.drawText(timerText, 0f, tY, timerBadgePaint)
             }
 
-            // Draw Comment Label (hanya jika diaktifkan di Settings)
-            if (showComponentNames && el.comment.isNotEmpty()) {
+            // Draw Comment Label (hanya jika diaktifkan di Settings & bukan komponen teks anotasi)
+            if (showComponentNames && el.svgData != "text" && el.comment.isNotEmpty()) {
                 canvas.drawText(el.comment, 0f, visualH / 2f + 16f, elementCommentPaint)
             }
 
