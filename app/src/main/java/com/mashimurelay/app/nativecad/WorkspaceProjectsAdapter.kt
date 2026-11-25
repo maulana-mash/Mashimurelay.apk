@@ -39,7 +39,7 @@ class WorkspaceProjectsAdapter(
         val item = items[position]
         holder.tvTitle.text = item.name
         holder.tvMeta.text = if (item.isExample) {
-            "Contoh Rangkaian • Standar IEC"
+            item.subtitle ?: "Contoh Rangkaian • Standar IEC"
         } else {
             "${item.elementCount} komponen"
         }

@@ -10,7 +10,9 @@ data class ProjectItem(
     val file: File,
     val lastModified: Long,
     val elementCount: Int,
-    val isExample: Boolean = false
+    val isExample: Boolean = false,
+    val subtitle: String? = null,
+    val exampleCircuitJson: String? = null
 )
 
 object WorkspaceManager {
@@ -69,10 +71,42 @@ object WorkspaceManager {
         }.sortedByDescending { it.lastModified }
     }
 
-    fun listExamples(): List<ProjectItem> {
-        return listOf(
-            ProjectItem("Rangkaian Sederhana Demo", File("rangkaian_sederhana_demo.smrl"), System.currentTimeMillis(), 12, isExample = true)
+    fun listExamples(context: Context? = null): List<ProjectItem> {
+        val result = mutableListOf(
+            ProjectItem(
+                name = "Rangkaian Sederhana Demo",
+                file = File("rangkaian_sederhana_demo.smrl"),
+                lastModified = System.currentTimeMillis(),
+                elementCount = 12,
+                isExample = true,
+                subtitle = "Contoh Rangkaian • Standar IEC"
+            )
         )
+        if (context != null) {
+            val builtinMods = PracticalModulesManager.getBuiltinModules(context)
+            for (mod in builtinMods) {
+                val exJson = mod.exampleCircuitJson
+                if (!exJson.isNullOrBlank()) {
+                    val trackLabel = if (mod.track == "otomotif") {
+                        "Otomotif (TKR/TSM) • Standar DIN"
+                    } else {
+                        "Industri (TITL) • Standar IEC"
+                    }
+                    result.add(
+                        ProjectItem(
+                            name = mod.title,
+                            file = File("${mod.id}.smrl"),
+                            lastModified = System.currentTimeMillis(),
+                            elementCount = mod.allowedComponents.size,
+                            isExample = true,
+                            subtitle = "${mod.code} • $trackLabel",
+                            exampleCircuitJson = exJson
+                        )
+                    )
+                }
+            }
+        }
+        return result
     }
 
     fun saveProject(context: Context, projectName: String, elements: List<NativeElement>, connectors: List<NativeConnector>): Boolean {

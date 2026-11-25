@@ -130,7 +130,7 @@ class MainActivity : Activity() {
     private lateinit var workspaceAdapter: WorkspaceProjectsAdapter
     private var isViewingExamples = false
     private var activeWorkspaceTab: String = "workspace" // "modules" | "workspace" | "examples"
-    private var activeModuleFilter: String = "all"
+    private var activeModuleFilter: String = "industri"
     private var activeModuleSearchQuery: String = ""
     private var activeDetailModule: PracticalModule? = null
     private var isInlineModulesWired: Boolean = false
@@ -2006,7 +2006,7 @@ class MainActivity : Activity() {
                 btnDeleteDetail?.visibility = View.GONE
                 bottomBar?.visibility = View.VISIBLE
                 bottomDivider?.visibility = View.VISIBLE
-                workspaceAdapter.updateItems(WorkspaceManager.listExamples())
+                workspaceAdapter.updateItems(WorkspaceManager.listExamples(this))
                 rvWorkspaceProjects.scrollToPosition(0)
             }
             else -> {
@@ -2031,7 +2031,7 @@ class MainActivity : Activity() {
     private fun refreshWorkspaceList() {
         when (activeWorkspaceTab) {
             "modules" -> if (activeDetailModule != null) renderInlineModuleDetail(activeDetailModule!!) else renderInlineModulesList()
-            "examples" -> workspaceAdapter.updateItems(WorkspaceManager.listExamples())
+            "examples" -> workspaceAdapter.updateItems(WorkspaceManager.listExamples(this))
             else -> workspaceAdapter.updateItems(WorkspaceManager.listProjects(this))
         }
     }
@@ -2039,12 +2039,36 @@ class MainActivity : Activity() {
     private fun loadProjectItem(item: ProjectItem) {
         stopSimulationIfRunning(restoreEditPill = false)
         if (item.isExample) {
-            when (item.name) {
-                "Rangkaian Sederhana Demo" -> loadStarterDemoTemplate()
-                "DOL Motor Starter" -> loadDolStarterTemplate()
-                "Hazard Switch & Lamp" -> loadHazardLampTemplate()
-                "Forward-Reverse Motor" -> loadForwardReverseTemplate()
-                else -> loadStarterDemoTemplate()
+            val exJson = item.exampleCircuitJson
+            if (!exJson.isNullOrBlank()) {
+                try {
+                    val circuit = WorkspaceManager.deserializeCircuit(exJson)
+                    canvasView.elements.clear()
+                    canvasView.elements.addAll(circuit.first)
+                    canvasView.connectors.clear()
+                    canvasView.connectors.addAll(circuit.second)
+                    canvasView.clearUndoHistory()
+                    WorkspaceManager.currentAssignmentKit = null
+                    if (::visualAdapter.isInitialized) {
+                        visualAdapter.setAllowedComponentFilter(null)
+                    }
+                    setCurrentProject(item.name)
+                    canvasView.showPinLabels = true
+                    SettingsManager.setPinLabelsEnabled(this, true)
+                    canvasView.invalidate()
+                    markCurrentStateAsSaved()
+                    canvasView.post { canvasView.fitToScreen() }
+                } catch (e: Exception) {
+                    Toast.makeText(this, "Gagal memuat contoh rangkaian: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                when (item.name) {
+                    "Rangkaian Sederhana Demo" -> loadStarterDemoTemplate()
+                    "DOL Motor Starter" -> loadDolStarterTemplate()
+                    "Hazard Switch & Lamp" -> loadHazardLampTemplate()
+                    "Forward-Reverse Motor" -> loadForwardReverseTemplate()
+                    else -> loadStarterDemoTemplate()
+                }
             }
         } else {
             val circuit = WorkspaceManager.loadProject(item.file)
@@ -4521,7 +4545,7 @@ class MainActivity : Activity() {
 
     private fun reloadCurrentProjectFromDisk() {
         try {
-            val examples = WorkspaceManager.listExamples()
+            val examples = WorkspaceManager.listExamples(this)
             val exampleItem = examples.find { it.name == currentProjectName }
             if (exampleItem != null) {
                 loadProjectItem(exampleItem)
@@ -4594,8 +4618,8 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun showPracticalModulesDialog(initialTrack: String = "all") {
-        activeModuleFilter = initialTrack
+    private fun showPracticalModulesDialog(initialTrack: String = "industri") {
+        activeModuleFilter = if (initialTrack == "otomotif" || initialTrack == "guru") initialTrack else "industri"
         activeDetailModule = null
         openWorkspaceOverlay("modules")
     }
@@ -4621,14 +4645,12 @@ class MainActivity : Activity() {
         val root = layoutInlineModulesPage ?: return
         isInlineModulesWired = true
 
-        val chipAll = root.findViewById<TextView>(R.id.chipFilterAll)
         val chipInd = root.findViewById<TextView>(R.id.chipFilterIndustri)
         val chipOto = root.findViewById<TextView>(R.id.chipFilterOtomotif)
         val chipGuru = root.findViewById<TextView>(R.id.chipFilterGuru)
         val etSearch = root.findViewById<EditText>(R.id.etPmSearch)
         val svCards = root.findViewById<ScrollView>(R.id.svPmCards)
 
-        chipAll?.setOnClickListener { activeModuleFilter = "all"; renderInlineModulesList(); svCards?.scrollTo(0, 0) }
         chipInd?.setOnClickListener { activeModuleFilter = "industri"; renderInlineModulesList(); svCards?.scrollTo(0, 0) }
         chipOto?.setOnClickListener { activeModuleFilter = "otomotif"; renderInlineModulesList(); svCards?.scrollTo(0, 0) }
         chipGuru?.setOnClickListener { activeModuleFilter = "guru"; renderInlineModulesList(); svCards?.scrollTo(0, 0) }
@@ -4676,14 +4698,17 @@ class MainActivity : Activity() {
         val root = layoutInlineModulesPage ?: return
         val isLight = SettingsManager.isLightTheme(this)
 
-        val bgCard = Color.parseColor(if (isLight) "#ffffff" else "#1a1a25")
-        val bgSubCard = Color.parseColor(if (isLight) "#ffffff" else "#16161f")
+        if (activeModuleFilter != "industri" && activeModuleFilter != "otomotif" && activeModuleFilter != "guru") {
+            activeModuleFilter = "industri"
+        }
+
+        val bgChipIdle = Color.parseColor(if (isLight) "#ffffff" else "#181822")
+        val bgSearch = Color.parseColor(if (isLight) "#ffffff" else "#16161f")
         val strokeColor = Color.parseColor(if (isLight) "#cbd5e1" else "#2a2a3c")
-        val textPrimary = Color.parseColor(if (isLight) "#0f172a" else "#f8fafc")
-        val textSecondary = Color.parseColor(if (isLight) "#475569" else "#94a3b8")
-        val accentBlue = Color.parseColor(if (isLight) "#2563eb" else "#38bdf8")
-        val accentAmber = Color.parseColor(if (isLight) "#b45309" else "#fbbf24")
-        val accentSlate = Color.parseColor(if (isLight) "#334155" else "#cbd5e1")
+        val dividerColor = Color.parseColor(if (isLight) "#e2e8f0" else "#1c1c26")
+        val textPrimary = Color.parseColor(if (isLight) "#0f172a" else "#ffffff")
+        val textSecondary = Color.parseColor(if (isLight) "#64748b" else "#64748b")
+        val iconColor = Color.parseColor(if (isLight) "#2563eb" else "#cbd5e1")
         val accentDanger = Color.parseColor(if (isLight) "#dc2626" else "#f87171")
 
         val layoutListView = root.findViewById<LinearLayout>(R.id.layoutPmListView)
@@ -4691,7 +4716,6 @@ class MainActivity : Activity() {
         layoutListView?.visibility = View.VISIBLE
         layoutDetailView?.visibility = View.GONE
 
-        val chipAll = root.findViewById<TextView>(R.id.chipFilterAll)
         val chipInd = root.findViewById<TextView>(R.id.chipFilterIndustri)
         val chipOto = root.findViewById<TextView>(R.id.chipFilterOtomotif)
         val chipGuru = root.findViewById<TextView>(R.id.chipFilterGuru)
@@ -4703,7 +4727,6 @@ class MainActivity : Activity() {
         updateDrawerModulesBadge()
 
         val chips = listOf(
-            Pair(chipAll, "all"),
             Pair(chipInd, "industri"),
             Pair(chipOto, "otomotif"),
             Pair(chipGuru, "guru")
@@ -4715,12 +4738,12 @@ class MainActivity : Activity() {
                 chip.background = makePmRoundedDrawable(Color.parseColor("#2563eb"), Color.parseColor("#2563eb"), 8)
                 chip.setTextColor(Color.WHITE)
             } else {
-                chip.background = makePmRoundedDrawable(bgCard, strokeColor, 8)
-                chip.setTextColor(textSecondary)
+                chip.background = makePmRoundedDrawable(bgChipIdle, strokeColor, 8)
+                chip.setTextColor(if (isLight) Color.parseColor("#475569") else Color.parseColor("#94a3b8"))
             }
         }
 
-        etSearch?.background = makePmRoundedDrawable(bgSubCard, strokeColor, 8)
+        etSearch?.background = makePmRoundedDrawable(bgSearch, strokeColor, 8)
         etSearch?.setTextColor(textPrimary)
         etSearch?.setHintTextColor(textSecondary)
 
@@ -4730,9 +4753,8 @@ class MainActivity : Activity() {
         val filtered = allMods.filter { mod ->
             val trackOk = when (activeModuleFilter) {
                 "guru" -> !mod.isBuiltin
-                "industri" -> mod.track == "industri"
-                "otomotif" -> mod.track == "otomotif"
-                else -> true
+                "otomotif" -> mod.isBuiltin && mod.track == "otomotif"
+                else -> mod.isBuiltin && mod.track != "otomotif"
             }
             val queryOk = if (q.isEmpty()) true else {
                 val hay = listOf(mod.code, mod.title, mod.subject, mod.author, mod.summary, mod.theory)
@@ -4749,149 +4771,109 @@ class MainActivity : Activity() {
                 } else {
                     "Tidak ditemukan modul yang cocok dengan pencarian."
                 }
-                setTextColor(textSecondary)
-                textSize = 12.5f
+                setTextColor(if (isLight) Color.parseColor("#475569") else Color.parseColor("#94a3b8"))
+                textSize = 13f
                 gravity = android.view.Gravity.CENTER
-                setPadding(pmDp(18), pmDp(28), pmDp(18), pmDp(28))
-                background = makePmRoundedDrawable(bgCard, strokeColor, 10)
+                setPadding(pmDp(24), pmDp(40), pmDp(24), pmDp(40))
             }
             cardsContainer?.addView(emptyTv)
             return
         }
 
-        for (mod in filtered) {
-            val cardLayout = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                background = makePmRoundedDrawable(bgCard, strokeColor, 11)
-                setPadding(pmDp(14), pmDp(12), pmDp(14), pmDp(12))
+        // Ambil ripple background standar Android seperti item_workspace_project.xml
+        val selectableAttr = android.util.TypedValue()
+        theme.resolveAttribute(android.R.attr.selectableItemBackground, selectableAttr, true)
+
+        for ((index, mod) in filtered.withIndex()) {
+            // Flat clean row persis gaya Workspace & Examples (tanpa kotak-kotak!)
+            val rowLayout = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                setBackgroundResource(selectableAttr.resourceId)
+                minimumHeight = pmDp(66)
+                setPadding(pmDp(20), pmDp(10), pmDp(14), pmDp(10))
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { bottomMargin = pmDp(10) }
+                )
                 isClickable = true
                 isFocusable = true
                 setOnClickListener { openInlineModuleDetail(mod) }
             }
 
-            // Top row: Track Badge + Code
-            val topRow = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = android.view.Gravity.CENTER_VERTICAL
+            // Ikon kiri 22dp (konsisten dengan Workspace & Examples)
+            val ivIcon = ImageView(this).apply {
+                setImageResource(R.drawable.ic_menu_modules)
+                setColorFilter(iconColor)
+                layoutParams = LinearLayout.LayoutParams(pmDp(22), pmDp(22))
             }
-            val badgeBg: Int
-            val badgeStroke: Int
-            val badgeTextCol: Int
-            val badgeLabel: String
-            when {
-                !mod.isBuiltin -> {
-                    badgeBg = Color.parseColor(if (isLight) "#f1f5f9" else "#1e293b")
-                    badgeStroke = Color.parseColor(if (isLight) "#cbd5e1" else "#475569")
-                    badgeTextCol = accentSlate
-                    badgeLabel = "MODUL GURU"
-                }
-                mod.track == "otomotif" -> {
-                    badgeBg = Color.parseColor(if (isLight) "#fef3c7" else "#33240d")
-                    badgeStroke = Color.parseColor(if (isLight) "#fcd34d" else "#92400e")
-                    badgeTextCol = accentAmber
-                    badgeLabel = "OTOMOTIF · TKR/TSM"
-                }
-                else -> {
-                    badgeBg = Color.parseColor(if (isLight) "#dbeafe" else "#122942")
-                    badgeStroke = Color.parseColor(if (isLight) "#93c5fd" else "#1e40af")
-                    badgeTextCol = accentBlue
-                    badgeLabel = "INDUSTRI · TITL"
-                }
-            }
-            val tvBadge = TextView(this).apply {
-                text = badgeLabel
-                setTextColor(badgeTextCol)
-                textSize = 10f
-                setTypeface(null, android.graphics.Typeface.BOLD)
-                setPadding(pmDp(8), pmDp(2), pmDp(8), pmDp(2))
-                background = makePmRoundedDrawable(badgeBg, badgeStroke, 5)
-            }
-            val tvCode = TextView(this).apply {
-                text = mod.code
-                setTextColor(textSecondary)
-                textSize = 11f
-                setTypeface(android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD)
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-                gravity = android.view.Gravity.END
-            }
-            topRow.addView(tvBadge)
-            topRow.addView(tvCode)
-            cardLayout.addView(topRow)
+            rowLayout.addView(ivIcon)
 
-            // Title
-            cardLayout.addView(TextView(this).apply {
+            // Kolom Judul + Meta (tanpa kotak / badge ramai)
+            val textCol = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    marginStart = pmDp(18)
+                    marginEnd = pmDp(8)
+                }
+            }
+            textCol.addView(TextView(this).apply {
                 text = mod.title
                 setTextColor(textPrimary)
-                textSize = 14.5f
-                setTypeface(null, android.graphics.Typeface.BOLD)
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { topMargin = pmDp(7) }
+                textSize = 15f
+                maxLines = 2
+                ellipsize = android.text.TextUtils.TruncateAt.END
             })
 
-            // Summary
-            if (mod.summary.isNotEmpty() || mod.theory.isNotEmpty()) {
-                cardLayout.addView(TextView(this).apply {
-                    text = mod.summary.ifEmpty { mod.theory }
-                    setTextColor(textSecondary)
-                    textSize = 12f
-                    maxLines = 2
-                    ellipsize = android.text.TextUtils.TruncateAt.END
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    ).apply { topMargin = pmDp(4) }
-                })
+            val kitPart = if (mod.allowedComponents.isNotEmpty()) " • Kit ${mod.allowedComponents.size}" else ""
+            val metaText = if (!mod.isBuiltin) {
+                "${mod.code} • ${mod.author.ifBlank { "Guru" }} • ${mod.duration}$kitPart"
+            } else {
+                "${mod.code} • ${mod.level} • ${mod.duration}$kitPart"
             }
-
-            // Bottom row: Meta (tanpa target penyelesaian wajib) + Hapus / Buka
-            val footerRow = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = android.view.Gravity.CENTER_VERTICAL
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { topMargin = pmDp(9) }
-            }
-            val kitPart = if (mod.allowedComponents.isNotEmpty()) " · Kit ${mod.allowedComponents.size}" else ""
-            footerRow.addView(TextView(this).apply {
-                text = "${mod.level} · ${mod.duration}$kitPart"
+            textCol.addView(TextView(this).apply {
+                text = metaText
                 setTextColor(textSecondary)
-                textSize = 11f
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                textSize = 11.5f
+                maxLines = 1
+                ellipsize = android.text.TextUtils.TruncateAt.END
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { topMargin = pmDp(2) }
             })
+            rowLayout.addView(textCol)
 
+            // Aksi Hapus ringan khusus Modul Guru (modul bawaan tetap super bersih seperti Examples)
             if (!mod.isBuiltin) {
-                footerRow.addView(TextView(this).apply {
+                rowLayout.addView(TextView(this).apply {
                     text = "Hapus"
                     setTextColor(accentDanger)
-                    textSize = 11f
+                    textSize = 11.5f
                     setTypeface(null, android.graphics.Typeface.BOLD)
-                    setPadding(pmDp(10), pmDp(4), pmDp(10), pmDp(4))
-                    background = makePmRoundedDrawable(
-                        Color.parseColor(if (isLight) "#fef2f2" else "#2a1419"),
-                        Color.parseColor(if (isLight) "#fca5a5" else "#7f1d1d"),
-                        6
-                    )
+                    setPadding(pmDp(10), pmDp(6), pmDp(10), pmDp(6))
+                    setBackgroundResource(selectableAttr.resourceId)
                     isClickable = true
                     isFocusable = true
                     setOnClickListener { confirmDeleteInlineTeacherModule(mod) }
                 })
-            } else {
-                footerRow.addView(TextView(this).apply {
-                    text = "Buka ->"
-                    setTextColor(accentBlue)
-                    textSize = 11.5f
-                    setTypeface(null, android.graphics.Typeface.BOLD)
+            }
+
+            cardsContainer?.addView(rowLayout)
+
+            // Garis pemisah super tipis antar baris (sejajar teks)
+            if (index < filtered.lastIndex) {
+                cardsContainer?.addView(View(this).apply {
+                    setBackgroundColor(dividerColor)
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        pmDp(1)
+                    ).apply {
+                        marginStart = pmDp(60)
+                        marginEnd = pmDp(16)
+                    }
                 })
             }
-            cardLayout.addView(footerRow)
-            cardsContainer?.addView(cardLayout)
         }
     }
 
